@@ -9,21 +9,72 @@ import SwiftUI
 
 struct SideView: View {
     
+    enum Mode {
+        case parameters, javascript
+    }
+    
+    @State var mode                     : Mode? = .parameters
+
     @Binding var document               : CarthageDocument
 
     @State   var selected               : CarthageObject? = nil
 
+    @Environment(\.colorScheme) var deviceColorScheme   : ColorScheme
+
     
     var body: some View {
            
-        VStack {
-            if let selected = selected {
-                DataView(model: document.model, data: selected.data)
+        VStack(alignment: .leading) {
+            
+            HStack {
+                
+                Button(action: {
+                    mode = .parameters
+                })
+                {
+                    Image(systemName: mode == .parameters ? "cube.fill" : "cube")
+                        .imageScale(.large)
+                }
+                .buttonStyle(.borderless)
+
+                Button(action: {
+                    mode = .javascript
+                })
+                {
+                    Image(systemName: mode == .javascript ? "j.square.fill" : "j.square")
+                        .imageScale(.large)
+                }
+                .buttonStyle(.borderless)
+                
+                Spacer()
             }
+            .padding(.top, 6)
+            .padding(.leading, 6)
+            
+            Divider()
+
+            if let selected = selected {
+                
+                
+                
+                if mode == .parameters {
+                    DataView(model: document.model, data: selected.data)
+                }
+                
+                if mode == .javascript {
+                    WebView(document.model, deviceColorScheme)
+                        .onChange(of: deviceColorScheme) { newValue in
+                            document.model.scriptEditor?.setTheme(newValue)
+                        }
+                }
+            }
+            
+            Spacer()
         }
         
         .onReceive(document.model.objectSelected) { object in
             selected = object
+            document.model.scriptEditor?.setSession(object)
         }
     }
 }

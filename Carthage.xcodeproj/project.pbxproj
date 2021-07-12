@@ -11,6 +11,14 @@
 		2B6AABA1269BEBDD001B17DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AAB9F269BEBDD001B17DE /* README.md */; };
 		2B6AABA3269BEF97001B17DE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABA2269BEF97001B17DE /* COPYING */; };
 		2B6AABA4269BEF97001B17DE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABA2269BEF97001B17DE /* COPYING */; };
+		2B6AABA7269C0EDA001B17DE /* CarthageEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */; };
+		2B6AABA8269C0EDA001B17DE /* CarthageEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */; };
+		2B6AABAA269C1524001B17DE /* SceneKitEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABA9269C1524001B17DE /* SceneKitEngine.swift */; };
+		2B6AABAB269C1524001B17DE /* SceneKitEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABA9269C1524001B17DE /* SceneKitEngine.swift */; };
+		2B6AABAE269C2AAF001B17DE /* ScriptEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABAD269C2AAF001B17DE /* ScriptEditor.swift */; };
+		2B6AABAF269C2AAF001B17DE /* ScriptEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6AABAD269C2AAF001B17DE /* ScriptEditor.swift */; };
+		2B6AABB2269C2D56001B17DE /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABB1269C2D56001B17DE /* Files */; };
+		2B6AABB3269C2D56001B17DE /* Files in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABB1269C2D56001B17DE /* Files */; };
 		2BA40EEE269BBEDB00558C15 /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EED269BBEDB00558C15 /* ProjectView.swift */; };
 		2BA40EEF269BBEDB00558C15 /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EED269BBEDB00558C15 /* ProjectView.swift */; };
 		2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EF0269BBF8500558C15 /* SideView.swift */; };
@@ -40,6 +48,11 @@
 /* Begin PBXFileReference section */
 		2B6AAB9F269BEBDD001B17DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2B6AABA2269BEF97001B17DE /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
+		2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageEngine.swift; sourceTree = "<group>"; };
+		2B6AABA9269C1524001B17DE /* SceneKitEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneKitEngine.swift; sourceTree = "<group>"; };
+		2B6AABAD269C2AAF001B17DE /* ScriptEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptEditor.swift; sourceTree = "<group>"; };
+		2B6AABB1269C2D56001B17DE /* Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Files; sourceTree = "<group>"; };
+		2B6AABB7269C2F75001B17DE /* Carthage.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Carthage.entitlements; sourceTree = "<group>"; };
 		2BA40EED269BBEDB00558C15 /* ProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectView.swift; sourceTree = "<group>"; };
 		2BA40EF0269BBF8500558C15 /* SideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideView.swift; sourceTree = "<group>"; };
 		2BA40EF3269BC06900558C15 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -76,6 +89,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B6AABA5269C0EA8001B17DE /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */,
+				2B6AABA9269C1524001B17DE /* SceneKitEngine.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		2B6AABAC269C2A77001B17DE /* JavaScript */ = {
+			isa = PBXGroup;
+			children = (
+				2B6AABAD269C2AAF001B17DE /* ScriptEditor.swift */,
+			);
+			path = JavaScript;
+			sourceTree = "<group>";
+		};
 		2BA40EEC269BBEAE00558C15 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -90,6 +120,7 @@
 		2BF4CEE3269ACE9D00337EB6 = {
 			isa = PBXGroup;
 			children = (
+				2B6AABB7269C2F75001B17DE /* Carthage.entitlements */,
 				2B6AAB9F269BEBDD001B17DE /* README.md */,
 				2B6AABA2269BEF97001B17DE /* COPYING */,
 				2BF4CEE8269ACE9D00337EB6 /* Shared */,
@@ -107,6 +138,9 @@
 				2BF4CEEB269ACE9D00337EB6 /* ContentView.swift */,
 				2BF4CF8D269AD98D00337EB6 /* Model */,
 				2BA40EEC269BBEAE00558C15 /* Views */,
+				2B6AABA5269C0EA8001B17DE /* Engine */,
+				2B6AABAC269C2A77001B17DE /* JavaScript */,
+				2B6AABB1269C2D56001B17DE /* Files */,
 				2BF4CEEC269ACE9E00337EB6 /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -227,6 +261,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B6AABB2269C2D56001B17DE /* Files in Resources */,
 				2B6AABA3269BEF97001B17DE /* COPYING in Resources */,
 				2B6AABA0269BEBDD001B17DE /* README.md in Resources */,
 				2BF4CF02269ACE9E00337EB6 /* Assets.xcassets in Resources */,
@@ -237,6 +272,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B6AABB3269C2D56001B17DE /* Files in Resources */,
 				2B6AABA4269BEF97001B17DE /* COPYING in Resources */,
 				2B6AABA1269BEBDD001B17DE /* README.md in Resources */,
 				2BF4CF03269ACE9E00337EB6 /* Assets.xcassets in Resources */,
@@ -254,8 +290,11 @@
 				2BA40EFA269BC35500558C15 /* CarthageObject.swift in Sources */,
 				2BF4CEFE269ACE9E00337EB6 /* CarthageDocument.swift in Sources */,
 				2BA40EF4269BC06900558C15 /* BrowserView.swift in Sources */,
+				2B6AABA7269C0EDA001B17DE /* CarthageEngine.swift in Sources */,
+				2B6AABAE269C2AAF001B17DE /* ScriptEditor.swift in Sources */,
 				2BA40F00269BDA9400558C15 /* CarthageData.swift in Sources */,
 				2BA40EEE269BBEDB00558C15 /* ProjectView.swift in Sources */,
+				2B6AABAA269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF00269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F03269BDE1700558C15 /* DataView.swift in Sources */,
@@ -272,8 +311,11 @@
 				2BA40EFB269BC35500558C15 /* CarthageObject.swift in Sources */,
 				2BF4CEFF269ACE9E00337EB6 /* CarthageDocument.swift in Sources */,
 				2BA40EF5269BC06900558C15 /* BrowserView.swift in Sources */,
+				2B6AABA8269C0EDA001B17DE /* CarthageEngine.swift in Sources */,
+				2B6AABAF269C2AAF001B17DE /* ScriptEditor.swift in Sources */,
 				2BA40F01269BDA9400558C15 /* CarthageData.swift in Sources */,
 				2BA40EEF269BBEDB00558C15 /* ProjectView.swift in Sources */,
+				2B6AABAB269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2BA40EF2269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF01269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F04269BDE1700558C15 /* DataView.swift in Sources */,
@@ -468,6 +510,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Carthage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -498,6 +541,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Carthage.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;

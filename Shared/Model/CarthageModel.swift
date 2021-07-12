@@ -7,6 +7,7 @@
 
 import Combine
 import SceneKit
+import JavaScriptCore
 
 class CarthageModel: NSObject, ObservableObject {
 
@@ -16,12 +17,20 @@ class CarthageModel: NSObject, ObservableObject {
     /// Send when an object has been selected
     let objectSelected              = PassthroughSubject<CarthageObject, Never>()
     
+    /// The current rendering engine
+    var engine                      : CarthageEngine? = nil
+    
+    /// 
+    var context                     = JSContext()
+    
     let scene           : SCNScene
     let camera          : SCNCamera
     let cameraNode      : SCNNode
     
+    var scriptEditor                : ScriptEditor? = nil
+    
     /// The project itself
-    var project                             : CarthageProject
+    var project                     : CarthageProject
 
     override init() {
 

@@ -31,6 +31,12 @@ class CarthageObject : Codable, Hashable, Identifiable {
 
     var assetName       : String = ""
     
+    // To identify the editor session
+    var scriptContext   = ""
+    
+    /// The reference to the underlying engine entity implementing this object
+    var entity          : CarthageEntity? = nil
+    
     private enum CodingKeys: String, CodingKey {
         case id
         case name
