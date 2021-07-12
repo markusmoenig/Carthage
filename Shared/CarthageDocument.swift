@@ -16,6 +16,8 @@ extension UTType {
 
 struct CarthageDocument: FileDocument {
     var text: String
+    
+    var model       = CarthageModel()
 
     init(text: String = "Hello, world!") {
         self.text = text

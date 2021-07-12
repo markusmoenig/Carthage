@@ -6,12 +6,55 @@
 //
 
 import SwiftUI
+import SceneKit
 
 struct ContentView: View {
-    @Binding var document: CarthageDocument
-
+    
+    @Binding var document               : CarthageDocument
+    
+    @State var sideViewIsVisible        : Bool = true
+    
     var body: some View {
-        TextEditor(text: $document.text)
+        
+        GeometryReader { geometry in
+
+            NavigationView {
+            
+                ProjectView(document: $document)
+
+                VStack {
+                
+                    HStack {
+                    
+                        SceneView(
+                            scene: document.model.scene,
+                            pointOfView: document.model.cameraNode,
+                            options: [.allowsCameraControl]
+                        )
+                        
+                        if sideViewIsVisible {
+                            SideView()
+                                .frame(width: min(geometry.size.width / 2.5, 800))
+                        }
+                    }
+                    
+                    BrowserView()
+                        .frame(height: 100)
+                }
+            }
+        }
+        
+        .toolbar {
+            ToolbarItemGroup(placement: .automatic) {
+                
+                Button(action: {
+                    sideViewIsVisible.toggle()
+                }, label: {
+                    Image(systemName: "sidebar.right")
+                })
+            }
+        }
+        
     }
 }
 
