@@ -177,8 +177,8 @@ struct FloatDataView: View {
 }
  */
 
-/*
-struct Float3DataView: View {
+
+struct Float3SliderView: View {
     
     let model                               : CarthageModel
     let entity                              : CarthageDataEntity
@@ -241,7 +241,6 @@ struct Float3DataView: View {
         //}
     }
 }
- */
 
 struct Float3DataView: View {
     
@@ -262,7 +261,7 @@ struct Float3DataView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 3) {
             Text(entity.key)
             HStack {
                 TextField("", text: $xText, onEditingChanged: { changed in
@@ -316,10 +315,18 @@ struct DataView: View {
                             .padding(.trailing, 6)
                     }
                     if entity.type == .Float3 {
-                        Float3DataView(model, entity)
-                            .padding(2)
-                            .padding(.leading, 6)
-                            .padding(.trailing, 6)
+                        if entity.usage == .Numeric {
+                            Float3DataView(model, entity)
+                                .padding(2)
+                                .padding(.leading, 6)
+                                .padding(.trailing, 6)
+                        } else
+                        if entity.usage == .Slider {
+                            Float3SliderView(model, entity)
+                                .padding(2)
+                                .padding(.leading, 6)
+                                .padding(.trailing, 6)
+                        }
                     }
                 }
                 Spacer()

@@ -8,4 +8,4 @@ Carthage is currently in the proof of concept phase.
 
 ## Abstract
 
-I wanted to create some casual games but the major game engines were too heavy for me to get involved in. SceneKit and RealityKit look good to me, each with their own advantages (SceneKit being available for Apple TV and RealityKit being more modern). However as I wanted to create my games live with an overall scripting system and wanted to be able to switch between SceneKit and RealityKit I created Carthage as an abstraction layer on top of a rendering / physics engine.
+I wanted to create some casual games but the major game engines were too heavy for me to get involved in. SceneKit and RealityKit look good to me, each with their own advantages (SceneKit being available for watchOS / Apple TV and RealityKit being more modern). However as I wanted to create my games live with an overall scripting system and be able to switch between SceneKit and RealityKit an abstraction layer looked like the best solution to me, thus Carthage.

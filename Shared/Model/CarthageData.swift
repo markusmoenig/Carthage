@@ -15,13 +15,20 @@ typealias float4 = SIMD4<Float>
 class CarthageDataEntity: Codable, Hashable {
     
     enum DataType: String, Codable {
-        case Int, Float, Float2, Float3, Float4, Color3, Color4
+        case Int, Float, Float2, Float3, Float4
+    }
+    
+    enum UsageType: String, Codable {
+        case Numeric, Slider, Color
     }
     
     var id          = UUID()
 
     var key         : String
+    
     var type        : DataType
+    var usage       : UsageType
+    
     var value       : float4
     var defaultValue: float4
     var time        : Double?
@@ -30,15 +37,17 @@ class CarthageDataEntity: Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case key
         case type
+        case usage
         case value
         case range
         case time
         case defaultValue
     }
     
-    init(_ key: String,_ v: Int,_ r: float2 = float2(0,1),_ t: Double? = nil) {
+    init(_ key: String,_ v: Int,_ r: float2 = float2(0,1),_ u: UsageType = .Slider,_ t: Double? = nil) {
         self.key = key
         type = .Int
+        usage = u
         value = float4(Float(v), 0, 0, 0)
         range = r
         time = t
@@ -46,9 +55,10 @@ class CarthageDataEntity: Codable, Hashable {
         defaultValue = value
     }
     
-    init(_ key: String,_ v: Float,_ r: float2 = float2(0,1),_ t: Double? = nil) {
+    init(_ key: String,_ v: Float,_ r: float2 = float2(0,1),_ u: UsageType = .Slider,_ t: Double? = nil) {
         self.key = key
         type = .Float
+        usage = u
         value = float4(v, 0, 0, 0)
         range = r
         time = t
@@ -56,9 +66,10 @@ class CarthageDataEntity: Codable, Hashable {
         defaultValue = value
     }
     
-    init(_ key: String,_ v: float2,_ r: float2 = float2(0,1),_ t: Double? = nil) {
+    init(_ key: String,_ v: float2,_ r: float2 = float2(0,1),_ u: UsageType = .Numeric,_ t: Double? = nil) {
         self.key = key
         type = .Float2
+        usage = u
         value = float4(v.x, v.y, 0, 0)
         range = r
         time = t
@@ -66,9 +77,10 @@ class CarthageDataEntity: Codable, Hashable {
         defaultValue = value
     }
     
-    init(_ key: String,_ v: float3,_ r: float2 = float2(0,1),_ t: Double? = nil) {
+    init(_ key: String,_ v: float3,_ r: float2 = float2(0,1),_ u: UsageType = .Numeric,_ t: Double? = nil) {
         self.key = key
         type = .Float3
+        usage = u
         value = float4(v.x, v.y, v.z, 0)
         range = r
         time = t
@@ -76,9 +88,10 @@ class CarthageDataEntity: Codable, Hashable {
         defaultValue = value
     }
     
-    init(_ key: String,_ v: float4,_ r: float2 = float2(0,1),_ t: Double? = nil) {
+    init(_ key: String,_ v: float4,_ r: float2 = float2(0,1),_ u: UsageType = .Numeric,_ t: Double? = nil) {
         self.key = key
         type = .Float4
+        usage = u
         value = v
         range = r
         time = t
@@ -91,6 +104,7 @@ class CarthageDataEntity: Codable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         key = try container.decode(String.self, forKey: .key)
         type = try container.decode(DataType.self, forKey: .type)
+        usage = try container.decode(UsageType.self, forKey: .usage)
         value = try container.decode(float4.self, forKey: .value)
         range = try container.decode(float2.self, forKey: .range)
         time = try container.decode(Double?.self, forKey: .time)
@@ -102,6 +116,7 @@ class CarthageDataEntity: Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(key, forKey: .key)
         try container.encode(type, forKey: .type)
+        try container.encode(usage, forKey: .usage)
         try container.encode(value, forKey: .value)
         try container.encode(range, forKey: .range)
         try container.encode(time, forKey: .time)
@@ -209,47 +224,47 @@ class CarthageData: Codable {
     }
     
     /// Set Int
-    func set(_ key: String,_ value: Int,_ range: float2 = float2(0,1),_ time: Double? = nil) {
+    func set(_ key: String,_ value: Int,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Slider,_ time: Double? = nil) {
         if let ex = getExisting(key, .Int, time) {
             ex.value = float4(Float(value), 0, 0, 0)
         } else {
-            data.append(CarthageDataEntity(key, value, range, time))
+            data.append(CarthageDataEntity(key, value, range, usage, time))
         }
     }
     
     /// Set Float
-    func set(_ key: String,_ value: Float,_ range: float2 = float2(0,1),_ time: Double? = nil) {
+    func set(_ key: String,_ value: Float,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Slider,_ time: Double? = nil) {
         if let ex = getExisting(key, .Float, time) {
             ex.value = float4(value, 0, 0, 0)
         } else {
-            data.append(CarthageDataEntity(key, value, range, time))
+            data.append(CarthageDataEntity(key, value, range, usage, time))
         }
     }
     
     /// Set Float2
-    func set(_ key: String,_ value: float2,_ range: float2 = float2(0,1),_ time: Double? = nil) {
+    func set(_ key: String,_ value: float2,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Numeric,_ time: Double? = nil) {
         if let ex = getExisting(key, .Float2, time) {
             ex.value = float4(value.x, value.y, 0, 0)
         } else {
-            data.append(CarthageDataEntity(key, value, range, time))
+            data.append(CarthageDataEntity(key, value, range, usage, time))
         }
     }
     
     /// Set Float3
-    func set(_ key: String,_ value: float3,_ range: float2 = float2(0,1),_ time: Double? = nil) {
+    func set(_ key: String,_ value: float3,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Numeric,_ time: Double? = nil) {
         if let ex = getExisting(key, .Float3, time) {
             ex.value = float4(value.x, value.y, value.z, 0)
         } else {
-            data.append(CarthageDataEntity(key, value, range, time))
+            data.append(CarthageDataEntity(key, value, range, usage, time))
         }
     }
     
     /// Set Float4
-    func set(_ key: String,_ value: float4,_ range: float2 = float2(0,1),_ time: Double? = nil) {
+    func set(_ key: String,_ value: float4,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Numeric,_ time: Double? = nil) {
         if let ex = getExisting(key, .Float4, time) {
             ex.value = value
         } else {
-            data.append(CarthageDataEntity(key, value, range, time))
+            data.append(CarthageDataEntity(key, value, range, usage, time))
         }
     }
     

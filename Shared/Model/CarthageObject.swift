@@ -14,6 +14,10 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case Scene, Procedural, Geometry, Audio
     }
     
+    enum CarthageProceduralObjectType: Int32, Codable {
+        case Sphere, Cube
+    }
+    
     var id              = UUID()
     var name            : String
     
@@ -47,11 +51,17 @@ class CarthageObject : Codable, Hashable, Identifiable {
             // Init default data types for geometry objects
             
             if self.data.exists("Rotation") == false {
-                self.data.data.insert(CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360)), at: 0)
+                self.data.data.insert(CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider), at: 0)
             }
             
             if self.data.exists("Position") == false {
                 self.data.data.insert(CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)), at: 0)
+            }
+        }
+        
+        if type == .Procedural {
+            if self.data.exists("Type") == false {
+                self.data.data.insert(CarthageDataEntity("Type", 0, float2(0,0), .Numeric), at: 0)
             }
         }
     }
