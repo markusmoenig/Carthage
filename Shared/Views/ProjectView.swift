@@ -26,6 +26,8 @@ struct ProjectView: View {
                 } else {
                     document.model.selected = object
                     selected = object
+                    
+                    document.model.objectSelected.send(object)
                 }
             })
             {
@@ -42,16 +44,16 @@ struct ProjectView: View {
             //})
         }
         
-        .onChange(of: document.model.selected) { sel in
-            print("selected")
-        }
+        //.onChange(of: document.model.selected) { sel in
+        //    print("selected")
+        //}
     }
     
     /// Returns the system icon name for the given object type
     func getObjectIconName(_ obj: CarthageObject) -> String {
         var name = "cylinder"
         
-        if obj.type == .ProceduralGeometry || obj.type == .Geometry {
+        if obj.type == .Procedural || obj.type == .Geometry {
             name = "cube"
         }
         

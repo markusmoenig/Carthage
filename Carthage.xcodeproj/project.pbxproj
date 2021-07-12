@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B6AABA0269BEBDD001B17DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AAB9F269BEBDD001B17DE /* README.md */; };
+		2B6AABA1269BEBDD001B17DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AAB9F269BEBDD001B17DE /* README.md */; };
+		2B6AABA3269BEF97001B17DE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABA2269BEF97001B17DE /* COPYING */; };
+		2B6AABA4269BEF97001B17DE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABA2269BEF97001B17DE /* COPYING */; };
 		2BA40EEE269BBEDB00558C15 /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EED269BBEDB00558C15 /* ProjectView.swift */; };
 		2BA40EEF269BBEDB00558C15 /* ProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EED269BBEDB00558C15 /* ProjectView.swift */; };
 		2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EF0269BBF8500558C15 /* SideView.swift */; };
@@ -34,6 +38,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B6AAB9F269BEBDD001B17DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		2B6AABA2269BEF97001B17DE /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		2BA40EED269BBEDB00558C15 /* ProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectView.swift; sourceTree = "<group>"; };
 		2BA40EF0269BBF8500558C15 /* SideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideView.swift; sourceTree = "<group>"; };
 		2BA40EF3269BC06900558C15 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
@@ -84,6 +90,8 @@
 		2BF4CEE3269ACE9D00337EB6 = {
 			isa = PBXGroup;
 			children = (
+				2B6AAB9F269BEBDD001B17DE /* README.md */,
+				2B6AABA2269BEF97001B17DE /* COPYING */,
 				2BF4CEE8269ACE9D00337EB6 /* Shared */,
 				2BF4CEF3269ACE9E00337EB6 /* iOS */,
 				2BF4CEFA269ACE9E00337EB6 /* macOS */,
@@ -219,6 +227,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B6AABA3269BEF97001B17DE /* COPYING in Resources */,
+				2B6AABA0269BEBDD001B17DE /* README.md in Resources */,
 				2BF4CF02269ACE9E00337EB6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,6 +237,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B6AABA4269BEF97001B17DE /* COPYING in Resources */,
+				2B6AABA1269BEBDD001B17DE /* README.md in Resources */,
 				2BF4CF03269ACE9E00337EB6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

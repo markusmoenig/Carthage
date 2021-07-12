@@ -11,7 +11,7 @@ import Foundation
 class CarthageObject : Codable, Hashable, Identifiable {
     
     enum CarthageObjectType: Int32, Codable {
-        case Scene, ProceduralGeometry, Geometry, Audio
+        case Scene, Procedural, Geometry, Audio
     }
     
     var id              = UUID()
@@ -43,7 +43,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         self.name = name
         self.data = data
         
-        if type == .Geometry || type == .ProceduralGeometry {
+        if type == .Geometry || type == .Procedural {
             // Init default data types for geometry objects
             
             if self.data.exists("Rotation") == false {

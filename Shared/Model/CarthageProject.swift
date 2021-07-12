@@ -21,7 +21,7 @@ class CarthageProject: Codable {
     init() {
         let scene = CarthageObject(.Scene, "Start Scene")
         
-        scene.children = [CarthageObject(.ProceduralGeometry, "Sphere")]
+        scene.children = [CarthageObject(.Procedural, "Sphere")]
         
         scenes.append(scene)
     }

@@ -33,7 +33,7 @@ struct ContentView: View {
                         )
                         
                         if sideViewIsVisible {
-                            SideView()
+                            SideView(document: $document)
                                 .frame(width: min(geometry.size.width / 2.5, 800))
                         }
                     }

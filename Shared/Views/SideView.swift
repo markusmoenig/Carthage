@@ -8,13 +8,22 @@
 import SwiftUI
 
 struct SideView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+    
+    @Binding var document               : CarthageDocument
 
-struct SideView_Previews: PreviewProvider {
-    static var previews: some View {
-        SideView()
+    @State   var selected               : CarthageObject? = nil
+
+    
+    var body: some View {
+           
+        VStack {
+            if let selected = selected {
+                DataView(model: document.model, data: selected.data)
+            }
+        }
+        
+        .onReceive(document.model.objectSelected) { object in
+            selected = object
+        }
     }
 }

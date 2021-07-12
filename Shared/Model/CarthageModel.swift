@@ -5,7 +5,7 @@
 //  Created by Markus Moenig on 11/7/21.
 //
 
-import Foundation
+import Combine
 import SceneKit
 
 class CarthageModel: NSObject, ObservableObject {
@@ -13,6 +13,9 @@ class CarthageModel: NSObject, ObservableObject {
     @Published var selected         : CarthageObject? = nil
     @Published var selectedScene    : CarthageObject? = nil
 
+    /// Send when an object has been selected
+    let objectSelected              = PassthroughSubject<CarthageObject, Never>()
+    
     let scene           : SCNScene
     let camera          : SCNCamera
     let cameraNode      : SCNNode
