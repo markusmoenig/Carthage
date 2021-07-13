@@ -16,37 +16,61 @@ struct ProjectView: View {
 
     var body: some View {
         
-        List(document.model.project.scenes, children: \.children) { object in
-            
-            Button(action: {
+        ZStack(alignment: .bottomLeading) {
+            List(document.model.project.scenes, children: \.children) { object in
                 
-                if object.type == .Scene {
-                    document.model.selectedScene = object
-                    selectedScene = object
-                } else {
+                Button(action: {
+                    
                     document.model.selected = object
                     selected = object
                     
                     document.model.objectSelected.send(object)
+                })
+                {
+                    Label(object.name, systemImage: getObjectIconName(object))
+                        //.frame(maxWidth: .infinity, alignment: .leading)
+                        //.contentShape(Rectangle())
+                        .foregroundColor(selected === object || selectedScene === object ? .accentColor : .primary)
                 }
-            })
-            {
-                Label(object.name, systemImage: getObjectIconName(object))
-                    //.frame(maxWidth: .infinity, alignment: .leading)
-                    //.contentShape(Rectangle())
-                    .foregroundColor(selected === object || selectedScene === object ? .accentColor : .primary)
+                .buttonStyle(PlainButtonStyle())
+                //.listRowBackground(Group {
+                //    if selected === object || selectedScene === object{
+                //        Color.accentColor.mask(RoundedRectangle(cornerRadius: 4))
+                //    } else { Color.clear }
+                //})
             }
-            .buttonStyle(PlainButtonStyle())
-            //.listRowBackground(Group {
-            //    if selected === object || selectedScene === object{
-            //        Color.accentColor.mask(RoundedRectangle(cornerRadius: 4))
-            //    } else { Color.clear }
-            //})
+            
+            //.onChange(of: document.model.selected) { sel in
+            //    print("selected")
+            //}
+            
+            HStack {
+                Menu {
+                    Button("Add Procedural", action: {
+                        if let selected = document.model.selected {
+                            
+                            let o = CarthageObject(.Procedural, "Sphere")
+                            if selected.children == nil {
+                                selected.children = []
+                            }
+                            selected.children!.append(o)
+                            o.parent = selected
+                            document.model.engineScene?.addObject(object: o)
+                            
+                            document.model.selected = o
+                            document.model.objectSelected.send(o)
+                        }
+                    })
+                }
+                label: {
+                    Label("Add Asset", systemImage: "plus")
+                }
+                .menuStyle(BorderlessButtonMenuStyle())
+                .padding(.leading, 10)
+                .padding(.bottom, 6)
+                Spacer()
+            }
         }
-        
-        //.onChange(of: document.model.selected) { sel in
-        //    print("selected")
-        //}
     }
     
     /// Returns the system icon name for the given object type

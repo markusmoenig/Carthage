@@ -6,30 +6,25 @@
 //
 
 import SceneKit
-import JavaScriptCore
 
-@objc class SceneKitScene : SceneKitEntity {
-    
-    var scene             : SCNScene
-    
-    init(object: CarthageObject, scene: SCNScene) {
-        self.scene = scene
-        super.init(object: object, node: scene.rootNode)
-    }
-    
-    /// Update the entity from the given object
-    override func update()
-    {
-    }
-}
-
-@objc class SceneKitEntity : CarthageEntity {
+class SceneKitEntity : CarthageEntity {
     
     var node             : SCNNode
     
     init(object: CarthageObject, node: SCNNode) {
         self.node = node
         super.init(object: object)
+        
+        attach()
+    }
+    
+    func attach() {
+        if let parent = object.parent {
+            if let e = parent.entity as? SceneKitEntity {
+                e.node.addChildNode(node)
+                print("h")
+            }
+        }
     }
     
     /// Update the entity from the given object
@@ -39,27 +34,59 @@ import JavaScriptCore
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
-class SceneKitEngine: CarthageEngine {
+class SceneKitScene: CarthageScene {
     
-    var scnScene            : SCNScene? = nil
-    var scene               : SceneKitScene? = nil
+    var scene               : SCNScene? = nil
 
-    var sceneObject         : CarthageObject? = nil
-
+    //let scene           : SCNScene
+    let camera          : SCNCamera
+    let cameraNode      : SCNNode
+    
     //let camera          : SCNCamera
     //let cameraNode      : SCNNode
     
     /// Initialize the engine
-    override init(model: CarthageModel)
+    override init(model: CarthageModel, sceneObject: CarthageObject)
     {
-        super.init(model: model)
+        scene = SCNScene()
+        
+        camera = SCNCamera()
+        cameraNode = SCNNode()
+        cameraNode.camera = camera
+        cameraNode.position = SCNVector3(x: 0.0, y: 0.0, z: 3.0)
+        cameraNode.look(at: SCNVector3(x: 0, y: 0, z: 0))
+
+        let light = SCNLight()
+        light.type = SCNLight.LightType.omni
+        let lightNode = SCNNode()
+        lightNode.light = light
+        lightNode.position = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
+
+
+        //let constraint = SCNLookAtConstraint(target: sphereNode)
+        //constraint.isGimbalLockEnabled = true
+        //cameraNode.constraints = [constraint]
+        
+        sceneObject.entity = SceneKitEntity(object: sceneObject, node: scene!.rootNode)
+
+        scene!.rootNode.addChildNode(lightNode)
+        scene!.rootNode.addChildNode(cameraNode)
+        
+        super.init(model: model, sceneObject: sceneObject)
     }
     
-    /// Sets up a scene
-    override func setupScene(sceneObject: CarthageObject)
-    {
-        scene = SceneKitScene(object: sceneObject, scene: SCNScene())
+    /// Adds the given object to it's parent.
+    override func addObject(object: CarthageObject) {
+        let sphereGeometry = SCNSphere(radius: 0.5)
+        let node = SCNNode(geometry: sphereGeometry)
         
-        model.context!.setObject(SceneKitScene.self, forKeyedSubscript: "Scene" as NSString)
+        object.entity = SceneKitEntity(object: object, node: node)
+        
+        //scene!.rootNode.addChildNode(sphereNode)
+    }
+    /// Returns the native scene object for attaching it to the view
+    override func getNativeScene() -> AnyObject? {
+        return scene
     }
 }
+

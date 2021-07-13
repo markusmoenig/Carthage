@@ -6,26 +6,20 @@
 //
 
 import Combine
-import SceneKit
 import JavaScriptCore
 
 class CarthageModel: NSObject, ObservableObject {
 
     @Published var selected         : CarthageObject? = nil
-    @Published var selectedScene    : CarthageObject? = nil
 
     /// Send when an object has been selected
     let objectSelected              = PassthroughSubject<CarthageObject, Never>()
     
     /// The current rendering engine
-    var engine                      : CarthageEngine? = nil
+    var engineScene                 : CarthageScene? = nil
     
     /// 
     var context                     = JSContext()
-    
-    let scene           : SCNScene
-    let camera          : SCNCamera
-    let cameraNode      : SCNNode
     
     var scriptEditor                : ScriptEditor? = nil
     
@@ -35,34 +29,24 @@ class CarthageModel: NSObject, ObservableObject {
     override init() {
 
         project = CarthageProject()
-
-        scene = SCNScene()
-        //sceneView.scene = scene
-
-        camera = SCNCamera()
-        cameraNode = SCNNode()
-        cameraNode.camera = camera
-        cameraNode.position = SCNVector3(x: -3.0, y: 3.0, z: 3.0)
-
-        let light = SCNLight()
-        light.type = SCNLight.LightType.omni
-        let lightNode = SCNNode()
-        lightNode.light = light
-        lightNode.position = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
-
-        let sphereGeometry = SCNSphere(radius: 0.5)
-
-        let sphereNode = SCNNode(geometry: sphereGeometry)
-
-        let constraint = SCNLookAtConstraint(target: sphereNode)
-        constraint.isGimbalLockEnabled = true
-        cameraNode.constraints = [constraint]
-
-        scene.rootNode.addChildNode(lightNode)
-        scene.rootNode.addChildNode(cameraNode)
-        scene.rootNode.addChildNode(sphereNode)
-        
+         
         super.init()
+        
+        selectScene(project.scenes.first!)
+    }
+    
+    func selectScene(_ scene: CarthageObject)
+    {
+        engineScene = SceneKitScene(model: self, sceneObject: scene)
 
+        
+        selected = scene
+    }
+    
+    func play() {
+    }
+    
+    func stop() {
+        
     }
 }

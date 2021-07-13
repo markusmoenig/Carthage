@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import JavaScriptCore
 
 /// Represents an object in a scene
 class CarthageObject : Codable, Hashable, Identifiable {
@@ -23,6 +24,8 @@ class CarthageObject : Codable, Hashable, Identifiable {
     
     var type            : CarthageObjectType
     
+    weak var parent     : CarthageObject? = nil
+    
     var children        : [CarthageObject]? = nil
 
     var data            : CarthageData
@@ -31,7 +34,11 @@ class CarthageObject : Codable, Hashable, Identifiable {
 
     var assetName       : String = ""
     
-    // To identify the editor session
+    /// The optional JavaScript context for this object. Only scene objects always have a JS context, for other objects the
+    /// user has to enable them in the object settings.
+    var jsContext       : JSContext? = nil
+    
+    /// To identify the editor session in the script editor
     var scriptContext   = ""
     
     /// The reference to the underlying engine entity implementing this object

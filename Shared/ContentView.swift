@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SceneKit
+import RealityKit
 
 struct ContentView: View {
     
@@ -27,8 +28,8 @@ struct ContentView: View {
                     HStack {
                     
                         SceneView(
-                            scene: document.model.scene,
-                            pointOfView: document.model.cameraNode,
+                            scene: document.model.engineScene?.getNativeScene() as? SCNScene,
+                            //pointOfView: document.model.cameraNode,
                             options: [.allowsCameraControl]
                         )
                         
@@ -46,6 +47,18 @@ struct ContentView: View {
         
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
+                
+                Button(action: {
+                    document.model.play()
+                }, label: {
+                    Image(systemName: "play")
+                })
+                
+                Button(action: {
+                    document.model.stop()
+                }, label: {
+                    Image(systemName: "stop")
+                })
                 
                 Button(action: {
                     sideViewIsVisible.toggle()
