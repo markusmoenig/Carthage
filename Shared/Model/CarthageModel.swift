@@ -54,6 +54,10 @@ class CarthageModel: NSObject, ObservableObject {
         }
         
         selected = scene
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.objectSelected.send(scene)
+        }
     }
     
     

@@ -28,7 +28,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     
     var children        : [CarthageObject]? = nil
 
-    var data            : CarthageData
+    var dataGroups      : CarthageDataGroups
 
     var code            : String = ""
 
@@ -49,33 +49,39 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case name
         case type
         case children
-        case data
+        case dataGroups
         case code
         case assetName
     }
     
-    init(_ type: CarthageObjectType, _ name: String = "Unnamed", data: CarthageData = CarthageData([]))
+    init(_ type: CarthageObjectType, _ name: String = "Unnamed")
     {
         self.type = type
         self.name = name
-        self.data = data
+        dataGroups = CarthageDataGroups()
         
         if type == .Geometry || type == .Procedural {
             // Init default data types for geometry objects
             
-            if self.data.exists("Rotation") == false {
-                self.data.data.insert(CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider), at: 0)
-            }
-            
-            if self.data.exists("Position") == false {
-                self.data.data.insert(CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)), at: 0)
-            }
+            dataGroups.addGroup("Translation", CarthageData([
+                CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
+                CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
+            ]))
         }
         
         if type == .Procedural {
-            if self.data.exists("Type") == false {
-                self.data.data.insert(CarthageDataEntity("Type", 0, float2(0,0), .Numeric), at: 0)
-            }
+                
+            dataGroups.addGroup("Type", CarthageData([
+                CarthageDataEntity("Type", 0, float2(0,20), .Numeric)
+            ]))
+                
+            dataGroups.addGroup("Sphere", CarthageData([
+                CarthageDataEntity("Radius", Float(0), float2(0, 10), .Slider),
+            ]))
+
+            dataGroups.addGroup("Cube", CarthageData([
+                CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
+            ]))
         }
     }
     
@@ -86,7 +92,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         name = try container.decode(String.self, forKey: .name)
         type = try container.decode(CarthageObjectType.self, forKey: .type)
         children = try container.decode([CarthageObject]?.self, forKey: .children)
-        data = try container.decode(CarthageData.self, forKey: .data)
+        dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
         code = try container.decode(String.self, forKey: .code)
         assetName = try container.decode(String.self, forKey: .assetName)
     }
@@ -98,7 +104,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         try container.encode(name, forKey: .name)
         try container.encode(type, forKey: .type)
         try container.encode(children, forKey: .children)
-        try container.encode(data, forKey: .data)
+        try container.encode(dataGroups, forKey: .dataGroups)
         try container.encode(code, forKey: .code)
         try container.encode(assetName, forKey: .assetName)
     }

@@ -303,7 +303,7 @@ class ScriptEditor
         if let object = model.selected {
             getValue(object, { (value) in
                 object.code = value
-                print(value)
+                
                 /*
                 if let device = self.model.renderer?.device {
                     self.parser?.verify(device, { errors in

@@ -285,3 +285,38 @@ class CarthageData: Codable {
         }
     }
 }
+
+/// A group of data dictionaries
+class CarthageDataGroups: Codable {
+ 
+    var groups: [String: CarthageData]
+    
+    private enum CodingKeys: String, CodingKey {
+        case groups
+    }
+    
+    init(_ groups: [String: CarthageData] = [:])
+    {
+        self.groups = groups
+    }
+    
+    required init(from decoder: Decoder) throws
+    {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        groups = try container.decode([String: CarthageData].self, forKey: .groups)
+    }
+    
+    func encode(to encoder: Encoder) throws
+    {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(groups, forKey: .groups)
+    }
+    
+    func getGroup(_ name: String) -> CarthageData? {
+        return groups[name]
+    }
+    
+    func addGroup(_ name: String,_ data: CarthageData) {
+        groups[name] = data
+    }
+}
