@@ -22,7 +22,6 @@ class SceneKitEntity : CarthageEntity {
         if let parent = object.parent {
             if let e = parent.entity as? SceneKitEntity {
                 e.node.addChildNode(node)
-                print("h")
             }
         }
     }
@@ -72,7 +71,7 @@ class SceneKitScene: CarthageScene {
         scene!.rootNode.addChildNode(lightNode)
         scene!.rootNode.addChildNode(cameraNode)
         
-        super.init(model: model, sceneObject: sceneObject)
+        super.init(model: model, sceneObject: sceneObject)        
     }
     
     /// Adds the given object to it's parent.
@@ -80,9 +79,9 @@ class SceneKitScene: CarthageScene {
         let sphereGeometry = SCNSphere(radius: 0.5)
         let node = SCNNode(geometry: sphereGeometry)
         
-        object.entity = SceneKitEntity(object: object, node: node)
+        print("addObject", object.type)
         
-        //scene!.rootNode.addChildNode(sphereNode)
+        object.entity = SceneKitEntity(object: object, node: node)        
     }
     /// Returns the native scene object for attaching it to the view
     override func getNativeScene() -> AnyObject? {

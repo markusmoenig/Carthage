@@ -15,6 +15,8 @@ struct ContentView: View {
     
     @State var sideViewIsVisible        : Bool = true
     
+    @State var engineType               : CarthageModel.EngineType = .SceneKit
+    
     var body: some View {
         
         GeometryReader { geometry in
@@ -27,11 +29,15 @@ struct ContentView: View {
                 
                     HStack {
                     
-                        SceneView(
-                            scene: document.model.engineScene?.getNativeScene() as? SCNScene,
-                            //pointOfView: document.model.cameraNode,
-                            options: [.allowsCameraControl]
-                        )
+                        if engineType == .SceneKit {
+                            SceneView(
+                                scene: document.model.engineScene?.getNativeScene() as? SCNScene,
+                                //pointOfView: document.model.cameraNode,
+                                options: [.allowsCameraControl]
+                            )
+                        } else {
+                            RKView(document.model)
+                        }
                         
                         if sideViewIsVisible {
                             SideView(document: $document)
@@ -43,6 +49,10 @@ struct ContentView: View {
                         .frame(height: 100)
                 }
             }
+        }
+        
+        .onReceive(document.model.engineChanged) { _ in
+            engineType = document.model.engineType
         }
         
         .toolbar {

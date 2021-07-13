@@ -10,7 +10,7 @@ import SwiftUI
 struct SideView: View {
     
     enum Mode {
-        case parameters, javascript
+        case parameters, javascript, settings
     }
     
     @State var mode                     : Mode? = .parameters
@@ -46,6 +46,15 @@ struct SideView: View {
                 }
                 .buttonStyle(.borderless)
                 
+                Button(action: {
+                    mode = .settings
+                })
+                {
+                    Image(systemName: mode == .settings ? "gearshape.fill" : "gearshape")
+                        .imageScale(.large)
+                }
+                .buttonStyle(.borderless)
+                
                 Spacer()
             }
             .padding(.top, 6)
@@ -54,8 +63,6 @@ struct SideView: View {
             Divider()
 
             if let selected = selected {
-                
-                
                 
                 if mode == .parameters {
                     DataView(model: document.model, data: selected.data)
@@ -66,6 +73,25 @@ struct SideView: View {
                         .onChange(of: deviceColorScheme) { newValue in
                             document.model.scriptEditor?.setTheme(newValue)
                         }
+                }
+                
+                if mode == .settings {
+                    Menu {
+                        Button("SceneKit", action: {
+                            document.model.engineType = .SceneKit
+                            document.model.selectScene(document.model.selected!)
+                            document.model.engineChanged.send()
+                        })
+                        
+                        Button("RealityKit", action: {
+                            document.model.engineType = .RealityKit
+                            document.model.selectScene(document.model.selected!)
+                            document.model.engineChanged.send()
+                        })
+                    }
+                    label: {
+                        Text("Engine")
+                    }
                 }
             }
             

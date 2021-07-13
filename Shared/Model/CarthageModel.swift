@@ -9,11 +9,20 @@ import Combine
 import JavaScriptCore
 
 class CarthageModel: NSObject, ObservableObject {
+    
+    enum EngineType {
+        case SceneKit, RealityKit
+    }
 
     @Published var selected         : CarthageObject? = nil
 
+    var engineType                  : EngineType = .SceneKit
+    
     /// Send when an object has been selected
     let objectSelected              = PassthroughSubject<CarthageObject, Never>()
+    
+    /// Send when an object has been selected
+    let engineChanged               = PassthroughSubject<Void, Never>()
     
     /// The current rendering engine
     var engineScene                 : CarthageScene? = nil
@@ -37,11 +46,17 @@ class CarthageModel: NSObject, ObservableObject {
     
     func selectScene(_ scene: CarthageObject)
     {
-        engineScene = SceneKitScene(model: self, sceneObject: scene)
-
+        engineScene?.destroy()
+        if engineType == .SceneKit {
+            engineScene = SceneKitScene(model: self, sceneObject: scene)
+        } else {
+            engineScene = RealityKitScene(model: self, sceneObject: scene)
+        }
         
         selected = scene
     }
+    
+    
     
     func play() {
     }

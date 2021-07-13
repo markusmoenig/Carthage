@@ -69,6 +69,29 @@ import JavaScriptCore
         
         //print(sceneObject.jsContext?.evaluateScript("scene.fullName; scene.testFunction();")?.toString())
         //print(sceneObject.jsContext?.evaluateScript("print('hallo')")?.toString())
+        
+        print(sceneObject.children?.count)
+        load()
+    }
+    
+    /// Loads / initializes the given objects in the derived engines
+    func load() {
+        
+        func loadObject(_ o: CarthageObject) {
+            addObject(object: o)
+
+            if let children = o.children {
+                for c in children {
+                    addObject(object: c)
+                }
+            }
+        }
+        
+        if let children = sceneObject.children {
+            for c in children {
+                addObject(object: c)
+            }
+        }
     }
 
     var fullName: String {
@@ -90,6 +113,10 @@ import JavaScriptCore
     
     /// Adds an object to the scene
     func addObject(object: CarthageObject) {
+        
+    }
+    
+    func destroy() {
         
     }
 }
