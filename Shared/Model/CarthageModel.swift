@@ -24,6 +24,9 @@ class CarthageModel: NSObject, ObservableObject {
     /// Send when an object has been selected
     let engineChanged               = PassthroughSubject<Void, Never>()
     
+    /// Send when an object has been selected
+    let projectChanged              = PassthroughSubject<Void, Never>()
+    
     /// The current rendering engine
     var engineScene                 : CarthageScene? = nil
     
@@ -59,8 +62,6 @@ class CarthageModel: NSObject, ObservableObject {
             self.objectSelected.send(scene)
         }
     }
-    
-    
     
     func play() {
     }

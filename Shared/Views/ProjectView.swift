@@ -59,6 +59,7 @@ struct ProjectView: View {
                             
                             document.model.selected = o
                             document.model.objectSelected.send(o)
+                            document.model.projectChanged.send()
                         }
                     })
                 }
@@ -70,6 +71,11 @@ struct ProjectView: View {
                 .padding(.bottom, 6)
                 Spacer()
             }
+        }
+        
+        .onReceive(document.model.projectChanged) { _ in
+            self.selectedScene = document.model.selected
+            self.selectedScene = nil
         }
     }
     

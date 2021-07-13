@@ -83,6 +83,8 @@ class CarthageObject : Codable, Hashable, Identifiable {
                 CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
             ]))
         }
+        
+        children = []
     }
     
     required init(from decoder: Decoder) throws
