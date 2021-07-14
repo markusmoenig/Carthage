@@ -24,6 +24,7 @@ struct ContentView: View {
             NavigationView {
             
                 ProjectView(document: $document)
+                    .frame(maxWidth: 250)
 
                 VStack {
                 

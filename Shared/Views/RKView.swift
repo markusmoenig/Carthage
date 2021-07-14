@@ -53,7 +53,7 @@ struct SwiftUIRKView: UIViewRepresentable {
     public typealias UIViewType = ARView
     var model       : CarthageModel!
     
-    private let arView: ARView = ARView(frame: .zero)//, cameraMode: .ar, automaticallyConfigureSession: true)
+    private let arView: ARView = ARView(frame: .zero, cameraMode: .nonAR, automaticallyConfigureSession: false)
     public func makeUIView(context: UIViewRepresentableContext<SwiftUIRKView>) -> ARView {
         if let rkEngine = model.engine as? RealityKitScene {
             if let sceneAnchor = rkEngine.sceneAnchor {
