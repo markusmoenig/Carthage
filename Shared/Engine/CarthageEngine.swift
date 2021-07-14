@@ -140,7 +140,7 @@ import JavaScriptCore
         }        
     }
     
-    /// Stops the game, remove the javascript contexts and update the entities back to the model
+    /// Stops the game, removes the javascript contexts and updates the entities back to the model
     func stop() {
         let children = sceneObject.collectChildren()
             
@@ -150,6 +150,7 @@ import JavaScriptCore
         }
     }
     
+    /// The game loop, call the tick functions of the js contexts who signed up for this
     func tick(_ time: Double)
     {
         for o in jsObjects {

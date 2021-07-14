@@ -26,6 +26,8 @@ struct SwiftUIRKView: NSViewRepresentable {
             if let cameraAnchor = rkEngine.cameraAnchor {
                 arView.scene.anchors.append(cameraAnchor)
             }
+            
+            rkEngine.arView = arView
         }
         
         return arView
@@ -61,9 +63,10 @@ struct SwiftUIRKView: UIViewRepresentable {
             if let cameraAnchor = rkEngine.cameraAnchor {
                 arView.scene.anchors.append(cameraAnchor)
             }
+            
+            rkEngine.arView = arView
         }
         return arView
-
     }
 
     public func updateUIView(_ uiView: ARView, context: UIViewRepresentableContext<SwiftUIRKView>) { }

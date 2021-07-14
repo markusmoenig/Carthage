@@ -60,7 +60,6 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     var scene               : SCNScene? = nil
     var view                : SCNView? = nil
     
-    //let scene           : SCNScene
     let camera          : SCNCamera
     let cameraNode      : SCNNode
     

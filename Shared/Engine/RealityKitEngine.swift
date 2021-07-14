@@ -7,6 +7,7 @@
 
 import Foundation
 import RealityKit
+import Combine
 
 class RealityKitEntity : CarthageEntity {
     
@@ -29,21 +30,40 @@ class RealityKitEntity : CarthageEntity {
     
     override func updateFromModel()
     {
+        if let transform = object.dataGroups.getGroup("Transform") {
+            if let position = transform.getFloat3("Position") {
+                entity.position = position
+            }
+        }
+    }
+    
+    override var position: [String: Double]  {
+        get {
+            return ["x": Double(entity.position.x), "y": Double(entity.position.y), "z": Double(entity.position.z)]
+        }
+        set {
+            if let x = newValue["x"] { entity.position.x = Float(x) }
+            if let y = newValue["y"] { entity.position.y = Float(y) }
+            if let z = newValue["z"] { entity.position.z = Float(z) }
+        }
     }
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
 class RealityKitScene: CarthageScene {
     
+    var arView              : ARView? = nil
+
     var sceneAnchor         : AnchorEntity? = nil
 
     var cameraAnchor        : AnchorEntity? = nil
     var camera              : PerspectiveCamera? = nil
     
+    var sceneObserver       : Cancellable!
+    
     /// Initialize the engine
     override init(model: CarthageModel, sceneObject: CarthageObject)
     {
-        
         sceneAnchor = AnchorEntity(world: [0, 0, 0])
         
         camera = PerspectiveCamera()
@@ -68,5 +88,20 @@ class RealityKitScene: CarthageScene {
         object.entity = RealityKitEntity(object: object, entity: newSphere)
     }
 
+    override func play()
+    {
+        super.play()
+        
+        sceneObserver = arView!.scene.subscribe(to: SceneEvents.Update.self) { [unowned self] (_) in
+            tick(Date.timeIntervalSinceReferenceDate)
+        }
+    }
+    
+    override func stop()
+    {
+        super.stop()
+        
+        sceneObserver = nil
+    }
 }
 
