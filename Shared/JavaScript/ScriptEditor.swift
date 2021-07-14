@@ -151,13 +151,13 @@ class ScriptEditor
             })
         }
                 
-        if object.scriptContext.isEmpty == true {
+        //if object.scriptContext.isEmpty == true {
             createSession(object, { () in
                 setSession()
             })
-        } else {
-            setSession()
-        }
+        //} else {
+        //    setSession()
+        //}
 
         //parser = nil
         //parser = ComponentParser(component)
@@ -300,11 +300,9 @@ class ScriptEditor
     /// The code was updated in the editor, set the value to the current object code
     func updated()
     {
-        print("11", model.selected)
         if let object = model.selected {
             getValue(object, { (value) in
                 
-                print(object.name, value)
                 object.code = value
                 
                 /*

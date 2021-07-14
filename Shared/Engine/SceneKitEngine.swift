@@ -94,9 +94,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override func addObject(object: CarthageObject) {
         let sphereGeometry = SCNSphere(radius: 0.5)
         let node = SCNNode(geometry: sphereGeometry)
-        
-        print("addObject", object.type)
-        
+                
         object.entity = SceneKitEntity(object: object, node: node)        
     }
     

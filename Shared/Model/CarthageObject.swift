@@ -19,6 +19,12 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case Sphere, Cube
     }
     
+    enum SettingsMode {
+        case parameters, javascript, settings
+    }
+    
+    var settingsMode    : SettingsMode = .parameters
+    
     var id              = UUID()
     var name            : String
     
@@ -59,6 +65,10 @@ class CarthageObject : Codable, Hashable, Identifiable {
         self.type = type
         self.name = name
         dataGroups = CarthageDataGroups()
+        
+        if type == .Scene {
+            settingsMode = .javascript
+        }
         
         if type == .Geometry || type == .Procedural {
             // Init default data types for geometry objects
