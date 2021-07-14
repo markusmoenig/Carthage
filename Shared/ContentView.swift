@@ -30,12 +30,14 @@ struct ContentView: View {
                     HStack {
                     
                         if engineType == .SceneKit {
+                            /*
                             SceneView(
                                 scene: document.model.engine?.getNativeScene() as? SCNScene,
                                 //pointOfView: document.model.cameraNode,
                                 options: [.allowsCameraControl],
                                 delegate: document.model.engine as? SceneKitScene
-                            )
+                            )*/
+                            SKView(document.model)
                         } else {
                             RKView(document.model)
                         }
@@ -66,7 +68,7 @@ struct ContentView: View {
                 })
                 
                 Button(action: {
-                    document.model.engine?.play()
+                    document.model.engine?.stop()
                 }, label: {
                     Image(systemName: "stop")
                 })

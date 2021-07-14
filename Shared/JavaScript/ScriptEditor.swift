@@ -112,7 +112,6 @@ class ScriptEditor
             """
             \(object.scriptContext).getValue()
             """, completionHandler: { (value, error) in
-                print(error)
                 if let value = value as? String {
                     cb(value)
                 }
@@ -406,7 +405,7 @@ struct SwiftUIWebView: NSViewRepresentable {
 #else
 struct SwiftUIWebView: UIViewRepresentable {
     public typealias UIViewType = WKWebView
-    var model       : Model!
+    var model       : CarthageModel!
     var colorScheme : ColorScheme
     
     private let webView: WKWebView = WKWebView()
@@ -433,10 +432,10 @@ struct SwiftUIWebView: UIViewRepresentable {
     
     class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         
-        private var model        : Model
+        private var model        : CarthageModel
         private var colorScheme : ColorScheme
         
-        init(_ model: Model,_ colorScheme: ColorScheme) {
+        init(_ model: CarthageModel,_ colorScheme: ColorScheme) {
             self.model = model
             self.colorScheme = colorScheme
         }

@@ -7,6 +7,13 @@
 
 import SceneKit
 
+#if os(OSX)
+typealias SCNFloat = CGFloat
+#elseif os(iOS)
+typealias SCNFloat = Float
+#endif
+
+
 class SceneKitEntity : CarthageEntity {
     
     var node             : SCNNode
@@ -25,24 +32,24 @@ class SceneKitEntity : CarthageEntity {
             }
         }
     }
-    
+     
     override func updateFromModel()
     {
         if let transform = object.dataGroups.getGroup("Transform") {
             if let position = transform.getFloat3("Position") {
-                node.position = SCNVector3(x: CGFloat(position.x), y: CGFloat(position.y), z: CGFloat(position.z))
+                node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
             }
         }
     }
     
     override var position: [String: Double]  {
         get {
-            return ["x": node.position.x, "y": node.position.y, "z": node.position.z]
+            return ["x": Double(node.position.x), "y": Double(node.position.y), "z": Double(node.position.z)]
         }
         set {
-            if let x = newValue["x"] { node.position.x = x }
-            if let y = newValue["y"] { node.position.y = y }
-            if let z = newValue["z"] { node.position.z = z }
+            if let x = newValue["x"] { node.position.x = SCNFloat(x) }
+            if let y = newValue["y"] { node.position.y = SCNFloat(y) }
+            if let z = newValue["z"] { node.position.z = SCNFloat(z) }
         }
     }
 }
@@ -51,7 +58,7 @@ class SceneKitEntity : CarthageEntity {
 class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     var scene               : SCNScene? = nil
-    //var view                : SCNView? = nil
+    var view                : SCNView? = nil
     
     //let scene           : SCNScene
     let camera          : SCNCamera
@@ -101,15 +108,18 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override func play()
     {
         super.play()
+        view?.isPlaying = true
+    }
+    
+    override func stop()
+    {
+        super.stop()
+        view?.isPlaying = false
     }
     
     func renderer(_: SCNSceneRenderer, willRenderScene: SCNScene, atTime: TimeInterval)
     {
-    }
-    
-    /// Returns the native scene object for attaching it to the view
-    override func getNativeScene() -> AnyObject? {
-        return scene
+        tick(Double(atTime))
     }
 }
 
