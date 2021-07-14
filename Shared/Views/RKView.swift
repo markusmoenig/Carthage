@@ -27,7 +27,7 @@ struct SwiftUIRKView: NSViewRepresentable {
     private let arView: ARView = ARView(frame: .zero)//, cameraMode: .ar, automaticallyConfigureSession: true)
     public func makeNSView(context: NSViewRepresentableContext<SwiftUIRKView>) -> ARView {
         
-        if let rkEngine = model.engineScene as? RealityKitScene {
+        if let rkEngine = model.engine as? RealityKitScene {
             if let sceneAnchor = rkEngine.sceneAnchor {
                 arView.scene.anchors.append(sceneAnchor)
             }

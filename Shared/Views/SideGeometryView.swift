@@ -63,7 +63,7 @@ struct SideGeometryView: View {
             if let selected = selected {
                 
                 if mode == .parameters {
-                    if let translationData = selected.dataGroups.getGroup("Translation") {
+                    if let translationData = selected.dataGroups.getGroup("Transform") {
                         DataView(model: document.model, data: translationData)
                     }
                 }
@@ -80,6 +80,11 @@ struct SideGeometryView: View {
             }
             
             //Spacer()
+        }
+        
+        .onReceive(document.model.objectSelected) { object in
+            selected = object
+            document.model.scriptEditor?.setSession(object)
         }
     }
 }

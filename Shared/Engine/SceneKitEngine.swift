@@ -26,17 +26,33 @@ class SceneKitEntity : CarthageEntity {
         }
     }
     
-    /// Update the entity from the given object
-    override func update()
+    override func updateFromModel()
     {
+        if let transform = object.dataGroups.getGroup("Transform") {
+            if let position = transform.getFloat3("Position") {
+                node.position = SCNVector3(x: CGFloat(position.x), y: CGFloat(position.y), z: CGFloat(position.z))
+            }
+        }
+    }
+    
+    override var position: [String: Double]  {
+        get {
+            return ["x": node.position.x, "y": node.position.y, "z": node.position.z]
+        }
+        set {
+            if let x = newValue["x"] { node.position.x = x }
+            if let y = newValue["y"] { node.position.y = y }
+            if let z = newValue["z"] { node.position.z = z }
+        }
     }
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
-class SceneKitScene: CarthageScene {
+class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     var scene               : SCNScene? = nil
-
+    //var view                : SCNView? = nil
+    
     //let scene           : SCNScene
     let camera          : SCNCamera
     let cameraNode      : SCNNode
@@ -83,6 +99,16 @@ class SceneKitScene: CarthageScene {
         
         object.entity = SceneKitEntity(object: object, node: node)        
     }
+    
+    override func play()
+    {
+        super.play()
+    }
+    
+    func renderer(_: SCNSceneRenderer, willRenderScene: SCNScene, atTime: TimeInterval)
+    {
+    }
+    
     /// Returns the native scene object for attaching it to the view
     override func getNativeScene() -> AnyObject? {
         return scene

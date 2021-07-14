@@ -205,7 +205,7 @@ struct Float3SliderView: View {
                 Spacer()
                 Button(action: {
                     entity.value = entity.defaultValue
-                    //model.updateDataViews.send()
+                    model.updateSelected()
                 })
                 {
                     Image(systemName: "x.circle")
@@ -267,21 +267,21 @@ struct Float3DataView: View {
                 TextField("", text: $xText, onEditingChanged: { changed in
                     if let v = Float(xText) {
                         entity.value.x = v
-                        //model.renderer?.restart()
+                        model.updateSelected()
                     }
                 })
                     .border(.red)
                 TextField("", text: $yText, onEditingChanged: { changed in
                     if let v = Float(yText) {
                         entity.value.y = v
-                        //model.renderer?.restart()
+                        model.updateSelected()
                     }
                 })
                     .border(.green)
                 TextField("", text: $zText, onEditingChanged: { changed in
                     if let v = Float(zText) {
                         entity.value.z = v
-                        //model.renderer?.restart()
+                        model.updateSelected()
                     }
                 })
                     .border(.blue)

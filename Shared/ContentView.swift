@@ -31,9 +31,10 @@ struct ContentView: View {
                     
                         if engineType == .SceneKit {
                             SceneView(
-                                scene: document.model.engineScene?.getNativeScene() as? SCNScene,
+                                scene: document.model.engine?.getNativeScene() as? SCNScene,
                                 //pointOfView: document.model.cameraNode,
-                                options: [.allowsCameraControl]
+                                options: [.allowsCameraControl],
+                                delegate: document.model.engine as? SceneKitScene
                             )
                         } else {
                             RKView(document.model)
@@ -59,13 +60,13 @@ struct ContentView: View {
             ToolbarItemGroup(placement: .automatic) {
                 
                 Button(action: {
-                    document.model.play()
+                    document.model.engine?.play()
                 }, label: {
                     Image(systemName: "play")
                 })
                 
                 Button(action: {
-                    document.model.stop()
+                    document.model.engine?.play()
                 }, label: {
                     Image(systemName: "stop")
                 })

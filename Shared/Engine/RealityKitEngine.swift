@@ -27,8 +27,7 @@ class RealityKitEntity : CarthageEntity {
         }
     }
     
-    /// Update the entity from the given object
-    override func update()
+    override func updateFromModel()
     {
     }
 }

@@ -63,7 +63,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         if type == .Geometry || type == .Procedural {
             // Init default data types for geometry objects
             
-            dataGroups.addGroup("Translation", CarthageData([
+            dataGroups.addGroup("Transform", CarthageData([
                 CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
                 CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
             ]))
@@ -117,5 +117,29 @@ class CarthageObject : Codable, Hashable, Identifiable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+    
+    /// Returns a flat array with the children of this object
+    func collectChildren() -> [CarthageObject] {
+        
+        var objects : [CarthageObject] = []
+        
+        /// Recursively reparent the children
+        func collect(_ o: CarthageObject) {
+            objects.append(o)
+            if let children = o.children {
+                for c in children {
+                    collect(c)
+                }
+            }
+        }
+        
+        if let children = children {
+            for c in children {
+                collect(c)
+            }
+        }
+        
+        return objects
     }
 }

@@ -300,8 +300,11 @@ class ScriptEditor
     /// The code was updated in the editor, set the value to the current object code
     func updated()
     {
+        print("11", model.selected)
         if let object = model.selected {
             getValue(object, { (value) in
+                
+                print(object.name, value)
                 object.code = value
                 
                 /*

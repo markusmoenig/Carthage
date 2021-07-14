@@ -64,13 +64,13 @@ struct SideSceneView: View {
                     Menu {
                         Button("SceneKit", action: {
                             document.model.engineType = .SceneKit
-                            document.model.selectScene(document.model.selected!)
+                            document.model.setScene(document.model.currentScene!)
                             document.model.engineChanged.send()
                         })
                         
                         Button("RealityKit", action: {
                             document.model.engineType = .RealityKit
-                            document.model.selectScene(document.model.selected!)
+                            document.model.setScene(document.model.currentScene!)
                             document.model.engineChanged.send()
                         })
                     }

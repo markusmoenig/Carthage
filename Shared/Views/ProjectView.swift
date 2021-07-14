@@ -55,7 +55,7 @@ struct ProjectView: View {
                             }
                             selected.children!.append(o)
                             o.parent = selected
-                            document.model.engineScene?.addObject(object: o)
+                            document.model.engine?.addObject(object: o)
                             
                             document.model.selected = o
                             document.model.objectSelected.send(o)
@@ -77,6 +77,14 @@ struct ProjectView: View {
             self.selectedScene = document.model.selected
             self.selectedScene = nil
         }
+        
+        .onReceive(document.model.objectSelected) { sel in
+            selected = sel
+        }
+        
+        .onAppear(perform: {
+            selected = document.model.selected
+        })
     }
     
     /// Returns the system icon name for the given object type

@@ -16,6 +16,8 @@ class CarthageModel: NSObject, ObservableObject {
 
     @Published var selected         : CarthageObject? = nil
 
+    @Published var currentScene     : CarthageObject? = nil
+
     var engineType                  : EngineType = .SceneKit
     
     /// Send when an object has been selected
@@ -28,7 +30,7 @@ class CarthageModel: NSObject, ObservableObject {
     let projectChanged              = PassthroughSubject<Void, Never>()
     
     /// The current rendering engine
-    var engineScene                 : CarthageScene? = nil
+    var engine                      : CarthageScene? = nil
     
     /// 
     var context                     = JSContext()
@@ -41,32 +43,35 @@ class CarthageModel: NSObject, ObservableObject {
     override init() {
 
         project = CarthageProject()
-         
+        selected = project.scenes.first
+        
         super.init()
         
-        selectScene(project.scenes.first!)
+        setScene(project.scenes.first!)
     }
     
-    func selectScene(_ scene: CarthageObject)
+    func setScene(_ scene: CarthageObject)
     {
-        engineScene?.destroy()
+        engine?.destroy()
         if engineType == .SceneKit {
-            engineScene = SceneKitScene(model: self, sceneObject: scene)
+            engine = SceneKitScene(model: self, sceneObject: scene)
         } else {
-            engineScene = RealityKitScene(model: self, sceneObject: scene)
+            engine = RealityKitScene(model: self, sceneObject: scene)
         }
         
-        selected = scene
+        currentScene = scene
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.objectSelected.send(scene)
         }
     }
     
-    func play() {
-    }
-    
-    func stop() {
-        
+    /// Updates the engine entity of the currently selected object, i.e. applies changes in the UI to the rendering engine.
+    func updateSelected() {
+        if let selected = selected {
+            if let entity = selected.entity {
+                entity.updateFromModel()
+            }
+        }
     }
 }

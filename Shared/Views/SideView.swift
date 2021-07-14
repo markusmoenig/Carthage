@@ -36,7 +36,6 @@ struct SideView: View {
         
         .onReceive(document.model.objectSelected) { object in
             selected = object
-            document.model.scriptEditor?.setSession(object)
         }
     }
 }
