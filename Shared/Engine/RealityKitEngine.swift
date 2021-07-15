@@ -15,12 +15,19 @@ class RealityKitEntity : CarthageEntity {
     var entity             : Entity
     
     init(object: CarthageObject, entity: Entity? = nil) {
+        
         if let entity = entity {
             self.entity = entity
         } else {
-            self.entity = ModelEntity()
+            
+            if object.type == .Camera {
+                self.entity = PerspectiveCamera()
+            } else {
+                self.entity = ModelEntity()
+            }
         }
 
+        self.entity.name = object.name
         super.init(object: object)
         
         updateFromModel()
@@ -32,6 +39,7 @@ class RealityKitEntity : CarthageEntity {
         if let parent = object.parent {
             if let e = parent.entity as? RealityKitEntity {
                 e.entity.addChild(entity)
+                //print("attaching", entity.name, "to", e.entity.name)
             }
         }
     }
@@ -87,8 +95,16 @@ class RealityKitEntity : CarthageEntity {
                     }
                 }
             }
+        }
+        
+        if let camera = object.dataGroups.getGroup("Camera") {
+            let position = camera.getFloat3("Position")
+            let lookAt = camera.getFloat3("Look At")
             
-
+            if let perspectiveCam = entity as? PerspectiveCamera {
+                perspectiveCam.look(at: lookAt, from: position, relativeTo: nil)
+                perspectiveCam.camera.fieldOfViewInDegrees = 60
+            }
         }
     }
     
@@ -143,14 +159,6 @@ class RealityKitScene: CarthageScene {
     {
         sceneAnchor = AnchorEntity(world: [0, 0, 0])
         
-        camera = PerspectiveCamera()
-        let cameraTranslation = SIMD3<Float>(0, 0, 0)
-        camera?.look(at: .zero, from: cameraTranslation, relativeTo: nil)
-        camera?.camera.fieldOfViewInDegrees = 60
-        
-        cameraAnchor = AnchorEntity(world: [0,0,3])
-        cameraAnchor?.addChild(camera!)
-        
         sceneObject.entity = RealityKitEntity(object: sceneObject, entity: sceneAnchor!)
 
         super.init(model: model, sceneObject: sceneObject)
@@ -158,8 +166,13 @@ class RealityKitScene: CarthageScene {
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-
-        object.entity = RealityKitEntity(object: object)
+        let entity = RealityKitEntity(object: object)
+        object.entity = entity
+        
+        if object.type == .Camera {
+            cameraAnchor = AnchorEntity(world: [0,0,0])
+            cameraAnchor?.addChild(entity.entity)
+        }
     }
 
     override func play()

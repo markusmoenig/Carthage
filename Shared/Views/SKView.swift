@@ -53,7 +53,6 @@ struct SwiftUISKView: UIViewRepresentable {
         if let skEngine = model.engine as? SceneKitScene {
             skEngine.view = skView
             skView.scene = skEngine.scene
-            
             skView.delegate = skEngine
         }
         

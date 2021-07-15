@@ -95,14 +95,14 @@ import JavaScriptCore
 
             if let children = o.children {
                 for c in children {
-                    addObject(object: c)
+                    loadObject(c)
                 }
             }
         }
         
         if let children = sceneObject.children {
             for c in children {
-                addObject(object: c)
+                loadObject(c)
             }
         }
     }

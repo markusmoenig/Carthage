@@ -142,8 +142,14 @@ struct ProjectView: View {
             name = "video"
         }
         
-        if selected == obj {
-            name += ".fill"
+        if obj.type == .Scene {
+            if obj.scene === selected?.scene {
+                name += ".fill"
+            }
+        } else {
+            if selected == obj {
+                name += ".fill"
+            }
         }
         
         return name

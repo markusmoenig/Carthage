@@ -18,10 +18,7 @@ typealias SCNFloat = Float
 class SceneKitEntity : CarthageEntity {
     
     var node            : SCNNode
-    
-    /// Default material for procedural objects
-    //var material        : SCNMaterial? = nil
-    
+        
     init(object: CarthageObject, node: SCNNode? = nil) {
         
         if let node = node {
@@ -30,16 +27,16 @@ class SceneKitEntity : CarthageEntity {
             self.node = SCNNode()
             
             if object.type == .Camera {
-                self.node.camera = SCNCamera()
-                print("adding cam")
-                /*
-                camera = SCNCamera()
-                cameraNode = SCNNode()
-                cameraNode.camera = camera
-                cameraNode.position = SCNVector3(x: 0.0, y: 0.0, z: 3.0)
-                cameraNode.look(at: SCNVector3(x: 0, y: 0, z: 0))*/
+                let camera = SCNCamera()
+                self.node.camera = camera
+                self.node.position = SCNVector3(x: 0.0, y: 0.0, z: 0.0)
+                self.node.look(at: SCNVector3(x: 0, y: 0, z: 0))
+                //camera.usesOrthographicProjection = true
+                //camera.orthographicScale = 2
             }
         }
+        
+        self.node.name = object.name
         
         super.init(object: object)
         
@@ -52,6 +49,7 @@ class SceneKitEntity : CarthageEntity {
         if let parent = object.parent {
             if let e = parent.entity as? SceneKitEntity {
                 e.node.addChildNode(node)
+                //print("attaching", node.name, "to", e.node.name)
             }
         }
     }
@@ -160,6 +158,8 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     var scene               : SCNScene? = nil
     var view                : SCNView? = nil
     
+    var cameraNode          : SCNNode? = nil
+
     //let camera          : SCNCamera
     //let cameraNode      : SCNNode
     
@@ -179,24 +179,23 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         lightNode.position = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
          */
 
-
         //let constraint = SCNLookAtConstraint(target: sphereNode)
         //constraint.isGimbalLockEnabled = true
         //cameraNode.constraints = [constraint]
         
         sceneObject.entity = SceneKitEntity(object: sceneObject, node: scene!.rootNode)
-
-        //scene!.rootNode.addChildNode(lightNode)
-        //scene!.rootNode.addChildNode(cameraNode)
         
         super.init(model: model, sceneObject: sceneObject)        
     }
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-        object.entity = SceneKitEntity(object: object)
+        let entity = SceneKitEntity(object: object)
+        object.entity = entity
+        
         if object.type == .Camera {
-            //scene?.rootNode.camera = (object.entity as? SceneKitEntity)?.node.camera
+            cameraNode = entity.node
+            cameraNode?.constraints = []
         }
     }
     

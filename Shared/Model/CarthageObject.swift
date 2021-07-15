@@ -32,7 +32,8 @@ class CarthageObject : Codable, Hashable, Identifiable {
     var proceduralType  : CarthageProceduralObjectType
 
     weak var parent     : CarthageObject? = nil
-    
+    weak var scene      : CarthageObject? = nil
+
     var children        : [CarthageObject]? = nil
 
     var dataGroups      : CarthageDataGroups
@@ -110,7 +111,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
                     CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
                 ]))
                 if let transform = dataGroups.getGroup("Transform") {
-                    transform.set("Rotation", float3(270.5, 0, 0))
+                    transform.set("Rotation", float3(270, 0, 0))
                 }
             }
             

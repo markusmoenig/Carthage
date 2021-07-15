@@ -20,8 +20,8 @@ class CarthageProject: Codable {
         
     init() {
         let scene = CarthageObject(type: .Scene, name: "Start Scene")
-        
         scene.children = [CarthageObject(type: .Camera, name: "Camera")]
+        scene.children?[0].parent = scene
         
         scenes.append(scene)
     }
@@ -44,8 +44,11 @@ class CarthageProject: Codable {
     /// Reparents the objects, only needed after loading
     func reparent() {
         
+        var scene : CarthageObject? = nil
+        
         /// Recursively reparent the children
         func reparent(_ o: CarthageObject) {
+            o.scene = scene
             if let children = o.children {
                 for c in children {
                     c.parent = o
@@ -54,8 +57,9 @@ class CarthageProject: Codable {
             }
         }
         
-        for scene in scenes {
-            reparent(scene)
+        for s in scenes {
+            scene = s
+            reparent(s)
         }
     }
 }
