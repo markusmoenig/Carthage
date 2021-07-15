@@ -28,6 +28,17 @@ class SceneKitEntity : CarthageEntity {
             self.node = node
         } else {
             self.node = SCNNode()
+            
+            if object.type == .Camera {
+                self.node.camera = SCNCamera()
+                print("adding cam")
+                /*
+                camera = SCNCamera()
+                cameraNode = SCNNode()
+                cameraNode.camera = camera
+                cameraNode.position = SCNVector3(x: 0.0, y: 0.0, z: 3.0)
+                cameraNode.look(at: SCNVector3(x: 0, y: 0, z: 0))*/
+            }
         }
         
         super.init(object: object)
@@ -99,6 +110,14 @@ class SceneKitEntity : CarthageEntity {
                 node.geometry?.materials = [material]
             }
         }
+        
+        if let camera = object.dataGroups.getGroup("Camera") {
+            let position = camera.getFloat3("Position")
+            let lookAt = camera.getFloat3("Look At")
+            
+            node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
+            node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)))
+        }
     }
     
     override var position: [String: Double]  {
@@ -141,8 +160,8 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     var scene               : SCNScene? = nil
     var view                : SCNView? = nil
     
-    let camera          : SCNCamera
-    let cameraNode      : SCNNode
+    //let camera          : SCNCamera
+    //let cameraNode      : SCNNode
     
     //let camera          : SCNCamera
     //let cameraNode      : SCNNode
@@ -151,12 +170,6 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override init(model: CarthageModel, sceneObject: CarthageObject)
     {
         scene = SCNScene()
-        
-        camera = SCNCamera()
-        cameraNode = SCNNode()
-        cameraNode.camera = camera
-        cameraNode.position = SCNVector3(x: 0.0, y: 0.0, z: 3.0)
-        cameraNode.look(at: SCNVector3(x: 0, y: 0, z: 0))
 
         /*
         let light = SCNLight()
@@ -174,14 +187,17 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         sceneObject.entity = SceneKitEntity(object: sceneObject, node: scene!.rootNode)
 
         //scene!.rootNode.addChildNode(lightNode)
-        scene!.rootNode.addChildNode(cameraNode)
+        //scene!.rootNode.addChildNode(cameraNode)
         
         super.init(model: model, sceneObject: sceneObject)        
     }
     
     /// Adds the given object to it's parent.
-    override func addObject(object: CarthageObject) {                
+    override func addObject(object: CarthageObject) {
         object.entity = SceneKitEntity(object: object)
+        if object.type == .Camera {
+            //scene?.rootNode.camera = (object.entity as? SceneKitEntity)?.node.camera
+        }
     }
     
     override func play()

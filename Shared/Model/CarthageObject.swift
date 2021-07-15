@@ -12,7 +12,7 @@ import JavaScriptCore
 class CarthageObject : Codable, Hashable, Identifiable {
     
     enum CarthageObjectType: Int32, Codable {
-        case Scene, Procedural, Geometry, Audio
+        case Camera, Scene, Procedural, Geometry, Audio
     }
     
     enum CarthageProceduralObjectType: Int32, Codable {
@@ -81,6 +81,15 @@ class CarthageObject : Codable, Hashable, Identifiable {
                 CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
                 CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
             ]))
+        } else
+        if type == .Camera {
+            // Init default data types for geometry objects
+            
+            dataGroups.addGroup("Camera", CarthageData([
+                CarthageDataEntity("Position", float3(0,1,3), float2(-1000, 1000)),
+                CarthageDataEntity("Look At", float3(0,0,0), float2(-1000, 1000)),
+                //CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
+            ]))
         }
         
         if type == .Procedural {
@@ -112,7 +121,9 @@ class CarthageObject : Codable, Hashable, Identifiable {
             ]))
         }
         
-        children = []
+        if type != .Camera {
+            children = []
+        }
     }
     
     required init(from decoder: Decoder) throws

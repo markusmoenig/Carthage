@@ -47,25 +47,30 @@ struct SideView: View {
                         .buttonStyle(.borderless)
                     }
 
-                    Button(action: {
-                        mode = .javascript
-                        selected.settingsMode = mode
-                    })
-                    {
-                        Image(systemName: mode == .javascript ? "j.square.fill" : "j.square")
-                            .imageScale(.large)
+                    if selected.type == .Geometry || selected.type == .Procedural || selected.type == .Scene {
+                        Button(action: {
+                            mode = .javascript
+                            selected.settingsMode = mode
+                        })
+                        {
+                            Image(systemName: mode == .javascript ? "j.square.fill" : "j.square")
+                                .imageScale(.large)
+                        }
+                        .buttonStyle(.borderless)
                     }
-                    .buttonStyle(.borderless)
                     
-                    Button(action: {
-                        mode = .settings
-                        selected.settingsMode = mode
-                    })
-                    {
-                        Image(systemName: mode == .settings ? "gearshape.fill" : "gearshape")
-                            .imageScale(.large)
+                    if selected.type == .Camera {
+                        Button(action: {
+                            mode = .parameters
+                            selected.settingsMode = mode
+                        })
+                        {
+                            Image(systemName: mode == .parameters ? "gearshape.fill" : "gearshape")
+                                .imageScale(.large)
+                        }
+                        .buttonStyle(.borderless)
                     }
-                    .buttonStyle(.borderless)
+                    
                     
                     Spacer()
                 }
@@ -77,6 +82,9 @@ struct SideView: View {
                 if mode == .parameters {
                     if let transformData = selected.dataGroups.getGroup("Transform") {
                         DataView(model: document.model, data: transformData)
+                    }
+                    if let cameraData = selected.dataGroups.getGroup("Camera") {
+                        DataView(model: document.model, data: cameraData)
                     }
                     if selected.type == .Procedural {
                         Divider()

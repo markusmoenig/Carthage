@@ -137,6 +137,13 @@ struct ProjectView: View {
         
         if obj.type == .Procedural || obj.type == .Geometry {
             name = "cube"
+        } else
+        if obj.type == .Camera {
+            name = "video"
+        }
+        
+        if selected == obj {
+            name += ".fill"
         }
         
         return name
