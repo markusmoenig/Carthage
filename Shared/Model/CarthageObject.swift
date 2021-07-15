@@ -20,7 +20,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     }
     
     enum SettingsMode {
-        case parameters, javascript, settings
+        case parameters, materials, javascript, settings
     }
     
     var settingsMode    : SettingsMode = .parameters
@@ -100,6 +100,12 @@ class CarthageObject : Codable, Hashable, Identifiable {
                     CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
                 ]))
             }
+            
+            dataGroups.addGroup("Material", CarthageData([
+                CarthageDataEntity("Color", float3(0.5,0.5,0.5), float2(0, 1)),
+                CarthageDataEntity("Metallic", Float(0), float2(0, 1), .Slider),
+                CarthageDataEntity("Roughness", Float(0.5 ), float2(0, 1), .Slider),
+            ]))
         }
         
         children = []

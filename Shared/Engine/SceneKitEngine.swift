@@ -6,6 +6,7 @@
 //
 
 import SceneKit
+import RealityFoundation
 
 #if os(OSX)
 typealias SCNFloat = CGFloat
@@ -16,7 +17,10 @@ typealias SCNFloat = Float
 
 class SceneKitEntity : CarthageEntity {
     
-    var node             : SCNNode
+    var node            : SCNNode
+    
+    /// Default material for procedural objects
+    //var material        : SCNMaterial? = nil
     
     init(object: CarthageObject, node: SCNNode? = nil) {
         
@@ -49,6 +53,7 @@ class SceneKitEntity : CarthageEntity {
         }
         
         if object.type == .Procedural {
+                        
             if let procedural = object.dataGroups.getGroup("Procedural") {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
@@ -61,6 +66,8 @@ class SceneKitEntity : CarthageEntity {
                     let cornerRadius = procedural.getFloat("Corner Radius")
 
                     let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
+                    
+                    
                     node.geometry = cubeGeometry
                 } else
                 if object.proceduralType == .Plane {
@@ -71,6 +78,20 @@ class SceneKitEntity : CarthageEntity {
                     planeGeometry.cornerRadius = SCNFloat(cornerRadius)
                     node.geometry = planeGeometry
                 }
+            }
+            
+            if let materialData = object.dataGroups.getGroup("Material") {
+                
+                let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
+                let metallic = materialData.getFloat("Metallic", 0)
+                let roughness = materialData.getFloat("Roughness", 0.5)
+
+                let material = SCNMaterial()
+                material.lightingModel = .physicallyBased
+                material.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                material.metalness.contents = SCNFloat(metallic)
+                material.roughness.contents = SCNFloat(roughness)
+                node.geometry?.materials = [material]
             }
         }
     }
@@ -130,10 +151,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     }
     
     /// Adds the given object to it's parent.
-    override func addObject(object: CarthageObject) {
-        //let sphereGeometry = SCNSphere(radius: 0.5)
-        //let node = SCNNode(geometry: sphereGeometry)
-                
+    override func addObject(object: CarthageObject) {                
         object.entity = SceneKitEntity(object: object)
     }
     

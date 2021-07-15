@@ -9,10 +9,6 @@ import SwiftUI
 
 struct SideView: View {
     
-    enum Mode {
-        case parameters, javascript, settings
-    }
-    
     @State var mode                     : CarthageObject.SettingsMode = .parameters
 
     @Binding var document               : CarthageDocument
@@ -36,6 +32,16 @@ struct SideView: View {
                         })
                         {
                             Image(systemName: mode == .parameters ? "cube.fill" : "cube")
+                                .imageScale(.large)
+                        }
+                        .buttonStyle(.borderless)
+                        
+                        Button(action: {
+                            mode = .materials
+                            selected.settingsMode = mode
+                        })
+                        {
+                            Image(systemName: mode == .materials ? "light.max" : "light.min")
                                 .imageScale(.large)
                         }
                         .buttonStyle(.borderless)
@@ -77,6 +83,12 @@ struct SideView: View {
                         if let proceduralData = selected.dataGroups.getGroup("Procedural") {
                             DataView(model: document.model, data: proceduralData)
                         }
+                    }
+                }
+                
+                if mode == .materials {
+                    if let materialData = selected.dataGroups.getGroup("Material") {
+                        DataView(model: document.model, data: materialData)
                     }
                 }
                 

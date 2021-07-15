@@ -8,6 +8,7 @@
 import Foundation
 import RealityKit
 import Combine
+import AppKit
 
 class RealityKitEntity : CarthageEntity {
     
@@ -42,19 +43,32 @@ class RealityKitEntity : CarthageEntity {
         }
         
         if object.type == .Procedural {
+            
+            var material = PhysicallyBasedMaterial()
+            if let materialData = object.dataGroups.getGroup("Material") {
+                
+                let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
+                let metallic = materialData.getFloat("Metallic", 0)
+                let roughness = materialData.getFloat("Roughness", 0.5)
+                
+                material.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                material.roughness.scale = roughness
+                material.metallic.scale = metallic
+            }
+            
             if let procedural = object.dataGroups.getGroup("Procedural") {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
                     if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [])
+                        modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [material])
                     }
                 } else
                 if object.proceduralType == .Cube {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [])
+                        modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [material])
                     }
                 }
                 
@@ -63,10 +77,12 @@ class RealityKitEntity : CarthageEntity {
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     
                     if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [])
+                        modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [material])
                     }
                 }
             }
+            
+
         }
     }
     
@@ -116,6 +132,8 @@ class RealityKitScene: CarthageScene {
     override func addObject(object: CarthageObject) {
 
         object.entity = RealityKitEntity(object: object)
+
+        model.engineChanged.send()
     }
 
     override func play()
