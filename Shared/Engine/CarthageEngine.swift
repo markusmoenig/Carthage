@@ -53,6 +53,8 @@ import JavaScriptCore
     let sceneObject     : CarthageObject
     
     var jsObjects       : [CarthageObject] = []
+    
+    var isPlaying       : Bool = false
             
     /// Initialize the engine
     init(model: CarthageModel, sceneObject: CarthageObject)
@@ -104,6 +106,7 @@ import JavaScriptCore
     ///  Setup the js context
     func play() {
         
+        isPlaying = true
         jsObjects = []
         func setupJS(_ object: CarthageObject) {
             if object.code.isEmpty { return }
@@ -142,6 +145,7 @@ import JavaScriptCore
     
     /// Stops the game, removes the javascript contexts and updates the entities back to the model
     func stop() {
+        isPlaying = false
         let children = sceneObject.collectChildren()
             
         for c in children {

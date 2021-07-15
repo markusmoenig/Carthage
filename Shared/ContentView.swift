@@ -16,6 +16,9 @@ struct ContentView: View {
     @State var sideViewIsVisible        : Bool = true
     
     @State var engineType               : CarthageModel.EngineType = .SceneKit
+    @State var engineTypeText           : String = ""
+    
+    @State var isPlaying                : Bool = false
     
     var body: some View {
         
@@ -64,16 +67,41 @@ struct ContentView: View {
                 
                 Button(action: {
                     document.model.engine?.play()
+                    isPlaying = true
                 }, label: {
-                    Image(systemName: "play")
+                    Image(systemName: isPlaying == true ? "play.fill" : "play")
                 })
                 
                 Button(action: {
+                    isPlaying = false
                     document.model.engine?.stop()
                 }, label: {
-                    Image(systemName: "stop")
+                    Image(systemName: isPlaying == false ? "stop.fill" : "stop")
                 })
-                
+            }
+            
+            ToolbarItemGroup(placement: .automatic) {
+                Menu {
+                    Button("SceneKit", action: {
+                        document.model.engineType = .SceneKit
+                        document.model.setScene(document.model.currentScene!)
+                        document.model.engineChanged.send()
+                        engineTypeText = "SceneKit"
+                    })
+                    
+                    Button("RealityKit", action: {
+                        document.model.engineType = .RealityKit
+                        document.model.setScene(document.model.currentScene!)
+                        document.model.engineChanged.send()
+                        engineTypeText = "RealityKit"
+                    })
+                }
+                label: {
+                    Text(engineTypeText)
+                }
+            }
+            
+            ToolbarItemGroup(placement: .automatic) {
                 Button(action: {
                     sideViewIsVisible.toggle()
                 }, label: {
@@ -81,6 +109,15 @@ struct ContentView: View {
                 })
             }
         }
+        
+        .onAppear(perform: {
+            if document.model.engineType == .SceneKit {
+                engineTypeText = "SceneKit"
+            } else
+            if document.model.engineType == .RealityKit {
+                engineTypeText = "RealityKit"
+            }
+        })
         
     }
 }

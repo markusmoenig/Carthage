@@ -18,7 +18,7 @@ class CarthageModel: NSObject, ObservableObject {
 
     @Published var currentScene     : CarthageObject? = nil
 
-    var engineType                  : EngineType = .RealityKit
+    var engineType                  : EngineType = .SceneKit
     
     /// Send when an object has been selected
     let objectSelected              = PassthroughSubject<CarthageObject, Never>()

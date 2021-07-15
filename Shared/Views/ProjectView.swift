@@ -61,6 +61,9 @@ struct ProjectView: View {
                             document.model.selected = o
                             document.model.objectSelected.send(o)
                             document.model.projectChanged.send()
+                            if document.model.engineType == .RealityKit {
+                                document.model.engineChanged.send()
+                            }
                         }
                     })
                     
@@ -78,6 +81,9 @@ struct ProjectView: View {
                             document.model.selected = o
                             document.model.objectSelected.send(o)
                             document.model.projectChanged.send()
+                            if document.model.engineType == .RealityKit {
+                                document.model.engineChanged.send()
+                            }
                         }
                     })
                     
@@ -95,6 +101,9 @@ struct ProjectView: View {
                             document.model.selected = o
                             document.model.objectSelected.send(o)
                             document.model.projectChanged.send()
+                            if document.model.engineType == .RealityKit {
+                                document.model.engineChanged.send()
+                            }
                         }
                     })
                 }

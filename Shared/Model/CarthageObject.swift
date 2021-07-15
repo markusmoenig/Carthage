@@ -85,7 +85,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         if type == .Procedural {
             if proceduralType == .Sphere {
                 dataGroups.addGroup("Procedural", CarthageData([
-                    CarthageDataEntity("Radius", Float(1), float2(0, 10), .Slider),
+                    CarthageDataEntity("Radius", Float(0.5), float2(0, 10), .Slider),
                 ]))
             } else
             if proceduralType == .Cube {
@@ -96,9 +96,12 @@ class CarthageObject : Codable, Hashable, Identifiable {
             } else
             if proceduralType == .Plane {
                 dataGroups.addGroup("Procedural", CarthageData([
-                    CarthageDataEntity("Size", float2(20, 0.1), float2(0, 1000), .Numeric),
+                    CarthageDataEntity("Size", float2(20, 20), float2(0, 1000), .Numeric),
                     CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
                 ]))
+                if let transform = dataGroups.getGroup("Transform") {
+                    transform.set("Rotation", float3(270.5, 0, 0))
+                }
             }
             
             dataGroups.addGroup("Material", CarthageData([

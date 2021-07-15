@@ -38,8 +38,13 @@ class RealityKitEntity : CarthageEntity {
     
     override func updateFromModel()
     {
-        if let transform = object.dataGroups.getGroup("Transform") {
-            entity.position = transform.getFloat3("Position")
+        if let transform = object.dataGroups.getGroup("Transform") {            
+            let rotation = transform.getFloat3("Rotation")
+            entity.transform = Transform()
+            entity.transform.translation = transform.getFloat3("Position")
+            entity.transform.rotation *= simd_quatf(angle: rotation.x.degreesToRadians, axis: SIMD3<Float>(1,0,0))
+            entity.transform.rotation *= simd_quatf(angle: rotation.y.degreesToRadians, axis: SIMD3<Float>(0,1,0))
+            entity.transform.rotation *= simd_quatf(angle: rotation.z.degreesToRadians, axis: SIMD3<Float>(0,0,1))
         }
         
         if object.type == .Procedural {
@@ -132,16 +137,16 @@ class RealityKitScene: CarthageScene {
     override func addObject(object: CarthageObject) {
 
         object.entity = RealityKitEntity(object: object)
-
-        model.engineChanged.send()
     }
 
     override func play()
     {
         super.play()
         
-        sceneObserver = arView!.scene.subscribe(to: SceneEvents.Update.self) { [unowned self] (_) in
-            tick(Date.timeIntervalSinceReferenceDate)
+        if let arView = arView {
+            sceneObserver = arView.scene.subscribe(to: SceneEvents.Update.self) { [unowned self] (_) in
+                tick(Date.timeIntervalSinceReferenceDate)
+            }
         }
     }
     

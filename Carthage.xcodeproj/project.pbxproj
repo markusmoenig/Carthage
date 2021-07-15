@@ -43,6 +43,8 @@
 		2BA40F01269BDA9400558C15 /* CarthageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40EFF269BDA9400558C15 /* CarthageData.swift */; };
 		2BA40F03269BDE1700558C15 /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40F02269BDE1700558C15 /* DataView.swift */; };
 		2BA40F04269BDE1700558C15 /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA40F02269BDE1700558C15 /* DataView.swift */; };
+		2BD9F28F26A00B7F0066BA08 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD9F28E26A00B7F0066BA08 /* Utilities.swift */; };
+		2BD9F29026A00B7F0066BA08 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD9F28E26A00B7F0066BA08 /* Utilities.swift */; };
 		2BF4CEFC269ACE9E00337EB6 /* CarthageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF4CEE9269ACE9D00337EB6 /* CarthageApp.swift */; };
 		2BF4CEFD269ACE9E00337EB6 /* CarthageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF4CEE9269ACE9D00337EB6 /* CarthageApp.swift */; };
 		2BF4CEFE269ACE9E00337EB6 /* CarthageDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF4CEEA269ACE9D00337EB6 /* CarthageDocument.swift */; };
@@ -75,6 +77,7 @@
 		2BA40EF9269BC35500558C15 /* CarthageObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageObject.swift; sourceTree = "<group>"; };
 		2BA40EFF269BDA9400558C15 /* CarthageData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageData.swift; sourceTree = "<group>"; };
 		2BA40F02269BDE1700558C15 /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
+		2BD9F28E26A00B7F0066BA08 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		2BF4CEE9269ACE9D00337EB6 /* CarthageApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageApp.swift; sourceTree = "<group>"; };
 		2BF4CEEA269ACE9D00337EB6 /* CarthageDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageDocument.swift; sourceTree = "<group>"; };
 		2BF4CEEB269ACE9D00337EB6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 				2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */,
 				2B6AABA9269C1524001B17DE /* SceneKitEngine.swift */,
 				2B183B78269D5C3D009B0F82 /* RealityKitEngine.swift */,
+				2BD9F28E26A00B7F0066BA08 /* Utilities.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -324,6 +328,7 @@
 				2BF4CF00269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F03269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF7269BC32300558C15 /* CarthageProject.swift in Sources */,
+				2BD9F28F26A00B7F0066BA08 /* Utilities.swift in Sources */,
 				2BF4CF8B269AD97800337EB6 /* CarthageModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +355,7 @@
 				2BF4CF01269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F04269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF8269BC32300558C15 /* CarthageProject.swift in Sources */,
+				2BD9F29026A00B7F0066BA08 /* Utilities.swift in Sources */,
 				2BF4CF8C269AD97800337EB6 /* CarthageModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

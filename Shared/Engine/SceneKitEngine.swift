@@ -50,6 +50,9 @@ class SceneKitEntity : CarthageEntity {
         if let transform = object.dataGroups.getGroup("Transform") {
             let position = transform.getFloat3("Position")
             node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
+            
+            let rotation = transform.getFloat3("Rotation")
+            node.eulerAngles = SCNVector3(x: SCNFloat(rotation.x.degreesToRadians), y: SCNFloat(rotation.y.degreesToRadians), z: SCNFloat(rotation.z.degreesToRadians))
         }
         
         if object.type == .Procedural {
@@ -71,7 +74,7 @@ class SceneKitEntity : CarthageEntity {
                     node.geometry = cubeGeometry
                 } else
                 if object.proceduralType == .Plane {
-                    let size = procedural.getFloat2("Size", float2(20,0.1))
+                    let size = procedural.getFloat2("Size", float2(20,20))
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     
                     let planeGeometry = SCNPlane(width: SCNFloat(size.x), height: SCNFloat(size.y))
@@ -131,11 +134,13 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         cameraNode.position = SCNVector3(x: 0.0, y: 0.0, z: 3.0)
         cameraNode.look(at: SCNVector3(x: 0, y: 0, z: 0))
 
+        /*
         let light = SCNLight()
         light.type = SCNLight.LightType.omni
         let lightNode = SCNNode()
         lightNode.light = light
         lightNode.position = SCNVector3(x: 1.5, y: 1.5, z: 1.5)
+         */
 
 
         //let constraint = SCNLookAtConstraint(target: sphereNode)
@@ -144,7 +149,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         
         sceneObject.entity = SceneKitEntity(object: sceneObject, node: scene!.rootNode)
 
-        scene!.rootNode.addChildNode(lightNode)
+        //scene!.rootNode.addChildNode(lightNode)
         scene!.rootNode.addChildNode(cameraNode)
         
         super.init(model: model, sceneObject: sceneObject)        

@@ -100,24 +100,7 @@ struct SideView: View {
                 }
                 
                 if mode == .settings {
-                    Menu {
-                        Button("SceneKit", action: {
-                            document.model.engineType = .SceneKit
-                            document.model.setScene(document.model.currentScene!)
-                            document.model.engineChanged.send()
-                        })
-                        
-                        Button("RealityKit", action: {
-                            document.model.engineType = .RealityKit
-                            document.model.setScene(document.model.currentScene!)
-                            document.model.engineChanged.send()
-                        })
-                    }
-                    label: {
-                        Text("Engine")
-                    }
-                }
-                
+                }                
             }
             
             Spacer()
