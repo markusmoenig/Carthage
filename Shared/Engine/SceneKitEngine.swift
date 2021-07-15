@@ -18,9 +18,17 @@ class SceneKitEntity : CarthageEntity {
     
     var node             : SCNNode
     
-    init(object: CarthageObject, node: SCNNode) {
-        self.node = node
+    init(object: CarthageObject, node: SCNNode? = nil) {
+        
+        if let node = node {
+            self.node = node
+        } else {
+            self.node = SCNNode()
+        }
+        
         super.init(object: object)
+        
+        updateFromModel()
         
         attach()
     }
@@ -36,8 +44,33 @@ class SceneKitEntity : CarthageEntity {
     override func updateFromModel()
     {
         if let transform = object.dataGroups.getGroup("Transform") {
-            if let position = transform.getFloat3("Position") {
-                node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
+            let position = transform.getFloat3("Position")
+            node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
+        }
+        
+        if object.type == .Procedural {
+            if let procedural = object.dataGroups.getGroup("Procedural") {
+                if object.proceduralType == .Sphere {
+                    let radius = procedural.getFloat("Radius", 1)
+                    
+                    let sphereGeometry = SCNSphere(radius: SCNFloat(radius))
+                    node.geometry = sphereGeometry
+                } else
+                if object.proceduralType == .Cube {
+                    let size = procedural.getFloat3("Size", float3(1,1,1))
+                    let cornerRadius = procedural.getFloat("Corner Radius")
+
+                    let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
+                    node.geometry = cubeGeometry
+                } else
+                if object.proceduralType == .Plane {
+                    let size = procedural.getFloat2("Size", float2(20,0.1))
+                    let cornerRadius = procedural.getFloat("Corner Radius")
+                    
+                    let planeGeometry = SCNPlane(width: SCNFloat(size.x), height: SCNFloat(size.y))
+                    planeGeometry.cornerRadius = SCNFloat(cornerRadius)
+                    node.geometry = planeGeometry
+                }
             }
         }
     }
@@ -98,10 +131,10 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-        let sphereGeometry = SCNSphere(radius: 0.5)
-        let node = SCNNode(geometry: sphereGeometry)
+        //let sphereGeometry = SCNSphere(radius: 0.5)
+        //let node = SCNNode(geometry: sphereGeometry)
                 
-        object.entity = SceneKitEntity(object: object, node: node)        
+        object.entity = SceneKitEntity(object: object)
     }
     
     override func play()

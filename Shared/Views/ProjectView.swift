@@ -46,10 +46,45 @@ struct ProjectView: View {
             
             HStack {
                 Menu {
-                    Button("Add Procedural", action: {
+                    
+                    Button("Plane", action: {
                         if let selected = document.model.selected {
                             
-                            let o = CarthageObject(.Procedural, "Sphere")
+                            let o = CarthageObject(type: .Procedural, name: "Plane", proceduralType: .Plane)
+                            if selected.children == nil {
+                                selected.children = []
+                            }
+                            selected.children!.append(o)
+                            o.parent = selected
+                            document.model.engine?.addObject(object: o)
+                            
+                            document.model.selected = o
+                            document.model.objectSelected.send(o)
+                            document.model.projectChanged.send()
+                        }
+                    })
+                    
+                    Button("Cube", action: {
+                        if let selected = document.model.selected {
+                            
+                            let o = CarthageObject(type: .Procedural, name: "Cube", proceduralType: .Cube)
+                            if selected.children == nil {
+                                selected.children = []
+                            }
+                            selected.children!.append(o)
+                            o.parent = selected
+                            document.model.engine?.addObject(object: o)
+                            
+                            document.model.selected = o
+                            document.model.objectSelected.send(o)
+                            document.model.projectChanged.send()
+                        }
+                    })
+                    
+                    Button("Sphere", action: {
+                        if let selected = document.model.selected {
+                            
+                            let o = CarthageObject(type: .Procedural, name: "Sphere", proceduralType: .Sphere)
                             if selected.children == nil {
                                 selected.children = []
                             }

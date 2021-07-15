@@ -16,7 +16,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     }
     
     enum CarthageProceduralObjectType: Int32, Codable {
-        case Sphere, Cube
+        case Plane, Sphere, Cube
     }
     
     enum SettingsMode {
@@ -29,7 +29,8 @@ class CarthageObject : Codable, Hashable, Identifiable {
     var name            : String
     
     var type            : CarthageObjectType
-    
+    var proceduralType  : CarthageProceduralObjectType
+
     weak var parent     : CarthageObject? = nil
     
     var children        : [CarthageObject]? = nil
@@ -54,15 +55,17 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case id
         case name
         case type
+        case proceduralType
         case children
         case dataGroups
         case code
         case assetName
     }
     
-    init(_ type: CarthageObjectType, _ name: String = "Unnamed")
+    init(type: CarthageObjectType, name: String = "Unnamed", proceduralType: CarthageProceduralObjectType = .Plane)
     {
         self.type = type
+        self.proceduralType = proceduralType
         self.name = name
         dataGroups = CarthageDataGroups()
         
@@ -80,18 +83,23 @@ class CarthageObject : Codable, Hashable, Identifiable {
         }
         
         if type == .Procedural {
-                
-            dataGroups.addGroup("Type", CarthageData([
-                CarthageDataEntity("Type", 0, float2(0,20), .Numeric)
-            ]))
-                
-            dataGroups.addGroup("Sphere", CarthageData([
-                CarthageDataEntity("Radius", Float(0), float2(0, 10), .Slider),
-            ]))
-
-            dataGroups.addGroup("Cube", CarthageData([
-                CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
-            ]))
+            if proceduralType == .Sphere {
+                dataGroups.addGroup("Procedural", CarthageData([
+                    CarthageDataEntity("Radius", Float(1), float2(0, 10), .Slider),
+                ]))
+            } else
+            if proceduralType == .Cube {
+                dataGroups.addGroup("Procedural", CarthageData([
+                    CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
+                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 0.5), .Slider),
+                ]))
+            } else
+            if proceduralType == .Plane {
+                dataGroups.addGroup("Procedural", CarthageData([
+                    CarthageDataEntity("Size", float2(20, 0.1), float2(0, 1000), .Numeric),
+                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
+                ]))
+            }
         }
         
         children = []
@@ -103,6 +111,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         id = try container.decode(UUID.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         type = try container.decode(CarthageObjectType.self, forKey: .type)
+        proceduralType = try container.decode(CarthageProceduralObjectType.self, forKey: .proceduralType)
         children = try container.decode([CarthageObject]?.self, forKey: .children)
         dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
         code = try container.decode(String.self, forKey: .code)
@@ -115,6 +124,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
         try container.encode(type, forKey: .type)
+        try container.encode(proceduralType, forKey: .proceduralType)
         try container.encode(children, forKey: .children)
         try container.encode(dataGroups, forKey: .dataGroups)
         try container.encode(code, forKey: .code)

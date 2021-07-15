@@ -13,9 +13,16 @@ class RealityKitEntity : CarthageEntity {
     
     var entity             : Entity
     
-    init(object: CarthageObject, entity: Entity) {
-        self.entity = entity
+    init(object: CarthageObject, entity: Entity? = nil) {
+        if let entity = entity {
+            self.entity = entity
+        } else {
+            self.entity = ModelEntity()
+        }
+
         super.init(object: object)
+        
+        updateFromModel()
         
         attach()
     }
@@ -31,8 +38,34 @@ class RealityKitEntity : CarthageEntity {
     override func updateFromModel()
     {
         if let transform = object.dataGroups.getGroup("Transform") {
-            if let position = transform.getFloat3("Position") {
-                entity.position = position
+            entity.position = transform.getFloat3("Position")
+        }
+        
+        if object.type == .Procedural {
+            if let procedural = object.dataGroups.getGroup("Procedural") {
+                if object.proceduralType == .Sphere {
+                    let radius = procedural.getFloat("Radius", 1)
+                    
+                    if let modelEntity = entity as? ModelEntity {
+                        modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [])
+                    }
+                } else
+                if object.proceduralType == .Cube {
+                    let size = procedural.getFloat3("Size", float3(1,1,1))
+                    let cornerRadius = procedural.getFloat("Corner Radius")
+                    if let modelEntity = entity as? ModelEntity {
+                        modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [])
+                    }
+                }
+                
+                if object.proceduralType == .Plane {
+                    let size = procedural.getFloat2("Size", float2(20,0.1))
+                    let cornerRadius = procedural.getFloat("Corner Radius")
+                    
+                    if let modelEntity = entity as? ModelEntity {
+                        modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [])
+                    }
+                }
             }
         }
     }
@@ -81,11 +114,8 @@ class RealityKitScene: CarthageScene {
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-        
-        //let newBox = ModelEntity(mesh: .generateBox(size: 1))
-        let newSphere = ModelEntity(mesh: .generateSphere(radius: 1))
 
-        object.entity = RealityKitEntity(object: object, entity: newSphere)
+        object.entity = RealityKitEntity(object: object)
     }
 
     override func play()

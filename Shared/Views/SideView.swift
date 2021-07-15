@@ -69,8 +69,14 @@ struct SideView: View {
                 Divider()
                 
                 if mode == .parameters {
-                    if let translationData = selected.dataGroups.getGroup("Transform") {
-                        DataView(model: document.model, data: translationData)
+                    if let transformData = selected.dataGroups.getGroup("Transform") {
+                        DataView(model: document.model, data: transformData)
+                    }
+                    if selected.type == .Procedural {
+                        Divider()
+                        if let proceduralData = selected.dataGroups.getGroup("Procedural") {
+                            DataView(model: document.model, data: proceduralData)
+                        }
                     }
                 }
                 

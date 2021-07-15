@@ -69,6 +69,8 @@ struct DataFloatSliderView: View {
                     
                         value.wrappedValue = newValue
                         valueText = String(format: "%.02f",  newValue)
+                        
+                        model.updateSelected()
                     })
                     .onEnded({ info in
                     })
@@ -221,17 +223,17 @@ struct Float3SliderView: View {
         
         .onChange(of: xValue) { value in
             entity.value.x = value
-            //model.renderer?.restart()
+            model.updateSelected()
         }
         
         .onChange(of: yValue) { value in
             entity.value.y = value
-            //model.renderer?.restart()
+            model.updateSelected()
         }
         
         .onChange(of: zValue) { value in
             entity.value.z = value
-            //model.renderer?.restart()
+            model.updateSelected()
         }
         
         //.onReceive(model.updateDataViews) { _ in
@@ -296,6 +298,108 @@ struct Float3DataView: View {
     }
 }
 
+struct Float2DataView: View {
+    
+    let model                               : CarthageModel
+    let entity                              : CarthageDataEntity
+    
+    @State private var xText                : String
+    @State private var yText                : String
+
+    init(_ model: CarthageModel,_ entity: CarthageDataEntity) {
+        self.model = model
+        self.entity = entity
+        
+        _xText = State(initialValue: String(format: "%.02f", entity.value.x))
+        _yText = State(initialValue: String(format: "%.02f", entity.value.y))
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(entity.key)
+            HStack {
+                TextField("", text: $xText, onEditingChanged: { changed in
+                    if let v = Float(xText) {
+                        entity.value.x = v
+                        model.updateSelected()
+                    }
+                })
+                    .border(.red)
+                TextField("", text: $yText, onEditingChanged: { changed in
+                    if let v = Float(yText) {
+                        entity.value.y = v
+                        model.updateSelected()
+                    }
+                })
+                    .border(.green)
+            }
+        }
+        
+        //.onReceive(model.updateDataViews) { _ in
+        //    xText = String(format: "%.02f", entity.value.x)
+        //    yText = String(format: "%.02f", entity.value.y)
+        //    zText = String(format: "%.02f", entity.value.z)
+        //}
+    }
+}
+
+
+struct Float2SliderView: View {
+    
+    let model                               : CarthageModel
+    let entity                              : CarthageDataEntity
+    
+    @State var xValue                       : Float = 0
+    @State var yValue                       : Float = 0
+    @State var valueRange                   = float2()
+
+    init(_ model: CarthageModel,_ entity: CarthageDataEntity) {
+        self.model = model
+        self.entity = entity
+
+        _xValue = State(initialValue: entity.value.x)
+        _yValue = State(initialValue: entity.value.y)
+        _valueRange = State(initialValue: entity.range)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack {
+                Text(entity.key)
+                Spacer()
+                Button(action: {
+                    entity.value = entity.defaultValue
+                    model.updateSelected()
+                })
+                {
+                    Image(systemName: "x.circle")
+                }
+                .buttonStyle(.borderless)
+            }
+            HStack {
+                DataFloatSliderView(model, $xValue, $valueRange, .red)
+                DataFloatSliderView(model, $yValue, $valueRange, .green)
+            }
+        }
+        
+        .onChange(of: xValue) { value in
+            entity.value.x = value
+            model.updateSelected()
+        }
+        
+        .onChange(of: yValue) { value in
+            entity.value.y = value
+            model.updateSelected()
+        }
+        
+        //.onReceive(model.updateDataViews) { _ in
+        //    xValue = entity.value.x
+        //    yValue = entity.value.y
+        //    zValue = entity.value.z
+        //}
+    }
+}
+
 struct DataView: View {
     
     let model                               : CarthageModel
@@ -313,7 +417,7 @@ struct DataView: View {
                             .padding(2)
                             .padding(.leading, 6)
                             .padding(.trailing, 6)
-                    }
+                    } else
                     if entity.type == .Float3 {
                         if entity.usage == .Numeric {
                             Float3DataView(model, entity)
@@ -327,9 +431,23 @@ struct DataView: View {
                                 .padding(.leading, 6)
                                 .padding(.trailing, 6)
                         }
+                    } else
+                    if entity.type == .Float2 {
+                        if entity.usage == .Numeric {
+                            Float2DataView(model, entity)
+                                .padding(2)
+                                .padding(.leading, 6)
+                                .padding(.trailing, 6)
+                        } else
+                        if entity.usage == .Slider {
+                            Float2SliderView(model, entity)
+                                .padding(2)
+                                .padding(.leading, 6)
+                                .padding(.trailing, 6)
+                        }
                     }
                 }
-                Spacer()
+                //Spacer()
             }
         }
     }

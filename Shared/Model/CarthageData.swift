@@ -170,36 +170,36 @@ class CarthageData: Codable {
     }
     
     /// Get an Float key
-    func getFloat(_ key: String,_ time: Double? = nil) -> Float? {
+    func getFloat(_ key: String,_ defaultValue: Float = 0,_ time: Double? = nil) -> Float {
         for e in data {
             if e.key == key && e.type == .Float && e.time == time {
                 return e.value.x
             }
         }
         // TODO: Interpolate between existing values
-        return nil
+        return defaultValue
     }
     
     /// Get an Float2 key
-    func getFloat2(_ key: String,_ time: Double? = nil) -> float2? {
+    func getFloat2(_ key: String,_ defaultValue: float2 = float2(0,0),_ time: Double? = nil) -> float2 {
         for e in data {
             if e.key == key && e.type == .Float2 && e.time == time {
                 return float2(e.value.x, e.value.y)
             }
         }
         // TODO: Interpolate between existing values
-        return nil
+        return defaultValue
     }
     
     /// Get an Float3 key
-    func getFloat3(_ key: String,_ time: Double? = nil) -> float3? {
+    func getFloat3(_ key: String,_ defaultValue: float3 = float3(0,0,0),_ time: Double? = nil) -> float3 {
         for e in data {
             if e.key == key && e.type == .Float3 && e.time == time {
                 return float3(e.value.x, e.value.y, e.value.z)
             }
         }
         // TODO: Interpolate between existing values
-        return nil
+        return defaultValue
     }
     
     /// Get an Float4 key
