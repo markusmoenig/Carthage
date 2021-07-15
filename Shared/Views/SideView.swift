@@ -103,7 +103,7 @@ struct SideView: View {
                 }                
             }
             
-            Spacer()
+            //Spacer()
         }
         .animation(.default)
         

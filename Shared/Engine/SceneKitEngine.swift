@@ -53,6 +53,9 @@ class SceneKitEntity : CarthageEntity {
             
             let rotation = transform.getFloat3("Rotation")
             node.eulerAngles = SCNVector3(x: SCNFloat(rotation.x.degreesToRadians), y: SCNFloat(rotation.y.degreesToRadians), z: SCNFloat(rotation.z.degreesToRadians))
+            
+            let scale = transform.getFloat3("Scale")
+            node.scale = SCNVector3(x: SCNFloat(scale.x), y: SCNFloat(scale.y), z: SCNFloat(scale.z))
         }
         
         if object.type == .Procedural {
@@ -69,7 +72,6 @@ class SceneKitEntity : CarthageEntity {
                     let cornerRadius = procedural.getFloat("Corner Radius")
 
                     let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
-                    
                     
                     node.geometry = cubeGeometry
                 } else
@@ -107,6 +109,28 @@ class SceneKitEntity : CarthageEntity {
             if let x = newValue["x"] { node.position.x = SCNFloat(x) }
             if let y = newValue["y"] { node.position.y = SCNFloat(y) }
             if let z = newValue["z"] { node.position.z = SCNFloat(z) }
+        }
+    }
+    
+    override var rotation: [String: Double]  {
+        get {
+            return ["x": Double(node.rotation.x), "y": Double(node.rotation.y), "z": Double(node.rotation.z)]
+        }
+        set {
+            if let x = newValue["x"] { node.rotation.x = SCNFloat(x) }
+            if let y = newValue["y"] { node.rotation.y = SCNFloat(y) }
+            if let z = newValue["z"] { node.rotation.z = SCNFloat(z) }
+        }
+    }
+    
+    override var scale: [String: Double]  {
+        get {
+            return ["x": Double(node.scale.x), "y": Double(node.scale.y), "z": Double(node.scale.z)]
+        }
+        set {
+            if let x = newValue["x"] { node.scale.x = SCNFloat(x) }
+            if let y = newValue["y"] { node.scale.y = SCNFloat(y) }
+            if let z = newValue["z"] { node.scale.z = SCNFloat(z) }
         }
     }
 }

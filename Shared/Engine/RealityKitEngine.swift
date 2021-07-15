@@ -38,10 +38,11 @@ class RealityKitEntity : CarthageEntity {
     
     override func updateFromModel()
     {
-        if let transform = object.dataGroups.getGroup("Transform") {            
+        if let transform = object.dataGroups.getGroup("Transform") {
             let rotation = transform.getFloat3("Rotation")
             entity.transform = Transform()
             entity.transform.translation = transform.getFloat3("Position")
+            entity.transform.scale = transform.getFloat3("Scale")
             entity.transform.rotation *= simd_quatf(angle: rotation.x.degreesToRadians, axis: SIMD3<Float>(1,0,0))
             entity.transform.rotation *= simd_quatf(angle: rotation.y.degreesToRadians, axis: SIMD3<Float>(0,1,0))
             entity.transform.rotation *= simd_quatf(angle: rotation.z.degreesToRadians, axis: SIMD3<Float>(0,0,1))
@@ -93,7 +94,29 @@ class RealityKitEntity : CarthageEntity {
     
     override var position: [String: Double]  {
         get {
+            return ["x": Double(entity.transform.translation.x), "y": Double(entity.transform.translation.y), "z": Double(entity.transform.translation.z)]
+        }
+        set {
+            if let x = newValue["x"] { entity.transform.translation.x = Float(x) }
+            if let y = newValue["y"] { entity.transform.translation.y = Float(y) }
+            if let z = newValue["z"] { entity.transform.translation.z = Float(z) }
+        }
+    }
+    
+    override var rotation: [String: Double]  {
+        get {
             return ["x": Double(entity.position.x), "y": Double(entity.position.y), "z": Double(entity.position.z)]
+        }
+        set {
+            if let x = newValue["x"] { entity.position.x = Float(x) }
+            if let y = newValue["y"] { entity.position.y = Float(y) }
+            if let z = newValue["z"] { entity.position.z = Float(z) }
+        }
+    }
+    
+    override var scale: [String: Double]  {
+        get {
+            return ["x": Double(entity.transform.scale.x), "y": Double(entity.transform.scale.y), "z": Double(entity.transform.scale.z)]
         }
         set {
             if let x = newValue["x"] { entity.position.x = Float(x) }

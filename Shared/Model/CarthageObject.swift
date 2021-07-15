@@ -79,6 +79,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
             dataGroups.addGroup("Transform", CarthageData([
                 CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
                 CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
+                CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
             ]))
         }
         

@@ -12,6 +12,8 @@ import JavaScriptCore
 @objc protocol CarthageObjectJSExports: JSExport {
     
     var position: [String: Double] { get set }
+    var rotation: [String: Double] { get set }
+    var scale: [String: Double] { get set }
 }
 
 @objc class CarthageEntity : NSObject, CarthageObjectJSExports {
@@ -34,9 +36,27 @@ import JavaScriptCore
     /// position property
     var position: [String: Double]  {
         get {
-            return ["x": 0, "y": 0, "z": 0]
+            return [:]
         }
         set {            
+        }
+    }
+    
+    /// rotation property
+    var rotation: [String: Double]  {
+        get {
+            return [:]
+        }
+        set {
+        }
+    }
+    
+    /// scale property
+    var scale: [String: Double]  {
+        get {
+            return [:]
+        }
+        set {
         }
     }
 }
