@@ -29,7 +29,7 @@ struct ContentView: View {
                 ProjectView(document: $document)
                     .frame(maxWidth: 250)
 
-                VStack {
+                VStack(alignment: .leading, spacing: 2) {
                 
                     HStack {
                     
@@ -52,7 +52,7 @@ struct ContentView: View {
                         }
                     }
                     
-                    BrowserView()
+                    BrowserView(document: $document)
                         .frame(height: 100)
                 }
             }

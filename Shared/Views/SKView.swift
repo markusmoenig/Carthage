@@ -18,10 +18,9 @@ struct SwiftUISKView: NSViewRepresentable {
     public func makeNSView(context: NSViewRepresentableContext<SwiftUISKView>) -> SCNView {
         
         if let skEngine = model.engine as? SceneKitScene {
-            skEngine.view = skView
             skView.scene = skEngine.scene
-            
             skView.delegate = skEngine
+            skEngine.setView(skView)
         }
         
         return skView
@@ -51,9 +50,9 @@ struct SwiftUISKView: UIViewRepresentable {
     public func makeUIView(context: UIViewRepresentableContext<SwiftUISKView>) -> SCNView {
         
         if let skEngine = model.engine as? SceneKitScene {
-            skEngine.view = skView
             skView.scene = skEngine.scene
             skView.delegate = skEngine
+            skEngine.setView(skView)
         }
         
         return skView

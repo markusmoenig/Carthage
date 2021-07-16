@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B0E2E7126A117A200A053DE /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B0E2E7026A117A200A053DE /* CloudKit.framework */; };
+		2B0E2E7426A11B6800A053DE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E2E7226A11B6800A053DE /* DataModel.xcdatamodeld */; };
+		2B0E2E7526A11B6800A053DE /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E2E7226A11B6800A053DE /* DataModel.xcdatamodeld */; };
+		2B0E2E7A26A11BCA00A053DE /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E2E7926A11BCA00A053DE /* PersistenceController.swift */; };
+		2B0E2E7B26A11BCA00A053DE /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0E2E7926A11BCA00A053DE /* PersistenceController.swift */; };
 		2B183B76269D542C009B0F82 /* RKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B183B75269D542C009B0F82 /* RKView.swift */; };
 		2B183B77269D542C009B0F82 /* RKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B183B75269D542C009B0F82 /* RKView.swift */; };
 		2B183B79269D5C3D009B0F82 /* RealityKitEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B183B78269D5C3D009B0F82 /* RealityKitEngine.swift */; };
@@ -58,6 +63,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B0E2E7026A117A200A053DE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		2B0E2E7326A11B6800A053DE /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		2B0E2E7926A11BCA00A053DE /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		2B183B75269D542C009B0F82 /* RKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RKView.swift; sourceTree = "<group>"; };
 		2B183B78269D5C3D009B0F82 /* RealityKitEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityKitEngine.swift; sourceTree = "<group>"; };
 		2B183B7B269D7A42009B0F82 /* SideSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideSceneView.swift; sourceTree = "<group>"; };
@@ -101,12 +109,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B0E2E7126A117A200A053DE /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B0E2E6F26A117A200A053DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2B0E2E7026A117A200A053DE /* CloudKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		2B6AABA5269C0EA8001B17DE /* Engine */ = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +168,7 @@
 				2BF4CEF3269ACE9E00337EB6 /* iOS */,
 				2BF4CEFA269ACE9E00337EB6 /* macOS */,
 				2BF4CEF2269ACE9E00337EB6 /* Products */,
+				2B0E2E6F26A117A200A053DE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -166,6 +184,7 @@
 				2B6AABAC269C2A77001B17DE /* JavaScript */,
 				2B6AABB1269C2D56001B17DE /* Files */,
 				2BF4CEEC269ACE9E00337EB6 /* Assets.xcassets */,
+				2B0E2E7226A11B6800A053DE /* DataModel.xcdatamodeld */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -202,6 +221,7 @@
 				2BA40EF9269BC35500558C15 /* CarthageObject.swift */,
 				2BA40EF6269BC32300558C15 /* CarthageProject.swift */,
 				2BF4CF8A269AD97800337EB6 /* CarthageModel.swift */,
+				2B0E2E7926A11BCA00A053DE /* PersistenceController.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -313,6 +333,7 @@
 				2BF4CEFC269ACE9E00337EB6 /* CarthageApp.swift in Sources */,
 				2B183B7C269D7A42009B0F82 /* SideSceneView.swift in Sources */,
 				2BA40EFA269BC35500558C15 /* CarthageObject.swift in Sources */,
+				2B0E2E7426A11B6800A053DE /* DataModel.xcdatamodeld in Sources */,
 				2B183B7F269D7A61009B0F82 /* SideGeometryView.swift in Sources */,
 				2B3C75BE269EC21A00415C14 /* SKView.swift in Sources */,
 				2BF4CEFE269ACE9E00337EB6 /* CarthageDocument.swift in Sources */,
@@ -324,6 +345,7 @@
 				2BA40EEE269BBEDB00558C15 /* ProjectView.swift in Sources */,
 				2B183B79269D5C3D009B0F82 /* RealityKitEngine.swift in Sources */,
 				2B6AABAA269C1524001B17DE /* SceneKitEngine.swift in Sources */,
+				2B0E2E7A26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF00269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F03269BDE1700558C15 /* DataView.swift in Sources */,
@@ -340,6 +362,7 @@
 				2BF4CEFD269ACE9E00337EB6 /* CarthageApp.swift in Sources */,
 				2B183B7D269D7A42009B0F82 /* SideSceneView.swift in Sources */,
 				2BA40EFB269BC35500558C15 /* CarthageObject.swift in Sources */,
+				2B0E2E7526A11B6800A053DE /* DataModel.xcdatamodeld in Sources */,
 				2B183B80269D7A61009B0F82 /* SideGeometryView.swift in Sources */,
 				2B3C75BF269EC21A00415C14 /* SKView.swift in Sources */,
 				2BF4CEFF269ACE9E00337EB6 /* CarthageDocument.swift in Sources */,
@@ -351,6 +374,7 @@
 				2BA40EEF269BBEDB00558C15 /* ProjectView.swift in Sources */,
 				2B183B7A269D5C3D009B0F82 /* RealityKitEngine.swift in Sources */,
 				2B6AABAB269C1524001B17DE /* SceneKitEngine.swift in Sources */,
+				2B0E2E7B26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF2269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF01269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F04269BDE1700558C15 /* DataView.swift in Sources */,
@@ -564,7 +588,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moenig.Carthage;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moenig.carthage;
 				PRODUCT_NAME = Carthage;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -595,7 +619,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moenig.Carthage;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moenig.carthage;
 				PRODUCT_NAME = Carthage;
 				SDKROOT = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -634,6 +658,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		2B0E2E7226A11B6800A053DE /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				2B0E2E7326A11B6800A053DE /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 2B0E2E7326A11B6800A053DE /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 2BF4CEE4269ACE9D00337EB6 /* Project object */;
 }

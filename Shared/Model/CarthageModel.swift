@@ -74,4 +74,49 @@ class CarthageModel: NSObject, ObservableObject {
             }
         }
     }
+    
+    /// Gets the url for an library item, i.e. saves the data to a temporary file and returns the URL
+    func getLibraryURL(_ name: String) -> URL? {
+        
+        var rc : URL? = nil
+        
+        let request = LibraryEntity.fetchRequest()
+        
+        let managedObjectContext = PersistenceController.shared.container.viewContext
+        let objects = try! managedObjectContext.fetch(request)
+
+        objects.forEach { ca in
+            
+            guard let objectName = ca.name else {
+                return
+            }
+
+            if objectName == name {
+                
+                if var url = getTempURL() {
+                    url.appendPathExtension(ca.ext!)
+                    print(url.absoluteString)
+                    
+                    if let data = ca.data {
+                        do {
+                            try data.write(to: url)
+                            rc = url
+                        } catch {
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+        return rc
+    }
+    
+    func getTempURL() -> URL? {
+        
+        let directory = NSTemporaryDirectory()
+        let fileName = NSUUID().uuidString
+
+        return NSURL.fileURL(withPathComponents: [directory, fileName])
+    }
 }

@@ -199,6 +199,11 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         }
     }
     
+    func setView(_ sceneView: SCNView) {
+        view = sceneView
+        sceneView.autoenablesDefaultLighting = true
+    }
+    
     override func play()
     {
         super.play()
