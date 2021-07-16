@@ -40,8 +40,9 @@ class CarthageObject : Codable, Hashable, Identifiable {
 
     var code            : String = ""
 
+    /// The name of the referenced asset in the library
     var assetName       : String = ""
-    
+
     /// The optional JavaScript context for this object. Only scene objects always have a JS context, for other objects the
     /// user has to enable them in the object settings.
     var jsContext       : JSContext? = nil
@@ -63,11 +64,13 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case assetName
     }
     
-    init(type: CarthageObjectType, name: String = "Unnamed", proceduralType: CarthageProceduralObjectType = .Plane)
+    init(type: CarthageObjectType, name: String = "Unnamed", proceduralType: CarthageProceduralObjectType = .Plane, assetName: String = "")
     {
         self.type = type
         self.proceduralType = proceduralType
         self.name = name
+        self.assetName = name
+        
         dataGroups = CarthageDataGroups()
         
         if type == .Scene {

@@ -48,63 +48,16 @@ struct ProjectView: View {
                 Menu {
                     
                     Button("Plane", action: {
-                        if let selected = document.model.selected {
-                            
-                            let o = CarthageObject(type: .Procedural, name: "Plane", proceduralType: .Plane)
-                            if selected.children == nil {
-                                selected.children = []
-                            }
-                            selected.children!.append(o)
-                            o.parent = selected
-                            document.model.engine?.addObject(object: o)
-                            
-                            document.model.selected = o
-                            document.model.objectSelected.send(o)
-                            document.model.projectChanged.send()
-                            if document.model.engineType == .RealityKit {
-                                document.model.engineChanged.send()
-                            }
-                        }
+                        
+                        document.model.addToProject(object: CarthageObject(type: .Procedural, name: "Plane", proceduralType: .Plane))
                     })
                     
                     Button("Cube", action: {
-                        if let selected = document.model.selected {
-                            
-                            let o = CarthageObject(type: .Procedural, name: "Cube", proceduralType: .Cube)
-                            if selected.children == nil {
-                                selected.children = []
-                            }
-                            selected.children!.append(o)
-                            o.parent = selected
-                            document.model.engine?.addObject(object: o)
-                            
-                            document.model.selected = o
-                            document.model.objectSelected.send(o)
-                            document.model.projectChanged.send()
-                            if document.model.engineType == .RealityKit {
-                                document.model.engineChanged.send()
-                            }
-                        }
+                        document.model.addToProject(object: CarthageObject(type: .Procedural, name: "Cube", proceduralType: .Cube))
                     })
                     
-                    Button("Sphere", action: {
-                        if let selected = document.model.selected {
-                            
-                            let o = CarthageObject(type: .Procedural, name: "Sphere", proceduralType: .Sphere)
-                            if selected.children == nil {
-                                selected.children = []
-                            }
-                            selected.children!.append(o)
-                            o.parent = selected
-                            document.model.engine?.addObject(object: o)
-                            
-                            document.model.selected = o
-                            document.model.objectSelected.send(o)
-                            document.model.projectChanged.send()
-                            if document.model.engineType == .RealityKit {
-                                document.model.engineChanged.send()
-                            }
-                        }
+                    Button("Sphere", action: {                        
+                        document.model.addToProject(object: CarthageObject(type: .Procedural, name: "Sphere", proceduralType: .Sphere))
                     })
                 }
                 label: {

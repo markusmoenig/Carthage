@@ -21,11 +21,11 @@ struct BrowserView: View {
     
     @Binding var document               : CarthageDocument
 
-    @State var IconSize                 : CGFloat = 80
-    
-    @State var library = ["Item"]
-    
+    @State private var IconSize         : CGFloat = 80
+        
     @State private var importing        : Bool = false
+    
+    @State private var selected         : String = ""
 
     var body: some View {
             
@@ -65,27 +65,23 @@ struct BrowserView: View {
                         
                         if MDLAsset.canImportFileExtension(url.pathExtension) {
                             
-                            
                             var fileName = url.lastPathComponent
                             
                             let components = fileName.components(separatedBy: ".")
                             if components.count > 1 {
                                 fileName = components[0]
                             }
-                            
+
                             if let data = modelToData(url) {
-                                let data = try Data(contentsOf: url)
                                 let object = LibraryEntity(context: managedObjectContext)
                                 
-                                object.name = fileName + "usd"
-                                object.ext = "usd"
+                                object.name = fileName
+                                object.ext = url.pathExtension
                                 object.tags = "3d model, 3d"
                                 object.data = data
                                 
                                 try! managedObjectContext.save()
-                            }                      
-                            //let asset = MDLAsset(url: selectedFiles[0])
-                            //print(asset)
+                            }
                         }
 
                     } catch {
@@ -104,13 +100,36 @@ struct BrowserView: View {
                             
                             ZStack(alignment: .center) {
                                 
+                                if object.tags!.contains("3d") {
+                                    Image(systemName: "view.3d")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: IconSize * 0.8, height: IconSize * 0.8)
+                                        .padding(.bottom, 15)
+                                        .onTapGesture(perform: {
+                                            selected = object.name!
+                                        })
+                                        .contextMenu {
+                                            Button("Add to Project") {
+                                                let object = CarthageObject(type: .Geometry, name: object.name!, assetName: object.name!)
+
+                                                document.model.addToProject(object: object)
+                                            }
+                                            
+                                            Button("Remove") {
+                                                managedObjectContext.delete(object)
+                                                try! managedObjectContext.save()
+                                            }
+                                        }
+                                }
+                                
                                 /*
                                 if let image = shape.icon {
                                     Image(image, scale: 1.0, label: Text(item))
                                         .onTapGesture(perform: {
  
                                         })
-                                } else {*/
+                                } else {
                                     Rectangle()
                                         .fill(Color.secondary)
                                         .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
@@ -118,27 +137,32 @@ struct BrowserView: View {
 
                                         })
                                         .contextMenu {
-                                            Button("Test") {
-                                                if let url = document.model.getLibraryURL(object.name!) {
-                                                    let asset = MDLAsset(url: url)
-                                                    print(asset)
-                                                }
+                                            Button("Add to Project") {
+                                                
+                                                let object = CarthageObject(type: .Geometry, name: object.name!, assetName: object.name!)
+
+                                                document.model.addToProject(object: object)
+                                            }
+                                            
+                                            Button("Remove") {
+                                                managedObjectContext.delete(object)
+                                                try! managedObjectContext.save()
                                             }
                                         }
-                                //}
+                                }*/
                                 
-                                //if shape === selected {
+                                if object.name == selected {
                                     Rectangle()
                                         .stroke(Color.accentColor, lineWidth: 2)
                                         .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
                                         .allowsHitTesting(false)
-                                //}
+                                }
                                 
                                 Rectangle()
                                     .fill(.black)
                                     .opacity(0.4)
-                                    .frame(width: CGFloat(IconSize/* - (shape === selected ? 2 : 0)*/), height: CGFloat(20 /*- (shape === selected ? 1 : 0)*/))
-                                    .padding(.top, CGFloat(IconSize/* - (20 + (shape === selected ? 1 : 0)*/))
+                                    .frame(width: CGFloat(IconSize - (object.name == selected ? 2 : 0)), height: CGFloat(20 - (object.name == selected ? 1 : 0)))
+                                    .padding(.top, CGFloat(IconSize - (20 + (object.name == selected ? 1 : 0))))
                                 
                                 object.name.map(Text.init)
                                 //Text(item.name)
@@ -167,19 +191,15 @@ struct BrowserView: View {
     
     /// Imports a model and returns a Data file, if the model is not USDX convert it to USD so that we have a single file representation of the model.
     func modelToData(_ url: URL) -> Data? {
+                
+        do {
+            let data = try Data(contentsOf: url)
+            return data
+        } catch {
+            print(error)
+        }
         
         /*
-        if url.pathExtension.lowercased().starts(with: "usd") {
-            do {
-                let data = try Data(contentsOf: url)
-                return data
-            } catch {
-                return nil
-            }
-        }*/
-        
-        print("need to convert", url.relativeString)
-        
         if var tempURL = document.model.getTempURL() {
             tempURL.appendPathExtension(".usd")
             
@@ -187,12 +207,12 @@ struct BrowserView: View {
             
             do {
                 try asset.export(to: tempURL)
-                let data = try Data(contentsOf: url)
+                let data = try Data(contentsOf: tempURL)
                 return data
             } catch {
                 print(error)
             }
-        }
+        }*/
         
         return nil
     }

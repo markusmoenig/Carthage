@@ -166,12 +166,22 @@ class RealityKitScene: CarthageScene {
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-        let entity = RealityKitEntity(object: object)
-        object.entity = entity
         
-        if object.type == .Camera {
-            cameraAnchor = AnchorEntity(world: [0,0,0])
-            cameraAnchor?.addChild(entity.entity)
+        if object.type == .Geometry {
+           
+            if let url = model.getLibraryURL(object.assetName) {
+                let modelEntity = try? Entity.load(contentsOf: url)
+                let entity = RealityKitEntity(object: object, entity: modelEntity)
+                object.entity = entity
+            }
+        } else {
+            let entity = RealityKitEntity(object: object)
+            object.entity = entity
+            
+            if object.type == .Camera {
+                cameraAnchor = AnchorEntity(world: [0,0,0])
+                cameraAnchor?.addChild(entity.entity)
+            }
         }
     }
 

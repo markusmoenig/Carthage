@@ -6,6 +6,7 @@
 //
 
 import SceneKit
+import SceneKit.ModelIO
 import RealityFoundation
 
 #if os(OSX)
@@ -190,12 +191,22 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
-        let entity = SceneKitEntity(object: object)
-        object.entity = entity
         
-        if object.type == .Camera {
-            cameraNode = entity.node
-            cameraNode?.constraints = []
+        if object.type == .Geometry {
+            if let url = model.getLibraryURL(object.assetName) {
+                let node = SCNReferenceNode(url: url)
+                node?.load()
+                let entity = SceneKitEntity(object: object, node: node)
+                object.entity = entity
+            }
+        } else {
+            let entity = SceneKitEntity(object: object)
+            object.entity = entity
+            
+            if object.type == .Camera {
+                cameraNode = entity.node
+                cameraNode?.constraints = []
+            }
         }
     }
     

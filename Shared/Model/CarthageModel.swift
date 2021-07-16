@@ -7,6 +7,7 @@
 
 import Combine
 import JavaScriptCore
+import ModelIO
 
 class CarthageModel: NSObject, ObservableObject {
     
@@ -39,6 +40,9 @@ class CarthageModel: NSObject, ObservableObject {
     
     /// The project itself
     var project                     : CarthageProject
+    
+    ///
+    var mdlLibrary                  : [String: MDLAsset] = [:]
 
     override init() {
 
@@ -75,6 +79,27 @@ class CarthageModel: NSObject, ObservableObject {
         }
     }
     
+    /// Adds the given object ti the project
+    func addToProject(object: CarthageObject) {
+        if let selected = selected {
+            
+            if selected.children == nil {
+                selected.children = []
+            }
+            
+            selected.children!.append(object)
+            object.parent = selected
+            engine?.addObject(object: object)
+            
+            self.selected = object
+            objectSelected.send(object)
+            projectChanged.send()
+            if engineType == .RealityKit {
+                engineChanged.send()
+            }
+        }
+    }
+    
     /// Gets the url for an library item, i.e. saves the data to a temporary file and returns the URL
     func getLibraryURL(_ name: String) -> URL? {
         
@@ -95,7 +120,6 @@ class CarthageModel: NSObject, ObservableObject {
                 
                 if var url = getTempURL() {
                     url.appendPathExtension(ca.ext!)
-                    print(url.absoluteString)
                     
                     if let data = ca.data {
                         do {
@@ -112,6 +136,20 @@ class CarthageModel: NSObject, ObservableObject {
         return rc
     }
     
+    /// Returns an MDLAsset for the given asset name
+    func getMDLAsset(forName: String) -> MDLAsset? {
+        if let asset = mdlLibrary[forName] {
+            return asset
+        }
+        
+        if let url = getLibraryURL(forName) {
+            mdlLibrary[forName] = MDLAsset(url: url)
+        }
+        
+        return mdlLibrary[forName]
+    }
+    
+    /// Gets the URL for a temporary file name
     func getTempURL() -> URL? {
         
         let directory = NSTemporaryDirectory()
