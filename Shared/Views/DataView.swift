@@ -189,6 +189,8 @@ struct Float3SliderView: View {
     @State var yValue                       : Float = 0
     @State var zValue                       : Float = 0
     @State var valueRange                   = float2()
+    
+    @State var isLocked                     = false
 
     init(_ model: CarthageModel,_ entity: CarthageDataEntity) {
         self.model = model
@@ -206,7 +208,17 @@ struct Float3SliderView: View {
                 Text(entity.key)
                 Spacer()
                 Button(action: {
+                    isLocked.toggle()
+                })
+                {
+                    Image(systemName: isLocked ? "link.circle.fill" : "link.circle")
+                }
+                .buttonStyle(.borderless)
+                Button(action: {
                     entity.value = entity.defaultValue
+                    xValue = entity.value.x
+                    yValue = entity.value.y
+                    zValue = entity.value.z
                     model.updateSelected()
                 })
                 {
@@ -223,16 +235,34 @@ struct Float3SliderView: View {
         
         .onChange(of: xValue) { value in
             entity.value.x = value
+            if isLocked {
+                entity.value.y = value
+                entity.value.z = value
+                yValue = value
+                zValue = value
+            }
             model.updateSelected()
         }
         
         .onChange(of: yValue) { value in
             entity.value.y = value
+            if isLocked {
+                entity.value.x = value
+                entity.value.z = value
+                xValue = value
+                zValue = value
+            }
             model.updateSelected()
         }
         
         .onChange(of: zValue) { value in
             entity.value.z = value
+            if isLocked {
+                entity.value.x = value
+                entity.value.y = value
+                xValue = value
+                yValue = value
+            }
             model.updateSelected()
         }
         
