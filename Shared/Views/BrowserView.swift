@@ -65,6 +65,7 @@ struct BrowserView: View {
                         
                         if MDLAsset.canImportFileExtension(url.pathExtension) {
                             
+                            
                             var fileName = url.lastPathComponent
                             
                             let components = fileName.components(separatedBy: ".")
@@ -72,20 +73,17 @@ struct BrowserView: View {
                                 fileName = components[0]
                             }
                             
-                            do {
+                            if let data = modelToData(url) {
                                 let data = try Data(contentsOf: url)
                                 let object = LibraryEntity(context: managedObjectContext)
                                 
-                                object.name = fileName
-                                object.ext = url.pathExtension
+                                object.name = fileName + "usd"
+                                object.ext = "usd"
                                 object.tags = "3d model, 3d"
                                 object.data = data
                                 
                                 try! managedObjectContext.save()
-                            } catch {
-                                
-                            }
-                                                        
+                            }                      
                             //let asset = MDLAsset(url: selectedFiles[0])
                             //print(asset)
                         }
@@ -165,5 +163,37 @@ struct BrowserView: View {
             //    model.brushSize = value
             //}
         }
+    }
+    
+    /// Imports a model and returns a Data file, if the model is not USDX convert it to USD so that we have a single file representation of the model.
+    func modelToData(_ url: URL) -> Data? {
+        
+        /*
+        if url.pathExtension.lowercased().starts(with: "usd") {
+            do {
+                let data = try Data(contentsOf: url)
+                return data
+            } catch {
+                return nil
+            }
+        }*/
+        
+        print("need to convert", url.relativeString)
+        
+        if var tempURL = document.model.getTempURL() {
+            tempURL.appendPathExtension(".usd")
+            
+            let asset = MDLAsset(url: url)
+            
+            do {
+                try asset.export(to: tempURL)
+                let data = try Data(contentsOf: url)
+                return data
+            } catch {
+                print(error)
+            }
+        }
+        
+        return nil
     }
 }
