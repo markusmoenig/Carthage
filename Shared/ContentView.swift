@@ -104,6 +104,7 @@ struct ContentView: View {
                 label: {
                     Text(engineTypeText)
                 }
+                .disabled(isPlaying)
             }
                         
             ToolbarItemGroup(placement: .automatic) {

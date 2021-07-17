@@ -9,6 +9,8 @@ import Combine
 import JavaScriptCore
 import ModelIO
 
+var gModel : CarthageModel? = nil
+
 class CarthageModel: NSObject, ObservableObject {
     
     enum EngineType {
@@ -33,6 +35,9 @@ class CarthageModel: NSObject, ObservableObject {
     /// Send when the user search generated new results, used to update browser view
     let searchResultsChanged        = PassthroughSubject<[String], Never>()
     
+    /// Send when the log changed and the UI has to be updated
+    let logChanged                  = PassthroughSubject<Void, Never>()
+    
     /// The current rendering engine
     var engine                      : CarthageScene? = nil
     
@@ -47,6 +52,7 @@ class CarthageModel: NSObject, ObservableObject {
     /// A dictionary containing local temporary URLs for library names / assets which have already been copied to local storage
     var urlLibrary                  : [String: URL] = [:]
 
+    var logText                     : String = ""
     
     override init() {
 
@@ -55,6 +61,7 @@ class CarthageModel: NSObject, ObservableObject {
         
         super.init()
         
+        gModel = self
         setScene(project.scenes.first!)
     }
     

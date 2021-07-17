@@ -110,7 +110,10 @@ import JavaScriptCore
     }
     
     let printConsole: @convention(block) (String) -> () = { input in
-        print(input)
+        DispatchQueue.main.async {
+            gModel?.logText.append(input + "\n")
+            gModel?.logChanged.send()
+        }
     }
     
     /// If the given data has a text associated with it, use it as the library name and return the URL to the local file
@@ -166,7 +169,10 @@ import JavaScriptCore
         
         for c in children {
             setupJS(c)
-        }        
+        }
+        
+        model.logText = ""
+        model.logChanged.send()
     }
     
     /// Stops the game, removes the javascript contexts and updates the entities back to the model

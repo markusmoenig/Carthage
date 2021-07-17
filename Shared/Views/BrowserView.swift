@@ -10,6 +10,10 @@ import ModelIO
 
 struct BrowserView: View {
     
+    enum Mode {
+        case browser, log
+    }
+    
     @Environment(\.managedObjectContext) var managedObjectContext
 
     @FetchRequest(
@@ -21,6 +25,8 @@ struct BrowserView: View {
     
     @Binding var document               : CarthageDocument
 
+    @State private var mode             : Mode = .browser
+    
     @State private var IconSize         : CGFloat = 80
         
     @State private var importing        : Bool = false
@@ -28,12 +34,14 @@ struct BrowserView: View {
     @State private var selected         : String = ""
     
     @State private var searchResults    : [String] = []
+    
+    @State private var log              : String = ""
 
     var body: some View {
             
             HStack(alignment: .top, spacing: 1) {
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .center, spacing: 4) {
                                     
                     Button(action: {
                         importing = true
@@ -44,9 +52,31 @@ struct BrowserView: View {
                     }
                     .buttonStyle(.borderless)
                     .padding(.top, 10)
+                    .disabled(mode == .log)
                     //.padding(.leading, 4)
                               
-                    //Divider()
+                    Divider()
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        mode = .browser
+                    })
+                    {
+                        Image(systemName: mode == .browser ? "b.square.fill" : "b.square")
+                            .imageScale(.large)
+                    }
+                    .buttonStyle(.borderless)
+                    
+                    Button(action: {
+                        mode = .log
+                    })
+                    {
+                        Image(systemName: mode == .log ? "l.square.fill" : "l.square")
+                            .imageScale(.large)
+                    }
+                    .buttonStyle(.borderless)
+                    //.padding(.leading, 4)
                     
                     //Divider()
                     //    .frame(maxHeight: 16)
@@ -123,133 +153,150 @@ struct BrowserView: View {
                 
                 Divider()
                 
-                let rows: [GridItem] = Array(repeating: .init(.fixed(70)), count: 1)
-                
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: rows, alignment: .center) {
-                        ForEach(objects, id: \.self) { object in
-                            
-                            if searchResults.contains(object.name!) {
-                            ZStack(alignment: .center) {
+                if mode == .browser {
+                    
+                    let rows: [GridItem] = Array(repeating: .init(.fixed(70)), count: 1)
+                    
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: rows, alignment: .center) {
+                            ForEach(objects, id: \.self) { object in
                                 
-                                if object.type == 0 {
-                                    // 3D Asset
-                                    Image(systemName: "view.3d")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: IconSize * 0.8, height: IconSize * 0.8)
-                                        .padding(.bottom, 15)
-                                        .onTapGesture(perform: {
-                                            selected = object.name!
-                                        })
-                                        .contextMenu {
-                                            Button("Add to Project") {
-                                                let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
+                                if searchResults.contains(object.name!) {
+                                ZStack(alignment: .center) {
+                                    
+                                    if object.type == 0 {
+                                        // 3D Asset
+                                        Image(systemName: "view.3d")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: IconSize * 0.8, height: IconSize * 0.8)
+                                            .padding(.bottom, 15)
+                                            .onTapGesture(perform: {
+                                                selected = object.name!
+                                            })
+                                            .contextMenu {
+                                                Button("Add to Project") {
+                                                    let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
 
-                                                document.model.addToProject(object: object)
-                                            }
-                                            
-                                            Button("Remove") {
-                                                managedObjectContext.delete(object)
-                                                do {
-                                                    try managedObjectContext.save()
-                                                } catch {}
-                                            }
-                                        }
-                                } else
-                                // Image
-                                if object.type == 1 {
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: IconSize * 0.8, height: IconSize * 0.8)
-                                        .padding(.bottom, 15)
-                                        .onTapGesture(perform: {
-                                            selected = object.name!
-                                        })
-                                        .contextMenu {
-                                            
-                                            /*
-                                            Button("Add to Project") {
-                                                let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
-
-                                                document.model.addToProject(object: object)
-                                            }*/
-                                            
-                                            Button("Remove") {
-                                                managedObjectContext.delete(object)
-                                                do {
-                                                    try managedObjectContext.save()
-                                                } catch {}
-                                            }
-                                        }
-                                }
-                                
-                                /*
-                                if let image = shape.icon {
-                                    Image(image, scale: 1.0, label: Text(item))
-                                        .onTapGesture(perform: {
- 
-                                        })
-                                } else {
-                                    Rectangle()
-                                        .fill(Color.secondary)
-                                        .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
-                                        .onTapGesture(perform: {
-
-                                        })
-                                        .contextMenu {
-                                            Button("Add to Project") {
+                                                    document.model.addToProject(object: object)
+                                                }
                                                 
-                                                let object = CarthageObject(type: .Geometry, name: object.name!, assetName: object.name!)
+                                                Button("Remove") {
+                                                    managedObjectContext.delete(object)
+                                                    do {
+                                                        try managedObjectContext.save()
+                                                    } catch {}
+                                                }
+                                            }
+                                    } else
+                                    // Image
+                                    if object.type == 1 {
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: IconSize * 0.8, height: IconSize * 0.8)
+                                            .padding(.bottom, 15)
+                                            .onTapGesture(perform: {
+                                                selected = object.name!
+                                            })
+                                            .contextMenu {
+                                                
+                                                /*
+                                                Button("Add to Project") {
+                                                    let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
 
-                                                document.model.addToProject(object: object)
+                                                    document.model.addToProject(object: object)
+                                                }*/
+                                                
+                                                Button("Remove") {
+                                                    managedObjectContext.delete(object)
+                                                    do {
+                                                        try managedObjectContext.save()
+                                                    } catch {}
+                                                }
                                             }
-                                            
-                                            Button("Remove") {
-                                                managedObjectContext.delete(object)
-                                                try! managedObjectContext.save()
+                                    }
+                                    
+                                    /*
+                                    if let image = shape.icon {
+                                        Image(image, scale: 1.0, label: Text(item))
+                                            .onTapGesture(perform: {
+     
+                                            })
+                                    } else {
+                                        Rectangle()
+                                            .fill(Color.secondary)
+                                            .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
+                                            .onTapGesture(perform: {
+
+                                            })
+                                            .contextMenu {
+                                                Button("Add to Project") {
+                                                    
+                                                    let object = CarthageObject(type: .Geometry, name: object.name!, assetName: object.name!)
+
+                                                    document.model.addToProject(object: object)
+                                                }
+                                                
+                                                Button("Remove") {
+                                                    managedObjectContext.delete(object)
+                                                    try! managedObjectContext.save()
+                                                }
                                             }
-                                        }
-                                }*/
-                                
-                                if object.name == selected {
+                                    }*/
+                                    
+                                    if object.name == selected {
+                                        Rectangle()
+                                            .stroke(Color.accentColor, lineWidth: 2)
+                                            .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
+                                            .allowsHitTesting(false)
+                                    }
+                                    
                                     Rectangle()
-                                        .stroke(Color.accentColor, lineWidth: 2)
-                                        .frame(width: CGFloat(IconSize), height: CGFloat(IconSize))
+                                        .fill(.black)
+                                        .opacity(0.4)
+                                        .frame(width: CGFloat(IconSize - (object.name == selected ? 2 : 0)), height: CGFloat(20 - (object.name == selected ? 1 : 0)))
+                                        .padding(.top, CGFloat(IconSize - (20 + (object.name == selected ? 1 : 0))))
+                                    
+                                    object.name.map(Text.init)
+                                    //Text(item.name)
+                                        .padding(.top, CGFloat(IconSize - 20))
                                         .allowsHitTesting(false)
+                                        .foregroundColor(.white)
                                 }
-                                
-                                Rectangle()
-                                    .fill(.black)
-                                    .opacity(0.4)
-                                    .frame(width: CGFloat(IconSize - (object.name == selected ? 2 : 0)), height: CGFloat(20 - (object.name == selected ? 1 : 0)))
-                                    .padding(.top, CGFloat(IconSize - (20 + (object.name == selected ? 1 : 0))))
-                                
-                                object.name.map(Text.init)
-                                //Text(item.name)
-                                    .padding(.top, CGFloat(IconSize - 20))
-                                    .allowsHitTesting(false)
-                                    .foregroundColor(.white)
-                            }
+                                }
                             }
                         }
-                    }
-                    .padding()
-                .padding(.top, 0)
+                        .padding()
+                    .padding(.top, 0)
+                }
+                    
+                .onReceive(document.model.searchResultsChanged) { results in
+                    searchResults = results
+                }
+            } else
+            if mode == .log {
+                //TextEditor(text: $log)
+                //    .onReceive(document.model.logChanged) { _ in
+                //        log = document.model.logText
+                //    }
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack {
+                            Text(log)
+                                .lineLimit(nil)
+                            Spacer()
+                        }
+                        .padding(.leading, 4)
+                    }.frame(maxWidth: .infinity)
+                }
+                
+                .onReceive(document.model.logChanged) { _ in
+                    log = document.model.logText
+                    mode = .log
+                }
             }
-            
-            .onReceive(document.model.searchResultsChanged) { results in
-                searchResults = results
-            }
-            
-            //.onReceive(model.objectSelected) { object in
-
-            //}
-            
-            //.onChange(of: brushSize) { value in
-            //    model.brushSize = value
-            //}
         }
     }
     
