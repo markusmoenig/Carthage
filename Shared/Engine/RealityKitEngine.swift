@@ -12,10 +12,12 @@ import AppKit
 
 class RealityKitEntity : CarthageEntity {
     
+    var scene              : RealityKitScene
     var entity             : Entity
     
-    init(object: CarthageObject, entity: Entity? = nil) {
+    init(scene: RealityKitScene, object: CarthageObject, entity: Entity? = nil) {
         
+        self.scene = scene
         if let entity = entity {
             self.entity = entity
         } else {
@@ -62,12 +64,33 @@ class RealityKitEntity : CarthageEntity {
             if let materialData = object.dataGroups.getGroup("Material") {
                 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
-                let metallic = materialData.getFloat("Metallic", 0)
-                let roughness = materialData.getFloat("Roughness", 0.5)
                 
-                material.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
-                material.roughness.scale = roughness
-                material.metallic.scale = metallic
+                if let url = scene.getUrl(data: materialData, key: "Color") {
+                    do {
+                        let texture = try TextureResource.load(contentsOf: url)
+                        material.baseColor.texture = PhysicallyBasedMaterial.Texture(texture)
+                    } catch {}
+                } else {
+                    material.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                }
+                
+                if let url = scene.getUrl(data: materialData, key: "Roughness") {
+                    do {
+                        let texture = try TextureResource.load(contentsOf: url)
+                        material.roughness.texture = PhysicallyBasedMaterial.Texture(texture)
+                    } catch {}
+                } else {
+                    material.roughness.scale = materialData.getFloat("Roughness", 0.5)
+                }
+                
+                if let url = scene.getUrl(data: materialData, key: "Metallic") {
+                    do {
+                        let texture = try TextureResource.load(contentsOf: url)
+                        material.metallic.texture = PhysicallyBasedMaterial.Texture(texture)
+                    } catch {}
+                } else {
+                    material.metallic.scale = materialData.getFloat("Metallic", 0)
+                }
             }
             
             if let procedural = object.dataGroups.getGroup("Procedural") {
@@ -159,9 +182,10 @@ class RealityKitScene: CarthageScene {
     {
         sceneAnchor = AnchorEntity(world: [0, 0, 0])
         
-        sceneObject.entity = RealityKitEntity(object: sceneObject, entity: sceneAnchor!)
-
         super.init(model: model, sceneObject: sceneObject)
+
+        sceneObject.entity = RealityKitEntity(scene: self, object: sceneObject, entity: sceneAnchor!)
+        load()
     }
     
     /// Adds the given object to it's parent.
@@ -171,11 +195,11 @@ class RealityKitScene: CarthageScene {
            
             if let url = model.getLibraryURL(object.libraryName) {
                 let modelEntity = try? Entity.load(contentsOf: url)
-                let entity = RealityKitEntity(object: object, entity: modelEntity)
+                let entity = RealityKitEntity(scene: self, object: object, entity: modelEntity)
                 object.entity = entity
             }
         } else {
-            let entity = RealityKitEntity(object: object)
+            let entity = RealityKitEntity(scene: self, object: object)
             object.entity = entity
             
             if object.type == .Camera {

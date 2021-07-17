@@ -82,9 +82,7 @@ import JavaScriptCore
         self.model = model
         self.sceneObject = sceneObject
         
-        super.init()
-        
-        load()
+        super.init()        
     }
     
     /// Loads / initializes the given objects in the derived engines

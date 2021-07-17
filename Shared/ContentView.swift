@@ -66,23 +66,26 @@ struct ContentView: View {
         
         .toolbar {
             ToolbarItemGroup(placement: .automatic) {
-                
-                Button(action: {
-                    document.model.engine?.play()
-                    isPlaying = true
-                }, label: {
-                    Image(systemName: isPlaying == true ? "play.fill" : "play")
-                })
-                
-                Button(action: {
-                    isPlaying = false
-                    document.model.engine?.stop()
-                }, label: {
-                    Image(systemName: isPlaying == false ? "stop.fill" : "stop")
-                })
+                HStack(spacing: 0) {
+                    Button(action: {
+                        document.model.engine?.play()
+                        isPlaying = true
+                    }, label: {
+                        Image(systemName: isPlaying == true ? "play.fill" : "play")
+                    })
+                    
+                    Button(action: {
+                        isPlaying = false
+                        document.model.engine?.stop()
+                    }, label: {
+                        Image(systemName: isPlaying == false ? "stop.fill" : "stop")
+                    })
+                }
             }
-            
+
             ToolbarItemGroup(placement: .automatic) {
+                Spacer()
+
                 Menu {
                     Button("SceneKit", action: {
                         document.model.engineType = .SceneKit
@@ -102,8 +105,10 @@ struct ContentView: View {
                     Text(engineTypeText)
                 }
             }
-            
+                        
             ToolbarItemGroup(placement: .automatic) {
+                Spacer()
+                
                 Button(action: {
                     sideViewIsVisible.toggle()
                 }, label: {

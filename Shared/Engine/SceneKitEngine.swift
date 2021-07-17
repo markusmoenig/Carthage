@@ -202,6 +202,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         
         super.init(model: model, sceneObject: sceneObject)
         sceneObject.entity = SceneKitEntity(scene: self, object: sceneObject, node: scene!.rootNode)
+        load()
     }
     
     /// Adds the given object to it's parent.
