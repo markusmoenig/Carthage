@@ -61,7 +61,7 @@ class RealityKitEntity : CarthageEntity {
         if object.type == .Procedural {
             
             var material = PhysicallyBasedMaterial()
-            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName.isEmpty  {
+            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural"  || groupName.isEmpty  {
                 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 

@@ -59,11 +59,9 @@ class SceneKitEntity : CarthageEntity {
      
     override func updateFromModel(groupName: String = "")
     {
-        print("updateFromModel", groupName)
+        //print("updateFromModel", groupName)
         
         if let transform = object.dataGroups.getGroup("Transform"), groupName == "Transform" || groupName.isEmpty {
-            print("updating Transform")
-
             let position = transform.getFloat3("Position")
             node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
             
@@ -77,7 +75,7 @@ class SceneKitEntity : CarthageEntity {
         if object.type == .Procedural {
                         
             if let procedural = object.dataGroups.getGroup("Procedural"), groupName == "Procedural" || groupName.isEmpty  {
-                print("updating procedural")
+                
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
@@ -102,9 +100,8 @@ class SceneKitEntity : CarthageEntity {
                 }
             }
             
-            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName.isEmpty {
+            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural" || groupName.isEmpty {
                 
-                print("updating material")
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 
                 let material = SCNMaterial()
