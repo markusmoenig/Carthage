@@ -64,7 +64,6 @@ import JavaScriptCore
 /// The javascript protocol for scenes
 @objc protocol CarthageSceneJSExports: JSExport {
 
-    func testFunction() -> Int
 }
 
 @objc class CarthageScene: NSObject, CarthageSceneJSExports {
@@ -103,10 +102,6 @@ import JavaScriptCore
                 loadObject(c)
             }
         }
-    }
-
-    func testFunction() -> Int {
-        return 5
     }
     
     /*
@@ -151,6 +146,9 @@ import JavaScriptCore
     ///  Setup the js context
     func play() {
         
+        model.logText = ""
+        model.logChanged.send()
+        
         isPlaying = true
         jsObjects = []
         func setupJS(_ object: CarthageObject) {
@@ -162,7 +160,8 @@ import JavaScriptCore
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
                     if let str = exc.toString() {
-                        print("JS Exception:", str)
+                        gModel?.logText.append("Error in \(object.name): \(str) \n")
+                        gModel?.logChanged.send()
                     }
                 }
             }
@@ -191,9 +190,6 @@ import JavaScriptCore
         for c in children {
             setupJS(c)
         }
-        
-        model.logText = ""
-        model.logChanged.send()
     }
     
     /// Stops the game, removes the javascript contexts and updates the entities back to the model

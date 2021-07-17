@@ -78,6 +78,9 @@ class ScriptEditor
             """
             var \(object.scriptContext) = ace.createEditSession(`\(object.code)`)
             editor.setSession(\(object.scriptContext))
+            
+            editor.session.$worker.send("changeOptions", [{asi: true}]);
+
             editor.session.setMode("ace/mode/javascript");
             """, completionHandler: { (value, error ) in
                 if let cb = cb {
