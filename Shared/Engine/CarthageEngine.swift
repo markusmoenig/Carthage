@@ -115,6 +115,14 @@ import JavaScriptCore
         print(input)
     }
     
+    /// If the given data has a text associated with it, use it as the library name and return the URL to the local file
+    func getUrl(data: CarthageData, key: String) -> URL? {
+        if let text = data.getText(key) {
+            return model.getLibraryURL(text)
+        }
+        return nil
+    }
+    
     /// Adds an object to the scene
     func addObject(object: CarthageObject) {
     }

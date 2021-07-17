@@ -26,6 +26,8 @@ struct BrowserView: View {
     @State private var importing        : Bool = false
     
     @State private var selected         : String = ""
+    
+    @State private var searchResults    : [String] = []
 
     var body: some View {
             
@@ -63,24 +65,53 @@ struct BrowserView: View {
                         
                         let url = selectedFiles[0]
                         
+                        var fileName = url.lastPathComponent
+                        
+                        let components = fileName.components(separatedBy: ".")
+                        if components.count > 1 {
+                            fileName = components[0]
+                        }
+                        
+                        // Check for 3D model via ModelIO
                         if MDLAsset.canImportFileExtension(url.pathExtension) {
-                            
-                            var fileName = url.lastPathComponent
-                            
-                            let components = fileName.components(separatedBy: ".")
-                            if components.count > 1 {
-                                fileName = components[0]
-                            }
-
-                            if let data = modelToData(url) {
+                            if let data = urlToData(url) {
                                 let object = LibraryEntity(context: managedObjectContext)
                                 
                                 object.name = fileName
                                 object.ext = url.pathExtension
-                                object.tags = "3d model, 3d"
+                                object.tags = "3d, model, " + fileName + ", " + url.pathExtension
                                 object.data = data
+                                object.type = 0
                                 
-                                try! managedObjectContext.save()
+                                do {
+                                    try managedObjectContext.save()
+                                } catch {}
+                            }
+                        } else {
+                            // If not a 3D model, check if it is an Image
+                            
+                            var isImage = false
+                            
+                            #if os(OSX)
+                            if let _ =  NSImage(contentsOfFile: url.path) { isImage = true }
+                            #elseif os(iOS)
+                            if let _ =  UIImage(contentsOfFile: url.path) { isImage = true }
+                            #endif
+                            
+                            if isImage {
+                                if let data = urlToData(url) {
+                                    let object = LibraryEntity(context: managedObjectContext)
+                                    
+                                    object.name = fileName
+                                    object.ext = url.pathExtension
+                                    object.tags = "image, texture, " + fileName + ", " + url.pathExtension
+                                    object.data = data
+                                    object.type = 1
+                                    
+                                    do {
+                                        try managedObjectContext.save()
+                                    } catch {}
+                                }
                             }
                         }
 
@@ -98,9 +129,11 @@ struct BrowserView: View {
                     LazyHGrid(rows: rows, alignment: .center) {
                         ForEach(objects, id: \.self) { object in
                             
+                            if searchResults.contains(object.name!) {
                             ZStack(alignment: .center) {
                                 
-                                if object.tags!.contains("3d") {
+                                if object.type == 0 {
+                                    // 3D Asset
                                     Image(systemName: "view.3d")
                                         .resizable()
                                         .scaledToFit()
@@ -111,14 +144,43 @@ struct BrowserView: View {
                                         })
                                         .contextMenu {
                                             Button("Add to Project") {
-                                                let object = CarthageObject(type: .Geometry, name: object.name!, assetName: object.name!)
+                                                let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
 
                                                 document.model.addToProject(object: object)
                                             }
                                             
                                             Button("Remove") {
                                                 managedObjectContext.delete(object)
-                                                try! managedObjectContext.save()
+                                                do {
+                                                    try managedObjectContext.save()
+                                                } catch {}
+                                            }
+                                        }
+                                } else
+                                // Image
+                                if object.type == 1 {
+                                    Image(systemName: "photo")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: IconSize * 0.8, height: IconSize * 0.8)
+                                        .padding(.bottom, 15)
+                                        .onTapGesture(perform: {
+                                            selected = object.name!
+                                        })
+                                        .contextMenu {
+                                            
+                                            /*
+                                            Button("Add to Project") {
+                                                let object = CarthageObject(type: .Geometry, name: object.name!, libraryName: object.name!)
+
+                                                document.model.addToProject(object: object)
+                                            }*/
+                                            
+                                            Button("Remove") {
+                                                managedObjectContext.delete(object)
+                                                do {
+                                                    try managedObjectContext.save()
+                                                } catch {}
                                             }
                                         }
                                 }
@@ -170,14 +232,16 @@ struct BrowserView: View {
                                     .allowsHitTesting(false)
                                     .foregroundColor(.white)
                             }
+                            }
                         }
                     }
                     .padding()
                 .padding(.top, 0)
             }
             
-            //.onReceive(model.componentPreviewNeedsUpdate) { _ in
-            //}
+            .onReceive(document.model.searchResultsChanged) { results in
+                searchResults = results
+            }
             
             //.onReceive(model.objectSelected) { object in
 
@@ -189,8 +253,8 @@ struct BrowserView: View {
         }
     }
     
-    /// Imports a model and returns a Data file, if the model is not USDX convert it to USD so that we have a single file representation of the model.
-    func modelToData(_ url: URL) -> Data? {
+    /// Loads an url into a Data
+    func urlToData(_ url: URL) -> Data? {
                 
         do {
             let data = try Data(contentsOf: url)

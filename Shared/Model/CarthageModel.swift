@@ -30,6 +30,9 @@ class CarthageModel: NSObject, ObservableObject {
     /// Send when an object has been selected
     let projectChanged              = PassthroughSubject<Void, Never>()
     
+    /// Send when the user search generated new results, used to update browser view
+    let searchResultsChanged        = PassthroughSubject<[String], Never>()
+    
     /// The current rendering engine
     var engine                      : CarthageScene? = nil
     
@@ -41,9 +44,10 @@ class CarthageModel: NSObject, ObservableObject {
     /// The project itself
     var project                     : CarthageProject
     
-    ///
-    var mdlLibrary                  : [String: MDLAsset] = [:]
+    /// A dictionary containing local temporary URLs for library names / assets which have already been copied to local storage
+    var urlLibrary                  : [String: URL] = [:]
 
+    
     override init() {
 
         project = CarthageProject()
@@ -101,7 +105,15 @@ class CarthageModel: NSObject, ObservableObject {
     }
     
     /// Gets the url for an library item, i.e. saves the data to a temporary file and returns the URL
-    func getLibraryURL(_ name: String) -> URL? {
+    func getLibraryURL(_ libraryName: String) -> URL? {
+        
+        // If the url for the given library name already exists, return it
+        if let url = urlLibrary[libraryName] {
+            return url
+        }
+        
+        // Otherwise copy the data from the library asset to a temporary file so that i can be loaded via the url
+        // As SceneKit and RealityKit mostly load 3D assets via URLs 
         
         var rc : URL? = nil
         
@@ -116,7 +128,7 @@ class CarthageModel: NSObject, ObservableObject {
                 return
             }
 
-            if objectName == name {
+            if objectName == libraryName {
                 
                 if var url = getTempURL() {
                     url.appendPathExtension(ca.ext!)
@@ -134,19 +146,6 @@ class CarthageModel: NSObject, ObservableObject {
         }
         
         return rc
-    }
-    
-    /// Returns an MDLAsset for the given asset name
-    func getMDLAsset(forName: String) -> MDLAsset? {
-        if let asset = mdlLibrary[forName] {
-            return asset
-        }
-        
-        if let url = getLibraryURL(forName) {
-            mdlLibrary[forName] = MDLAsset(url: url)
-        }
-        
-        return mdlLibrary[forName]
     }
     
     /// Gets the URL for a temporary file name

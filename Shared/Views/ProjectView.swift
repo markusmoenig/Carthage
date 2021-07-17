@@ -61,7 +61,7 @@ struct ProjectView: View {
                     })
                 }
                 label: {
-                    Label("Add Asset", systemImage: "plus")
+                    Label("Add Model", systemImage: "plus")
                 }
                 .menuStyle(BorderlessButtonMenuStyle())
                 .padding(.leading, 10)

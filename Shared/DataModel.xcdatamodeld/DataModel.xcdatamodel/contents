@@ -6,8 +6,9 @@
         <attribute name="icon" optional="YES" attributeType="Binary"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="tags" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>
-        <element name="LibraryEntity" positionX="-63" positionY="-18" width="128" height="104"/>
+        <element name="LibraryEntity" positionX="-63" positionY="-18" width="128" height="119"/>
     </elements>
 </model>

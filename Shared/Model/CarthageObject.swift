@@ -41,7 +41,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     var code            : String = ""
 
     /// The name of the referenced asset in the library
-    var assetName       : String = ""
+    var libraryName     : String = ""
 
     /// The optional JavaScript context for this object. Only scene objects always have a JS context, for other objects the
     /// user has to enable them in the object settings.
@@ -61,15 +61,15 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case children
         case dataGroups
         case code
-        case assetName
+        case libraryName
     }
     
-    init(type: CarthageObjectType, name: String = "Unnamed", proceduralType: CarthageProceduralObjectType = .Plane, assetName: String = "")
+    init(type: CarthageObjectType, name: String = "Unnamed", proceduralType: CarthageProceduralObjectType = .Plane, libraryName: String = "")
     {
         self.type = type
         self.proceduralType = proceduralType
         self.name = name
-        self.assetName = name
+        self.libraryName = name
         
         dataGroups = CarthageDataGroups()
         
@@ -119,9 +119,9 @@ class CarthageObject : Codable, Hashable, Identifiable {
             }
             
             dataGroups.addGroup("Material", CarthageData([
-                CarthageDataEntity("Color", float3(0.5,0.5,0.5), float2(0, 1)),
-                CarthageDataEntity("Metallic", Float(0), float2(0, 1), .Slider),
-                CarthageDataEntity("Roughness", Float(0.5 ), float2(0, 1), .Slider),
+                CarthageDataEntity("Color", float3(0.5,0.5,0.5), float2(0, 1), .Color, .Texture),
+                CarthageDataEntity("Metallic", Float(0), float2(0, 1), .Slider, .Texture),
+                CarthageDataEntity("Roughness", Float(0.5 ), float2(0, 1), .Slider, .Texture),
             ]))
         }
         
@@ -140,7 +140,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         children = try container.decode([CarthageObject]?.self, forKey: .children)
         dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
         code = try container.decode(String.self, forKey: .code)
-        assetName = try container.decode(String.self, forKey: .assetName)
+        libraryName = try container.decode(String.self, forKey: .libraryName)
     }
     
     func encode(to encoder: Encoder) throws
@@ -153,7 +153,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         try container.encode(children, forKey: .children)
         try container.encode(dataGroups, forKey: .dataGroups)
         try container.encode(code, forKey: .code)
-        try container.encode(assetName, forKey: .assetName)
+        try container.encode(libraryName, forKey: .libraryName)
     }
     
     static func ==(lhs: CarthageObject, rhs: CarthageObject) -> Bool {

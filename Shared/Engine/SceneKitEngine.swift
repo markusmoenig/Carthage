@@ -18,9 +18,11 @@ typealias SCNFloat = Float
 
 class SceneKitEntity : CarthageEntity {
     
+    var scene           : SceneKitScene
     var node            : SCNNode
         
-    init(object: CarthageObject, node: SCNNode? = nil) {
+    init(scene: SceneKitScene, object: CarthageObject, node: SCNNode? = nil) {
+        self.scene = scene
         
         if let node = node {
             self.node = node
@@ -98,14 +100,28 @@ class SceneKitEntity : CarthageEntity {
             if let materialData = object.dataGroups.getGroup("Material") {
                 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
-                let metallic = materialData.getFloat("Metallic", 0)
-                let roughness = materialData.getFloat("Roughness", 0.5)
-
+                
                 let material = SCNMaterial()
                 material.lightingModel = .physicallyBased
-                material.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
-                material.metalness.contents = SCNFloat(metallic)
-                material.roughness.contents = SCNFloat(roughness)
+                
+                if let url = scene.getUrl(data: materialData, key: "Color") {
+                    material.diffuse.contents = url
+                } else {
+                    material.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                }
+                
+                if let url = scene.getUrl(data: materialData, key: "Metallic") {
+                    material.metalness.contents = url
+                } else {
+                    material.metalness.contents = SCNFloat(materialData.getFloat("Metallic", 0))
+                }
+                
+                if let url = scene.getUrl(data: materialData, key: "Roughness") {
+                    material.roughness.contents = url
+                } else {
+                    material.roughness.contents = SCNFloat(materialData.getFloat("Roughness", 0.5))
+                }
+                
                 node.geometry?.materials = [material]
             }
         }
@@ -184,23 +200,22 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         //constraint.isGimbalLockEnabled = true
         //cameraNode.constraints = [constraint]
         
-        sceneObject.entity = SceneKitEntity(object: sceneObject, node: scene!.rootNode)
-        
-        super.init(model: model, sceneObject: sceneObject)        
+        super.init(model: model, sceneObject: sceneObject)
+        sceneObject.entity = SceneKitEntity(scene: self, object: sceneObject, node: scene!.rootNode)
     }
     
     /// Adds the given object to it's parent.
     override func addObject(object: CarthageObject) {
         
         if object.type == .Geometry {
-            if let url = model.getLibraryURL(object.assetName) {
+            if let url = model.getLibraryURL(object.libraryName) {
                 let node = SCNReferenceNode(url: url)
                 node?.load()
-                let entity = SceneKitEntity(object: object, node: node)
+                let entity = SceneKitEntity(scene: self, object: object, node: node)
                 object.entity = entity
             }
         } else {
-            let entity = SceneKitEntity(object: object)
+            let entity = SceneKitEntity(scene: self, object: object)
             object.entity = entity
             
             if object.type == .Camera {

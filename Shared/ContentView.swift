@@ -20,6 +20,8 @@ struct ContentView: View {
     
     @State var isPlaying                : Bool = false
     
+    @State private var searchText       = ""
+    
     var body: some View {
         
         GeometryReader { geometry in
@@ -119,6 +121,56 @@ struct ContentView: View {
             }
         })
         
+        // Library search
+        .searchable(text: $searchText) {
+            ForEach(searchResults, id: \.self) { result in
+                Text("\(result)").searchCompletion(result)
+            }
+        }
+    }
+    
+    /// Supplies the search results in the library for the current search text
+    var searchResults: [String] {
+        var tags : [String] = []
+        var names : [String] = []
+
+        let request = LibraryEntity.fetchRequest()
+        
+        let managedObjectContext = PersistenceController.shared.container.viewContext
+        let objects = try! managedObjectContext.fetch(request)
+
+        objects.forEach { ca in
+            
+            guard let tag = ca.tags else {
+                return
+            }
+            
+            guard let name = ca.name else {
+                return
+            }
+            
+            tags.append(tag)
+            names.append(name)
+        }
+        
+        if searchText.isEmpty {
+            document.model.searchResultsChanged.send(names)
+            return []//names
+        } else {
+            //return names.filter { $0.contains(searchText) }
+            var results : [String] = []
+
+            let text = searchText.lowercased()
+            
+            for (index, name) in names.enumerated() {
+                if tags[index].lowercased().contains(text) {
+                    results.append(name)
+                }
+            }
+            
+            document.model.searchResultsChanged.send(results)
+            return []//results
+        }
     }
 }
 

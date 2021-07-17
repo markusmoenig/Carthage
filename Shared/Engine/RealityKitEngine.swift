@@ -169,7 +169,7 @@ class RealityKitScene: CarthageScene {
         
         if object.type == .Geometry {
            
-            if let url = model.getLibraryURL(object.assetName) {
+            if let url = model.getLibraryURL(object.libraryName) {
                 let modelEntity = try? Entity.load(contentsOf: url)
                 let entity = RealityKitEntity(object: object, entity: modelEntity)
                 object.entity = entity
