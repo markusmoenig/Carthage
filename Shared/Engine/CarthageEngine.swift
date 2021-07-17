@@ -109,6 +109,22 @@ import JavaScriptCore
         return 5
     }
     
+    /*
+    let require: @convention(block) (String) -> () = { input in
+        print("require", input)
+    }*/
+    
+    func require(_ object: CarthageObject,_ module: String) {
+        guard let path = Bundle.main.path(forResource: module, ofType: "js", inDirectory: "Files/jslibs") else {
+            return
+        }
+        
+        if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+            object.jsContext?.evaluateScript(value)
+        }
+    }
+
+    
     let printConsole: @convention(block) (String) -> () = { input in
         DispatchQueue.main.async {
             gModel?.logText.append(input + "\n")
@@ -150,23 +166,28 @@ import JavaScriptCore
                     }
                 }
             }
-                        
+                                    
             //object.jsContext?.setObject(CarthageScene.self, forKeyedSubscript: "Scene" as NSString)
             //object.jsContext?.setObject(CarthageObject.self, forKeyedSubscript: "Object" as NSString)
 
             object.jsContext?.setObject(unsafeBitCast(self, to: AnyObject.self), forKeyedSubscript: "scene" as NSString)
             object.jsContext?.setObject(unsafeBitCast(object.entity, to: AnyObject.self), forKeyedSubscript: "object" as NSString)
             
-            object.jsContext?.evaluateScript(object.code)
-
+            object.jsContext?.setObject(require, forKeyedSubscript: "require" as NSString)
             object.jsContext?.setObject(printConsole, forKeyedSubscript: "print" as NSString)
             object.jsContext?.setObject(printConsole, forKeyedSubscript: "console" as NSString)
+
+            require(object, "matrix")
+
+            object.jsContext?.evaluateScript(object.code)
 
             jsObjects.append(object)
         }
         
         let children = sceneObject.collectChildren()
         
+        setupJS(sceneObject)
+
         for c in children {
             setupJS(c)
         }
@@ -190,7 +211,10 @@ import JavaScriptCore
     func tick(_ time: Double)
     {
         for o in jsObjects {
-            o.jsContext?.evaluateScript("tick(\(time))")
+            
+            if o.jsContext?.objectForKeyedSubscript("tick").isUndefined == false {
+                o.jsContext?.evaluateScript("tick(\(time))")
+            }
         }
     }
 }

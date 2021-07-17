@@ -298,6 +298,7 @@ struct BrowserView: View {
                 }
             }
         }
+        .animation(.default)
     }
     
     /// Loads an url into a Data
