@@ -46,9 +46,9 @@ class RealityKitEntity : CarthageEntity {
         }
     }
     
-    override func updateFromModel()
+    override func updateFromModel(groupName: String = "")
     {
-        if let transform = object.dataGroups.getGroup("Transform") {
+        if let transform = object.dataGroups.getGroup("Transform"), groupName == "Transform" || groupName.isEmpty {
             let rotation = transform.getFloat3("Rotation")
             entity.transform = Transform()
             entity.transform.translation = transform.getFloat3("Position")
@@ -61,7 +61,7 @@ class RealityKitEntity : CarthageEntity {
         if object.type == .Procedural {
             
             var material = PhysicallyBasedMaterial()
-            if let materialData = object.dataGroups.getGroup("Material") {
+            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName.isEmpty  {
                 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 
@@ -91,9 +91,14 @@ class RealityKitEntity : CarthageEntity {
                 } else {
                     material.metallic.scale = materialData.getFloat("Metallic", 0)
                 }
+                
+                // If we only update the material group we need to set the new material to the model
+                if let modelEntity = entity as? ModelEntity, groupName == "Material" {
+                    modelEntity.model?.materials = [material]
+                }
             }
             
-            if let procedural = object.dataGroups.getGroup("Procedural") {
+            if let procedural = object.dataGroups.getGroup("Procedural"), groupName == "Procedural" || groupName.isEmpty  {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
@@ -120,7 +125,7 @@ class RealityKitEntity : CarthageEntity {
             }
         }
         
-        if let camera = object.dataGroups.getGroup("Camera") {
+        if let camera = object.dataGroups.getGroup("Camera"), groupName == "Camera" || groupName.isEmpty  {
             let position = camera.getFloat3("Position")
             let lookAt = camera.getFloat3("Look At")
             

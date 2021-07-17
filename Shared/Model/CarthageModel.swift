@@ -75,10 +75,10 @@ class CarthageModel: NSObject, ObservableObject {
     }
     
     /// Updates the engine entity of the currently selected object, i.e. applies changes in the UI to the rendering engine.
-    func updateSelected() {
+    func updateSelectedGroup(groupName: String = "") {
         if let selected = selected {
             if let entity = selected.entity {
-                entity.updateFromModel()
+                entity.updateFromModel(groupName: groupName)
             }
         }
     }

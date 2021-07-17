@@ -57,9 +57,13 @@ class SceneKitEntity : CarthageEntity {
         }
     }
      
-    override func updateFromModel()
+    override func updateFromModel(groupName: String = "")
     {
-        if let transform = object.dataGroups.getGroup("Transform") {
+        print("updateFromModel", groupName)
+        
+        if let transform = object.dataGroups.getGroup("Transform"), groupName == "Transform" || groupName.isEmpty {
+            print("updating Transform")
+
             let position = transform.getFloat3("Position")
             node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
             
@@ -72,7 +76,8 @@ class SceneKitEntity : CarthageEntity {
         
         if object.type == .Procedural {
                         
-            if let procedural = object.dataGroups.getGroup("Procedural") {
+            if let procedural = object.dataGroups.getGroup("Procedural"), groupName == "Procedural" || groupName.isEmpty  {
+                print("updating procedural")
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
@@ -97,8 +102,9 @@ class SceneKitEntity : CarthageEntity {
                 }
             }
             
-            if let materialData = object.dataGroups.getGroup("Material") {
+            if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName.isEmpty {
                 
+                print("updating material")
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 
                 let material = SCNMaterial()
@@ -126,7 +132,7 @@ class SceneKitEntity : CarthageEntity {
             }
         }
         
-        if let camera = object.dataGroups.getGroup("Camera") {
+        if let camera = object.dataGroups.getGroup("Camera"), groupName == "Camera" || groupName.isEmpty  {
             let position = camera.getFloat3("Position")
             let lookAt = camera.getFloat3("Look At")
             

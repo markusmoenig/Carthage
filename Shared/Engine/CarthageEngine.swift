@@ -29,7 +29,7 @@ import JavaScriptCore
     }
     
     /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.
-    func updateFromModel()
+    func updateFromModel(groupName: String = "")
     {
     }
     

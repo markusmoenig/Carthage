@@ -64,7 +64,7 @@ struct SideGeometryView: View {
                 
                 if mode == .parameters {
                     if let translationData = selected.dataGroups.getGroup("Transform") {
-                        DataView(model: document.model, data: translationData)
+                        DataView(model: document.model, name: "Transform", data: translationData)
                     }
                 }
                 

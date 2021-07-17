@@ -340,11 +340,25 @@ class CarthageDataGroups: Codable {
         try container.encode(groups, forKey: .groups)
     }
     
+    /// Returns the group of the given name
     func getGroup(_ name: String) -> CarthageData? {
         return groups[name]
     }
     
+    /// Adds a named data class to the groups
     func addGroup(_ name: String,_ data: CarthageData) {
         groups[name] = data
+    }
+    
+    /// Returns the name of the given data group
+    func getName(of: CarthageData) -> String {
+        
+        for (name, d) in groups {
+            if d === of {
+                return name
+            }
+        }
+        
+        return ""
     }
 }

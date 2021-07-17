@@ -11,6 +11,7 @@ import SwiftUI
 struct DataFloatSliderView: View {
     
     let model                               : CarthageModel
+    let groupName                           : String
 
     var value                               : Binding<Float>
     var valueText                           : Binding<String>
@@ -22,9 +23,10 @@ struct DataFloatSliderView: View {
     
     @State var color                        : Color
 
-    init(_ model: CarthageModel,_ value :Binding<Float>,_ valueText :Binding<String>,_ range: Binding<float2>,_ color: Color = Color.accentColor,_ factor: CGFloat = 1)
+    init(_ model: CarthageModel,_ name : String,_ value :Binding<Float>,_ valueText :Binding<String>,_ range: Binding<float2>,_ color: Color = Color.accentColor,_ factor: CGFloat = 1)
     {
         self.model = model
+        self.groupName = name
         self.value = value
         self.valueText = valueText
         self.range = range
@@ -71,7 +73,7 @@ struct DataFloatSliderView: View {
                         value.wrappedValue = newValue
                         valueText.wrappedValue = String(format: "%.02f",  newValue)
                         
-                        model.updateSelected()
+                        model.updateSelectedGroup(groupName: groupName)
                     })
                     .onEnded({ info in
                     })
@@ -96,6 +98,7 @@ struct DataFloatSliderView: View {
 struct DataEntityView: View {
     
     let model                               : CarthageModel
+    let groupName                           : String
     let entity                              : CarthageDataEntity
     
     // For Sliders
@@ -121,9 +124,10 @@ struct DataEntityView: View {
     // To Reference Library Assets (Texture Feature)
     @State private var libraryName          = ""
 
-    init(_ model: CarthageModel,_ entity: CarthageDataEntity) {
+    init(_ model: CarthageModel,_ name: String,_ entity: CarthageDataEntity) {
         self.model = model
         self.entity = entity
+        self.groupName = name
         
         _xValue = State(initialValue: entity.value.x)
         _yValue = State(initialValue: entity.value.y)
@@ -184,7 +188,7 @@ struct DataEntityView: View {
                     if entity.usage == .Color {
                         colorValue = Color(red: Double(entity.value.x), green: Double(entity.value.y), blue: Double(entity.value.z))
                     }
-                    model.updateSelected()
+                    model.updateSelectedGroup(groupName: groupName)
                 })
                 {
                     Image(systemName: "x.circle")
@@ -194,12 +198,12 @@ struct DataEntityView: View {
             HStack {
                 if entity.usage == .Slider {
                     HStack {
-                        DataFloatSliderView(model, $xValue, $xText, $valueRange, .red)
+                        DataFloatSliderView(model, groupName, $xValue, $xText, $valueRange, .red)
                         if entity.type == .Float2 || entity.type == .Float3 {
-                            DataFloatSliderView(model, $yValue, $yText, $valueRange, .green)
+                            DataFloatSliderView(model, groupName, $yValue, $yText, $valueRange, .green)
                         }
                         if entity.type == .Float3 {
-                            DataFloatSliderView(model, $zValue, $zText, $valueRange, .blue)
+                            DataFloatSliderView(model, groupName, $zValue, $zText, $valueRange, .blue)
                         }
                     }
                 } else
@@ -213,7 +217,7 @@ struct DataEntityView: View {
                                 entity.value.y = Float(cgColor.components![1])
                                 entity.value.z = Float(cgColor.components![2])
 
-                                model.updateSelected()
+                                model.updateSelectedGroup(groupName: groupName)
                             }
                         }
                 } else
@@ -227,7 +231,7 @@ struct DataEntityView: View {
                                 yText = String(format: "%.02f", entity.value.y)
                                 zText = String(format: "%.02f", entity.value.z)
                             }
-                            model.updateSelected()
+                            model.updateSelectedGroup(groupName: groupName)
                         }
                     })
                         .border(.red)
@@ -242,7 +246,7 @@ struct DataEntityView: View {
                                     xText = String(format: "%.02f", entity.value.x)
                                     zText = String(format: "%.02f", entity.value.z)
                                 }
-                                model.updateSelected()
+                                model.updateSelectedGroup(groupName: groupName)
                             }
                         })
                             .border(.green)
@@ -258,7 +262,7 @@ struct DataEntityView: View {
                                     xText = String(format: "%.02f", entity.value.x)
                                     yText = String(format: "%.02f", entity.value.y)
                                 }
-                                model.updateSelected()
+                                model.updateSelectedGroup(groupName: groupName)
                             }
                         })
                             .border(.blue)
@@ -276,7 +280,7 @@ struct DataEntityView: View {
                     .foregroundColor(Color.secondary)
                 TextField("Name", text: $libraryName, onEditingChanged: { (changed) in
                     entity.text = libraryName
-                    model.updateSelected()
+                    model.updateSelectedGroup(groupName: groupName)
                 })
                 .frame(minWidth: 300)
             }.padding()
@@ -292,7 +296,7 @@ struct DataEntityView: View {
                 yValue = value
                 zValue = value
             }
-            model.updateSelected()
+            model.updateSelectedGroup(groupName: groupName)
         }
         
         .onChange(of: yValue) { value in
@@ -303,7 +307,7 @@ struct DataEntityView: View {
                 xValue = value
                 zValue = value
             }
-            model.updateSelected()
+            model.updateSelectedGroup(groupName: groupName)
         }
         
         .onChange(of: zValue) { value in
@@ -314,7 +318,7 @@ struct DataEntityView: View {
                 xValue = value
                 yValue = value
             }
-            model.updateSelected()
+            model.updateSelectedGroup(groupName: groupName)
         }
         
         //.onReceive(model.updateDataViews) { _ in
@@ -329,6 +333,7 @@ struct DataEntityView: View {
 struct DataView: View {
     
     let model                               : CarthageModel
+    let name                                : String
     let data                                : CarthageData
     
     @State var updateView                   : Bool = false
@@ -338,7 +343,7 @@ struct DataView: View {
             VStack(alignment: .leading, spacing: 8) {
                 
                 ForEach(data.data, id: \.id) { entity in
-                    DataEntityView(model, entity)
+                    DataEntityView(model, name, entity)
                         .padding(2)
                         .padding(.leading, 6)
                         .padding(.trailing, 6)

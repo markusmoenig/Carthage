@@ -81,22 +81,22 @@ struct SideView: View {
                 
                 if mode == .parameters {
                     if let transformData = selected.dataGroups.getGroup("Transform") {
-                        DataView(model: document.model, data: transformData)
+                        DataView(model: document.model, name: "Transform", data: transformData)
                     }
                     if let cameraData = selected.dataGroups.getGroup("Camera") {
-                        DataView(model: document.model, data: cameraData)
+                        DataView(model: document.model, name: "Camera", data: cameraData)
                     }
                     if selected.type == .Procedural {
                         Divider()
                         if let proceduralData = selected.dataGroups.getGroup("Procedural") {
-                            DataView(model: document.model, data: proceduralData)
+                            DataView(model: document.model, name: "Procedural", data: proceduralData)
                         }
                     }
                 }
                 
                 if mode == .materials {
                     if let materialData = selected.dataGroups.getGroup("Material") {
-                        DataView(model: document.model, data: materialData)
+                        DataView(model: document.model, name: "Material", data: materialData)
                     }
                 }
                 
