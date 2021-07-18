@@ -12,9 +12,15 @@ import AppKit
 
 class RealityKitEntity : CarthageEntity {
     
-    var scene              : RealityKitScene
-    var entity             : Entity
+    var scene               : RealityKitScene
+    var entity              : Entity
     
+    // To remember which texture urls we set so we dont update them every time when we update other
+    // material properties (which would be very slow)
+    var textureDict         : [String: String] = [:]
+    
+    var material            : PhysicallyBasedMaterial? = nil
+
     init(scene: RealityKitScene, object: CarthageObject, entity: Entity? = nil) {
         
         self.scene = scene
@@ -60,41 +66,60 @@ class RealityKitEntity : CarthageEntity {
         
         if object.type == .Procedural {
             
-            var material = PhysicallyBasedMaterial()
+            var materialIsNew = false
+            if material == nil {
+                material = PhysicallyBasedMaterial()
+                materialIsNew = true
+            }
+            
             if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural"  || groupName.isEmpty  {
                 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 
-                if let url = scene.getUrl(data: materialData, key: "Color") {
-                    do {
-                        let texture = try TextureResource.load(contentsOf: url)
-                        material.baseColor.texture = PhysicallyBasedMaterial.Texture(texture)
-                    } catch {}
+                var key = "Color"
+                if let url = scene.getUrl(data: materialData, key: key) {
+                    if textureDict[key] != materialData.getText(key) {
+                        do {
+                            let texture = try TextureResource.load(contentsOf: url)
+                            material?.baseColor.texture = PhysicallyBasedMaterial.Texture(texture)
+                            textureDict[key] = materialData.getText(key)
+                        } catch {}
+                    }
                 } else {
-                    material.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    material?.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    textureDict[key] = nil
                 }
                 
+                key = "Roughness"
                 if let url = scene.getUrl(data: materialData, key: "Roughness") {
-                    do {
-                        let texture = try TextureResource.load(contentsOf: url)
-                        material.roughness.texture = PhysicallyBasedMaterial.Texture(texture)
-                    } catch {}
+                    if textureDict[key] != materialData.getText(key) {
+                        do {
+                            let texture = try TextureResource.load(contentsOf: url)
+                            material?.roughness.texture = PhysicallyBasedMaterial.Texture(texture)
+                            textureDict[key] = materialData.getText(key)
+                        } catch {}
+                    }
                 } else {
-                    material.roughness.scale = materialData.getFloat("Roughness", 0.5)
+                    material?.roughness.scale = materialData.getFloat("Roughness", 0.5)
+                    textureDict[key] = materialData.getText(key)
                 }
                 
+                key = "Metallic"
                 if let url = scene.getUrl(data: materialData, key: "Metallic") {
-                    do {
-                        let texture = try TextureResource.load(contentsOf: url)
-                        material.metallic.texture = PhysicallyBasedMaterial.Texture(texture)
-                    } catch {}
+                    if textureDict[key] != materialData.getText(key) {
+                        do {
+                            let texture = try TextureResource.load(contentsOf: url)
+                            material?.metallic.texture = PhysicallyBasedMaterial.Texture(texture)
+                            textureDict[key] = materialData.getText(key)
+                        } catch {}
+                    }
                 } else {
-                    material.metallic.scale = materialData.getFloat("Metallic", 0)
+                    material?.metallic.scale = materialData.getFloat("Metallic", 0)
                 }
                 
                 // If we only update the material group we need to set the new material to the model
                 if let modelEntity = entity as? ModelEntity, groupName == "Material" {
-                    modelEntity.model?.materials = [material]
+                    modelEntity.model?.materials = [material!]
                 }
             }
             
@@ -102,15 +127,15 @@ class RealityKitEntity : CarthageEntity {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
-                    if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [material])
+                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                        modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [material!])
                     }
                 } else
                 if object.proceduralType == .Cube {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
-                    if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [material])
+                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                        modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [material!])
                     }
                 }
                 
@@ -118,8 +143,8 @@ class RealityKitEntity : CarthageEntity {
                     let size = procedural.getFloat2("Size", float2(20,0.1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     
-                    if let modelEntity = entity as? ModelEntity {
-                        modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [material])
+                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                        modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [material!])
                     }
                 }
             }

@@ -20,6 +20,12 @@ class SceneKitEntity : CarthageEntity {
     
     var scene           : SceneKitScene
     var node            : SCNNode
+    
+    var material        : SCNMaterial? = nil
+    
+    // To remember which texture urls we set so we dont update them every time when we update other
+    // material properties (which would be very slow)
+    var textureDict     : [String: String] = [:]
         
     init(scene: SceneKitScene, object: CarthageObject, node: SCNNode? = nil) {
         self.scene = scene
@@ -102,30 +108,52 @@ class SceneKitEntity : CarthageEntity {
             
             if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural" || groupName.isEmpty {
                 
+                var materialIsNew = false
+                if material == nil {
+                    material = SCNMaterial()
+                    materialIsNew = true
+                }
+
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
                 
-                let material = SCNMaterial()
-                material.lightingModel = .physicallyBased
+                material?.lightingModel = .physicallyBased
                 
-                if let url = scene.getUrl(data: materialData, key: "Color") {
-                    material.diffuse.contents = url
+                var key = "Color"
+                if let url = scene.getUrl(data: materialData, key: key) {
+                    if textureDict[key] != materialData.getText(key) {
+                        material?.diffuse.contents = url
+                        textureDict[key] = materialData.getText(key)
+                    }
                 } else {
-                    material.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    material?.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    textureDict[key] = nil
                 }
                 
-                if let url = scene.getUrl(data: materialData, key: "Metallic") {
-                    material.metalness.contents = url
+                key = "Metallic"
+                if let url = scene.getUrl(data: materialData, key: key) {
+                    if textureDict[key] != materialData.getText(key) {
+                        material?.metalness.contents = url
+                        textureDict[key] = materialData.getText(key)
+                    }
                 } else {
-                    material.metalness.contents = SCNFloat(materialData.getFloat("Metallic", 0))
+                    material?.metalness.contents = SCNFloat(materialData.getFloat(key, 0))
+                    textureDict[key] = nil
+                }
+          
+                key = "Roughness"
+                if let url = scene.getUrl(data: materialData, key: key) {
+                    if textureDict[key] != materialData.getText(key) {
+                        material?.roughness.contents = url
+                        textureDict[key] = materialData.getText(key)
+                    }
+                } else {
+                    material?.roughness.contents = SCNFloat(materialData.getFloat(key, 0.5))
+                    textureDict[key] = nil
                 }
                 
-                if let url = scene.getUrl(data: materialData, key: "Roughness") {
-                    material.roughness.contents = url
-                } else {
-                    material.roughness.contents = SCNFloat(materialData.getFloat("Roughness", 0.5))
+                if let material = material, materialIsNew {
+                    node.geometry?.materials = [material]
                 }
-                
-                node.geometry?.materials = [material]
             }
         }
         
