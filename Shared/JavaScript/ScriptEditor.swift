@@ -69,23 +69,46 @@ class ScriptEditor
     
     func createSession(_ object: CarthageObject,_ cb: (()->())? = nil)
     {
-        if object.scriptContext.isEmpty {
-            object.scriptContext = "session" + String(sessions)
-            sessions += 1
+        if object.settingsMode == .javascript {
+            if object.codeContext.isEmpty {
+                object.codeContext = "session" + String(sessions)
+                sessions += 1
+            }
+        } else {
+            if object.dataContext.isEmpty {
+                object.dataContext = "session" + String(sessions)
+                sessions += 1
+            }
         }
 
-        webView.evaluateJavaScript(
-            """
-            var \(object.scriptContext) = ace.createEditSession(`\(object.code)`)
-            editor.setSession(\(object.scriptContext))
-            
-            editor.session.$worker.send("changeOptions", [{asi: true}]);
-
+        var code =
+        """
+        var \(object.settingsMode == .data ? object.dataContext : object.codeContext) = ace.createEditSession(`\(object.settingsMode == .data ? object.json : object.code)`)
+        editor.setSession(\(object.settingsMode == .data ? object.dataContext : object.codeContext))
+                
+        """
+    
+        
+        if object.settingsMode == .data {
+            code.append("""
+            editor.session.setMode("ace/mode/json");
+            """)
+        } else {
+            code.append("""
             editor.session.setMode("ace/mode/javascript");
-            """, completionHandler: { (value, error ) in
-                if let cb = cb {
-                    cb()
-                }
+            """)
+        }
+        
+        code.append("""
+           
+        editor.session.$worker.send("changeOptions", [{asi: true}]);
+
+        """)
+        
+        webView.evaluateJavaScript( code, completionHandler: { (value, error ) in
+            if let cb = cb {
+                cb()
+            }
          })
     }
     
@@ -113,7 +136,7 @@ class ScriptEditor
     {
         webView.evaluateJavaScript(
             """
-            \(object.scriptContext).getValue()
+            \(object.settingsMode == .data ? object.dataContext: object.codeContext).getValue()
             """, completionHandler: { (value, error) in
                 if let value = value as? String {
                     cb(value)
@@ -147,7 +170,7 @@ class ScriptEditor
         func setSession()
         {
             let cmd = """
-            editor.setSession(\(object.scriptContext))
+            editor.setSession(\(object.settingsMode == .data ? object.dataContext : object.codeContext))
             """
             webView.evaluateJavaScript(cmd, completionHandler: { (value, error ) in
             })
@@ -305,7 +328,11 @@ class ScriptEditor
         if let object = model.selected {
             getValue(object, { (value) in
                 
-                object.code = value
+                if object.settingsMode == .data {
+                    object.json = value
+                } else {
+                    object.code = value
+                }
                 
                 /*
                 if let device = self.model.renderer?.device {

@@ -49,8 +49,20 @@ struct SideView: View {
 
                     if selected.type == .Geometry || selected.type == .Procedural || selected.type == .Scene {
                         Button(action: {
+                            mode = .data
+                            selected.settingsMode = mode
+                            document.model.scriptEditor?.setSession(selected)
+                        })
+                        {
+                            Image(systemName: mode == .data ? "square.stack.3d.up.fill" : "square.stack.3d.up")
+                                .imageScale(.large)
+                        }
+                        .buttonStyle(.borderless)
+                        
+                        Button(action: {
                             mode = .javascript
                             selected.settingsMode = mode
+                            document.model.scriptEditor?.setSession(selected)
                         })
                         {
                             Image(systemName: mode == .javascript ? "j.square.fill" : "j.square")
@@ -103,15 +115,15 @@ struct SideView: View {
                     }
                 }
                 
-                if mode == .javascript {
+                if mode == .javascript || mode == .data {
                     WebView(document.model, deviceColorScheme)
                         .onChange(of: deviceColorScheme) { newValue in
                             document.model.scriptEditor?.setTheme(newValue)
                         }
                 }
                 
-                if mode == .settings {
-                }                
+                //if mode == .settings {
+                //}
             }
             
             //Spacer()
@@ -121,7 +133,8 @@ struct SideView: View {
         .onReceive(document.model.objectSelected) { object in
             selected = object
             mode = object.settingsMode
-            object.scriptContext = ""
+            object.codeContext = ""
+            object.dataContext = ""
             document.model.scriptEditor?.setSession(object)
         }
         

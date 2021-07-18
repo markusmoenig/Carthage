@@ -20,7 +20,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     }
     
     enum SettingsMode {
-        case parameters, materials, javascript, settings
+        case parameters, materials, data, javascript, settings, help
     }
     
     var settingsMode    : SettingsMode = .parameters
@@ -38,8 +38,12 @@ class CarthageObject : Codable, Hashable, Identifiable {
 
     var dataGroups      : CarthageDataGroups
 
+    /// The JavaScript code for this object
     var code            : String = ""
 
+    /// The JSON data for this object
+    var json            : String = ""
+    
     /// The name of the referenced asset in the library
     var libraryName     : String = ""
 
@@ -48,8 +52,9 @@ class CarthageObject : Codable, Hashable, Identifiable {
     var jsContext       : JSContext? = nil
     
     /// To identify the editor session in the script editor
-    var scriptContext   = ""
-    
+    var codeContext   = ""
+    var dataContext   = ""
+
     /// The reference to the underlying engine entity implementing this object
     var entity          : CarthageEntity? = nil
     
