@@ -151,11 +151,15 @@ class CarthageDataEntity: Codable, Hashable {
 }
 
 /// A dictionary of CarthageDataEntity's to create a data fault for values which can be keyed over time.
-class CarthageData: Codable {
+class CarthageData: Codable, Hashable {
  
+    var id          = UUID()
+    var name        : String = ""
+    
     var data: [CarthageDataEntity]
     
     private enum CodingKeys: String, CodingKey {
+        case name
         case data
     }
     
@@ -167,12 +171,14 @@ class CarthageData: Codable {
     required init(from decoder: Decoder) throws
     {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
         data = try container.decode([CarthageDataEntity].self, forKey: .data)
     }
     
     func encode(to encoder: Encoder) throws
     {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
         try container.encode(data, forKey: .data)
     }
     
@@ -306,6 +312,14 @@ class CarthageData: Codable {
         return nil
     }
     
+    static func ==(lhs: CarthageData, rhs: CarthageData) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     func debug() {
         print("start debug --- ")
         for e in data {
@@ -347,6 +361,7 @@ class CarthageDataGroups: Codable {
     
     /// Adds a named data class to the groups
     func addGroup(_ name: String,_ data: CarthageData) {
+        data.name = name
         groups[name] = data
     }
     

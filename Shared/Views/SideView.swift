@@ -79,24 +79,27 @@ struct SideView: View {
                 
                 Divider()
                 
-                if mode == .parameters {
-                    if let transformData = selected.dataGroups.getGroup("Transform") {
-                        DataView(model: document.model, name: "Transform", data: transformData)
-                    }
-                    if let cameraData = selected.dataGroups.getGroup("Camera") {
-                        DataView(model: document.model, name: "Camera", data: cameraData)
-                    }
-                    if selected.type == .Procedural {
-                        Divider()
-                        if let proceduralData = selected.dataGroups.getGroup("Procedural") {
-                            DataView(model: document.model, name: "Procedural", data: proceduralData)
+                if mode == .parameters {                    
+                    if selected.type == .Geometry {
+                        if let transformData = selected.dataGroups.getGroup("Transform") {
+                            DataView(model: document.model, data: transformData)
                         }
+                    }
+                    
+                    if selected.type == .Procedural {
+                        if let proceduralData = selected.dataGroups.getGroup("Procedural"), let transformData = selected.dataGroups.getGroup("Transform") {
+                            DataViews(model: document.model, data: [transformData, proceduralData])
+                        }
+                    }
+                    
+                    if let cameraData = selected.dataGroups.getGroup("Camera") {
+                        DataView(model: document.model, data: cameraData)
                     }
                 }
                 
                 if mode == .materials {
                     if let materialData = selected.dataGroups.getGroup("Material") {
-                        DataView(model: document.model, name: "Material", data: materialData)
+                        DataView(model: document.model, data: materialData)
                     }
                 }
                 

@@ -335,11 +335,9 @@ struct DataEntityView: View {
     }
 }
 
-
 struct DataView: View {
     
     let model                               : CarthageModel
-    let name                                : String
     let data                                : CarthageData
     
     @State var updateView                   : Bool = false
@@ -349,10 +347,53 @@ struct DataView: View {
             VStack(alignment: .leading, spacing: 8) {
                 
                 ForEach(data.data, id: \.id) { entity in
-                    DataEntityView(model, name, entity)
+                    DataEntityView(model, data.name, entity)
                         .padding(2)
                         .padding(.leading, 6)
                         .padding(.trailing, 6)
+                }
+            }
+        }
+    }
+}
+
+struct EmbeddedDataView: View {
+    
+    let model                               : CarthageModel
+    let data                                : CarthageData
+    
+    @State var updateView                   : Bool = false
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            
+            ForEach(data.data, id: \.id) { entity in
+                DataEntityView(model, data.name, entity)
+                    .padding(2)
+                    .padding(.leading, 6)
+                    .padding(.trailing, 6)
+            }
+        }
+    }
+}
+
+struct DataViews: View {
+    
+    let model                               : CarthageModel
+    let data                                : [CarthageData]
+    
+    @State var updateView                   : Bool = false
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                
+                ForEach(Array(data.enumerated()), id: \.element.id) { (index,data) in
+                    if index > 0 {
+                        Divider()
+                    }
+                    EmbeddedDataView(model: model, data: data)
+                        .padding(.bottom, 12)
                 }
             }
         }
