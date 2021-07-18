@@ -53,7 +53,7 @@ class RealityKitEntity : CarthageEntity {
     }
     
     override func updateFromModel(groupName: String = "")
-    {
+    {        
         if let transform = object.dataGroups.getGroup("Transform"), groupName == "Transform" || groupName.isEmpty {
             let rotation = transform.getFloat3("Rotation")
             entity.transform = Transform()
@@ -66,10 +66,8 @@ class RealityKitEntity : CarthageEntity {
         
         if object.type == .Procedural {
             
-            var materialIsNew = false
             if material == nil {
                 material = PhysicallyBasedMaterial()
-                materialIsNew = true
             }
             
             if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural"  || groupName.isEmpty  {
@@ -127,14 +125,14 @@ class RealityKitEntity : CarthageEntity {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
-                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                    if let modelEntity = entity as? ModelEntity {
                         modelEntity.model = ModelComponent(mesh: .generateSphere(radius: radius), materials: [material!])
                     }
                 } else
                 if object.proceduralType == .Cube {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
-                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                    if let modelEntity = entity as? ModelEntity {
                         modelEntity.model = ModelComponent(mesh: .generateBox(size: size, cornerRadius: cornerRadius), materials: [material!])
                     }
                 }
@@ -143,7 +141,7 @@ class RealityKitEntity : CarthageEntity {
                     let size = procedural.getFloat2("Size", float2(20,0.1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     
-                    if let modelEntity = entity as? ModelEntity, materialIsNew {
+                    if let modelEntity = entity as? ModelEntity {
                         modelEntity.model = ModelComponent(mesh: .generatePlane(width: size.x, height: size.y, cornerRadius: cornerRadius), materials: [material!])
                     }
                 }

@@ -108,10 +108,8 @@ class SceneKitEntity : CarthageEntity {
             
             if let materialData = object.dataGroups.getGroup("Material"), groupName == "Material" || groupName == "Procedural" || groupName.isEmpty {
                 
-                var materialIsNew = false
                 if material == nil {
                     material = SCNMaterial()
-                    materialIsNew = true
                 }
 
                 let diffuse = materialData.getFloat3("Color", float3(0.5,0.5,0.5))
@@ -151,7 +149,7 @@ class SceneKitEntity : CarthageEntity {
                     textureDict[key] = nil
                 }
                 
-                if let material = material, materialIsNew {
+                if let material = material {
                     node.geometry?.materials = [material]
                 }
             }
