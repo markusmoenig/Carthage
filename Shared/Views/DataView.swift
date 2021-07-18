@@ -295,6 +295,8 @@ struct DataEntityView: View {
                 entity.value.z = value
                 yValue = value
                 zValue = value
+                yText = String(format: "%.02f", entity.value.y)
+                zText = String(format: "%.02f", entity.value.z)
             }
             model.updateSelectedGroup(groupName: groupName)
         }
@@ -306,6 +308,8 @@ struct DataEntityView: View {
                 entity.value.z = value
                 xValue = value
                 zValue = value
+                xText = String(format: "%.02f", entity.value.x)
+                zText = String(format: "%.02f", entity.value.z)
             }
             model.updateSelectedGroup(groupName: groupName)
         }
@@ -317,6 +321,8 @@ struct DataEntityView: View {
                 entity.value.y = value
                 xValue = value
                 yValue = value
+                xText = String(format: "%.02f", entity.value.x)
+                yText = String(format: "%.02f", entity.value.y)
             }
             model.updateSelectedGroup(groupName: groupName)
         }
@@ -348,7 +354,6 @@ struct DataView: View {
                         .padding(.leading, 6)
                         .padding(.trailing, 6)
                 }
-                //Spacer()
             }
         }
     }
