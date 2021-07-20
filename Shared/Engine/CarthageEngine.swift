@@ -9,14 +9,14 @@ import Foundation
 import JavaScriptCore
 
 /// The javascript protocol for object
-@objc protocol CarthageObjectJSExports: JSExport {
+@objc protocol CarthageEntityJSExports: JSExport {
     
-    var position: [String: Double] { get set }
-    var rotation: [String: Double] { get set }
-    var scale: [String: Double] { get set }
+    //var position: [String: Double] { get set }
+    //var rotation: [String: Double] { get set }
+    //var scale: [String: Double] { get set }
 }
 
-@objc class CarthageEntity : NSObject, CarthageObjectJSExports {
+@objc class CarthageEntity : NSObject, CarthageEntityJSExports {
     
     let object          : CarthageObject
     
@@ -28,42 +28,21 @@ import JavaScriptCore
         object.entity = self
     }
     
+    func getPosition() -> float3 {
+        return float3()
+    }
+    
+    func setPosition(_ p: float3) {
+    }
+    
     /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.
     func updateFromModel(groupName: String = "")
     {
-    }
-    
-    /// position property
-    var position: [String: Double]  {
-        get {
-            return [:]
-        }
-        set {            
-        }
-    }
-    
-    /// rotation property
-    var rotation: [String: Double]  {
-        get {
-            return [:]
-        }
-        set {
-        }
-    }
-    
-    /// scale property
-    var scale: [String: Double]  {
-        get {
-            return [:]
-        }
-        set {
-        }
     }
 }
 
 /// The javascript protocol for scenes
 @objc protocol CarthageSceneJSExports: JSExport {
-
 }
 
 @objc class CarthageScene: NSObject, CarthageSceneJSExports {
@@ -109,6 +88,7 @@ import JavaScriptCore
         print("require", input)
     }*/
     
+    
     func require(_ object: CarthageObject,_ module: String) {
         guard let path = Bundle.main.path(forResource: module, ofType: "js", inDirectory: "Files/jslibs") else {
             return
@@ -118,7 +98,11 @@ import JavaScriptCore
             object.jsContext?.evaluateScript(value)
         }
     }
-
+    
+    let applyForce: @convention(block) (String) -> () = { input in
+        let context = JSContext.current()
+        let object = context?.objectForKeyedSubscript("_internal").toObject() as? CarthageScene
+    }
     
     let printConsole: @convention(block) (String) -> () = { input in
         DispatchQueue.main.async {
@@ -155,8 +139,36 @@ import JavaScriptCore
             if object.code.isEmpty { return }
             
             object.jsContext = JSContext()
-                        
-            // Add an exception handler.
+            
+            object.jsContext?.setObject(require, forKeyedSubscript: "require" as NSString)
+            object.jsContext?.setObject(printConsole, forKeyedSubscript: "print" as NSString)
+            object.jsContext?.setObject(printConsole, forKeyedSubscript: "console" as NSString)
+            
+            // Init scene js object
+            object.jsContext?.setObject(CarthageJSScene.self, forKeyedSubscript: "Scene" as NSString)
+            object.jsContext?.setObject(CarthageJSObject.self, forKeyedSubscript: "Object" as NSString)
+            
+            object.jsContext?.setObject(object.entity, forKeyedSubscript: "__si" as NSString)
+            object.jsContext?.evaluateScript("scene = Scene.getInstance();")
+            
+            if object.json.isEmpty == false {
+                object.jsContext?.evaluateScript("scene.data = " + object.json)
+            }
+            
+            if object.type != .Scene {
+                // Init object js object
+
+                object.jsContext?.setObject(object.entity, forKeyedSubscript: "__oi" as NSString)
+                object.jsContext?.evaluateScript("object = Object.getInstance();")
+                
+                if object.json.isEmpty == false {
+                    object.jsContext?.evaluateScript("object.data = " + object.json)
+                }
+            }
+
+            require(object, "matrix")
+
+            // Exception handler.
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
                     if let str = exc.toString() {
@@ -165,25 +177,9 @@ import JavaScriptCore
                     }
                 }
             }
-                                    
-            //object.jsContext?.setObject(CarthageScene.self, forKeyedSubscript: "Scene" as NSString)
-            //object.jsContext?.setObject(CarthageObject.self, forKeyedSubscript: "Object" as NSString)
-
-            object.jsContext?.setObject(unsafeBitCast(self, to: AnyObject.self), forKeyedSubscript: "scene" as NSString)
-            object.jsContext?.setObject(unsafeBitCast(object.entity, to: AnyObject.self), forKeyedSubscript: "object" as NSString)
             
-            object.jsContext?.setObject(require, forKeyedSubscript: "require" as NSString)
-            object.jsContext?.setObject(printConsole, forKeyedSubscript: "print" as NSString)
-            object.jsContext?.setObject(printConsole, forKeyedSubscript: "console" as NSString)
-
-            require(object, "matrix")
-
-            if object.json.isEmpty == false {
-                object.jsContext?.evaluateScript("object.data = " + object.json)
-            }
-
             object.jsContext?.evaluateScript(object.code)
-
+            
             jsObjects.append(object)
         }
         

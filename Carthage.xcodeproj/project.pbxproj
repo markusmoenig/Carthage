@@ -20,6 +20,10 @@
 		2B3C75BF269EC21A00415C14 /* SKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3C75BD269EC21A00415C14 /* SKView.swift */; };
 		2B5951E826A65E1900F685F0 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 2B5951E726A65E1900F685F0 /* images */; };
 		2B5951E926A65E1900F685F0 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 2B5951E726A65E1900F685F0 /* images */; };
+		2B5951EB26A6C7C800F685F0 /* CarthageJSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */; };
+		2B5951EC26A6C7C800F685F0 /* CarthageJSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */; };
+		2B5951EE26A6CA0100F685F0 /* CarthageJSScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5951ED26A6CA0100F685F0 /* CarthageJSScene.swift */; };
+		2B5951EF26A6CA0100F685F0 /* CarthageJSScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5951ED26A6CA0100F685F0 /* CarthageJSScene.swift */; };
 		2B6AABA0269BEBDD001B17DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AAB9F269BEBDD001B17DE /* README.md */; };
 		2B6AABA1269BEBDD001B17DE /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AAB9F269BEBDD001B17DE /* README.md */; };
 		2B6AABA3269BEF97001B17DE /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 2B6AABA2269BEF97001B17DE /* COPYING */; };
@@ -68,6 +72,8 @@
 		2B183B78269D5C3D009B0F82 /* RealityKitEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealityKitEngine.swift; sourceTree = "<group>"; };
 		2B3C75BD269EC21A00415C14 /* SKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SKView.swift; sourceTree = "<group>"; };
 		2B5951E726A65E1900F685F0 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = Shared/images; sourceTree = "<group>"; };
+		2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSObject.swift; sourceTree = "<group>"; };
+		2B5951ED26A6CA0100F685F0 /* CarthageJSScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSScene.swift; sourceTree = "<group>"; };
 		2B6AAB9F269BEBDD001B17DE /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2B6AABA2269BEF97001B17DE /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		2B6AABA6269C0EDA001B17DE /* CarthageEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageEngine.swift; sourceTree = "<group>"; };
@@ -136,6 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				2B6AABAD269C2AAF001B17DE /* ScriptEditor.swift */,
+				2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */,
+				2B5951ED26A6CA0100F685F0 /* CarthageJSScene.swift */,
 			);
 			path = JavaScript;
 			sourceTree = "<group>";
@@ -340,12 +348,14 @@
 				2B183B76269D542C009B0F82 /* RKView.swift in Sources */,
 				2BA40EEE269BBEDB00558C15 /* ProjectView.swift in Sources */,
 				2B183B79269D5C3D009B0F82 /* RealityKitEngine.swift in Sources */,
+				2B5951EE26A6CA0100F685F0 /* CarthageJSScene.swift in Sources */,
 				2B6AABAA269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2B0E2E7A26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF00269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F03269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF7269BC32300558C15 /* CarthageProject.swift in Sources */,
+				2B5951EB26A6C7C800F685F0 /* CarthageJSObject.swift in Sources */,
 				2BD9F28F26A00B7F0066BA08 /* Utilities.swift in Sources */,
 				2BF4CF8B269AD97800337EB6 /* CarthageModel.swift in Sources */,
 			);
@@ -367,12 +377,14 @@
 				2B183B77269D542C009B0F82 /* RKView.swift in Sources */,
 				2BA40EEF269BBEDB00558C15 /* ProjectView.swift in Sources */,
 				2B183B7A269D5C3D009B0F82 /* RealityKitEngine.swift in Sources */,
+				2B5951EF26A6CA0100F685F0 /* CarthageJSScene.swift in Sources */,
 				2B6AABAB269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2B0E2E7B26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF2269BBF8500558C15 /* SideView.swift in Sources */,
 				2BF4CF01269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F04269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF8269BC32300558C15 /* CarthageProject.swift in Sources */,
+				2B5951EC26A6C7C800F685F0 /* CarthageJSObject.swift in Sources */,
 				2BD9F29026A00B7F0066BA08 /* Utilities.swift in Sources */,
 				2BF4CF8C269AD97800337EB6 /* CarthageModel.swift in Sources */,
 			);

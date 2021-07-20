@@ -19,7 +19,7 @@ class CarthageProject: Codable {
     var scenes                              : [CarthageObject] = []
         
     init() {
-        let scene = CarthageObject(type: .Scene, name: "Start Scene")
+        let scene = CarthageObject(type: .Scene, name: "Scene")
         scene.children = [CarthageObject(type: .Camera, name: "Camera")]
         scene.children?[0].parent = scene
         

@@ -159,6 +159,17 @@ class RealityKitEntity : CarthageEntity {
         }
     }
     
+    override func getPosition() -> float3 {
+        return  float3(Float(entity.transform.translation.x), Float(entity.transform.translation.y), Float(entity.transform.translation.z))
+    }
+    
+    override func setPosition(_ p: float3) {
+        entity.transform.translation.x = p.x
+        entity.transform.translation.y = p.y
+        entity.transform.translation.z = p.z
+    }
+    
+    /*
     override var position: [String: Double]  {
         get {
             return ["x": Double(entity.transform.translation.x), "y": Double(entity.transform.translation.y), "z": Double(entity.transform.translation.z)]
@@ -190,7 +201,7 @@ class RealityKitEntity : CarthageEntity {
             if let y = newValue["y"] { entity.position.y = Float(y) }
             if let z = newValue["z"] { entity.position.z = Float(z) }
         }
-    }
+    }*/
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract

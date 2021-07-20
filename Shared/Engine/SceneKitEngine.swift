@@ -96,6 +96,8 @@ class SceneKitEntity : CarthageEntity {
             //gravityField.isActive = true
             //node.physicsField = gravityField
             
+            node.physicsBody?.physicsShape = nil
+
             node.physicsBody?.mass = 0.125
 
             node.categoryBitMask = downGravityCategory
@@ -116,7 +118,7 @@ class SceneKitEntity : CarthageEntity {
                     
                     let sphereGeometry = SCNSphere(radius: SCNFloat(radius))
                     node.geometry = sphereGeometry
-                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: sphereGeometry)
+                    //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: sphereGeometry)
                 } else
                 if object.proceduralType == .Cube {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
@@ -125,7 +127,7 @@ class SceneKitEntity : CarthageEntity {
                     let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
                     
                     node.geometry = cubeGeometry
-                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: cubeGeometry)
+                    //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: cubeGeometry)
                 } else
                 if object.proceduralType == .Plane {
                     let size = procedural.getFloat2("Size", float2(20,20))
@@ -134,7 +136,7 @@ class SceneKitEntity : CarthageEntity {
                     let planeGeometry = SCNPlane(width: SCNFloat(size.x), height: SCNFloat(size.y))
                     planeGeometry.cornerRadius = SCNFloat(cornerRadius)
                     node.geometry = planeGeometry
-                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: planeGeometry)
+                    //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: planeGeometry)
                 }
             }
             
@@ -185,6 +187,10 @@ class SceneKitEntity : CarthageEntity {
                     node.geometry?.materials = [material]
                 }
             }
+            
+            let b = node.physicsBody
+            node.physicsBody = nil
+            node.physicsBody = b
         }
         
         // Scene Physics (World)
@@ -216,6 +222,17 @@ class SceneKitEntity : CarthageEntity {
         }
     }
     
+    override func getPosition() -> float3 {
+        return  float3(Float(node.position.x), Float(node.position.y), Float(node.position.z))
+    }
+    
+    override func setPosition(_ p: float3) {
+        node.position.x = SCNFloat(p.x)
+        node.position.y = SCNFloat(p.y)
+        node.position.z = SCNFloat(p.z)
+    }
+    
+    /*
     override var position: [String: Double]  {
         get {
             return ["x": Double(node.position.x), "y": Double(node.position.y), "z": Double(node.position.z)]
@@ -247,7 +264,7 @@ class SceneKitEntity : CarthageEntity {
             if let y = newValue["y"] { node.scale.y = SCNFloat(y) }
             if let z = newValue["z"] { node.scale.z = SCNFloat(z) }
         }
-    }
+    }*/
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
