@@ -90,6 +90,35 @@ class CarthageObject : Codable, Hashable, Identifiable {
                 CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
                 CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
             ]))
+            
+            // Default object code
+            if let path = Bundle.main.path(forResource: "object", ofType: "js", inDirectory: "Files/defaults") {
+                if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+                    code = value
+                }
+            }
+            
+            // Default object json
+            if let path = Bundle.main.path(forResource: "object_data", ofType: "js", inDirectory: "Files/defaults") {
+                if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+                    json = value
+                }
+            }
+        } else
+        if type == .Scene {
+            // Default scene json
+            if let path = Bundle.main.path(forResource: "scene_data", ofType: "js", inDirectory: "Files/defaults") {
+                if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+                    json = value
+                }
+            }
+            
+            // Default object code
+            if let path = Bundle.main.path(forResource: "scene", ofType: "js", inDirectory: "Files/defaults") {
+                if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+                    code = value
+                }
+            }
         } else
         if type == .Camera {
             // Init default data types for geometry objects

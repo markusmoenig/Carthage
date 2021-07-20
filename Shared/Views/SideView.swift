@@ -14,6 +14,13 @@ struct SideView: View {
     @Binding var document               : CarthageDocument
 
     @State   var selected               : CarthageObject? = nil
+    
+    @State var test                     = """
+                        **ytes** \n hh?
+                    
+                        * jere
+                        * here22
+                    """
 
     @Environment(\.colorScheme) var deviceColorScheme   : ColorScheme
     
@@ -83,6 +90,15 @@ struct SideView: View {
                         .buttonStyle(.borderless)
                     }
                     
+                    Button(action: {
+                        mode = .help
+                        selected.settingsMode = mode
+                    })
+                    {
+                        Image(systemName: mode == .help ? "questionmark.square.fill" : "questionmark.square")
+                            .imageScale(.large)
+                    }
+                    .buttonStyle(.borderless)
                     
                     Spacer()
                 }
@@ -122,6 +138,11 @@ struct SideView: View {
                         }
                 }
                 
+                if mode == .help {
+                    Text(getHelpText())
+                    Spacer()
+                }
+                
                 //if mode == .settings {
                 //}
             }
@@ -143,22 +164,21 @@ struct SideView: View {
             mode = selected!.settingsMode
         })
         
-        /*
-        VStack(alignment: .leading) {
-            if let selected = selected {
-                
-                /*
-                if selected.type == .Scene {
-                    SideSceneView(document: $document, selected: $selected)
-                } else
-                if selected.type == .Geometry || selected.type == .Procedural {
-                    SideGeometryView(document: $document, selected: $selected)
-                }*/
-            }
-        }
+    }
+    
+    func getHelpText() -> AttributedString {
+        let text = """
+        **Help**
         
-        .onReceive(document.model.objectSelected) { object in
-            selected = object
-        }*/
+        Have to implement help for each object type.
+        
+        """
+        
+        do {
+            let astring = try AttributedString(markdown: text, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))
+            return astring
+        } catch {
+            return "Parsing Error"
+        }
     }
 }

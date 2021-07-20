@@ -178,6 +178,10 @@ import JavaScriptCore
 
             require(object, "matrix")
 
+            if object.json.isEmpty == false {
+                object.jsContext?.evaluateScript("object.data = " + object.json)
+            }
+
             object.jsContext?.evaluateScript(object.code)
 
             jsObjects.append(object)

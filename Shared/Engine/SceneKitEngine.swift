@@ -77,6 +77,35 @@ class SceneKitEntity : CarthageEntity {
             let scale = transform.getFloat3("Scale")
             node.scale = SCNVector3(x: SCNFloat(scale.x), y: SCNFloat(scale.y), z: SCNFloat(scale.z))
         }
+
+        let downGravityCategory = 1 << 0
+
+        // Physics
+        if object.type == .Geometry || object.type == .Procedural {
+
+            node.physicsBody = SCNPhysicsBody()
+            node.physicsBody?.type = .dynamic
+            node.physicsBody?.isAffectedByGravity = true
+
+            // attach the sphere node to the scene's root node
+            //_mySphereNode.categoryBitMask = downGravityCategory
+            //_sceneView.scene!.rootNode.addChildNode(_mySphereNode)
+            
+            //let gravityField = SCNPhysicsField.radialGravity()
+            //gravityField.strength = 750
+            //gravityField.isActive = true
+            //node.physicsField = gravityField
+            
+            node.physicsBody?.mass = 0.125
+
+            node.categoryBitMask = downGravityCategory
+
+            //node.physicsBody?.friction = 0
+            //node.physicsBody?.restitution = 1
+            //node.physicsBody?.angularDamping = 1
+            
+            //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 0.5))
+        }
         
         if object.type == .Procedural {
                         
@@ -87,6 +116,7 @@ class SceneKitEntity : CarthageEntity {
                     
                     let sphereGeometry = SCNSphere(radius: SCNFloat(radius))
                     node.geometry = sphereGeometry
+                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: sphereGeometry)
                 } else
                 if object.proceduralType == .Cube {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
@@ -95,6 +125,7 @@ class SceneKitEntity : CarthageEntity {
                     let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
                     
                     node.geometry = cubeGeometry
+                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: cubeGeometry)
                 } else
                 if object.proceduralType == .Plane {
                     let size = procedural.getFloat2("Size", float2(20,20))
@@ -103,6 +134,7 @@ class SceneKitEntity : CarthageEntity {
                     let planeGeometry = SCNPlane(width: SCNFloat(size.x), height: SCNFloat(size.y))
                     planeGeometry.cornerRadius = SCNFloat(cornerRadius)
                     node.geometry = planeGeometry
+                    node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: planeGeometry)
                 }
             }
             
@@ -155,6 +187,26 @@ class SceneKitEntity : CarthageEntity {
             }
         }
         
+        // Scene Physics (World)
+        if object.type == .Scene {
+
+            if let scene = scene.scene {
+                scene.physicsWorld.gravity = SCNVector3(0.0,-90.8,0.0)
+                scene.physicsWorld.speed = 1.0
+
+                let gravityNode = SCNNode()
+                                                
+                let gravityField = SCNPhysicsField.linearGravity()
+                gravityField.categoryBitMask = downGravityCategory
+                                                gravityField.isActive = true
+                gravityField.strength = 3.0
+                                                gravityField.isExclusive = true
+                                                gravityNode.physicsField = gravityField
+                                                scene.rootNode.addChildNode(gravityNode)
+                //_sceneView.scene!.rootNode.addChildNode(_gravityFieldNode)
+            }
+        }
+            
         if let camera = object.dataGroups.getGroup("Camera"), groupName == "Camera" || groupName.isEmpty  {
             let position = camera.getFloat3("Position")
             let lookAt = camera.getFloat3("Look At")
