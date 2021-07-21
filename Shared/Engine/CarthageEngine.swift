@@ -28,11 +28,19 @@ import JavaScriptCore
         object.entity = self
     }
     
+    /// Get the object position
     func getPosition() -> float3 {
         return float3()
     }
     
+    /// Set the object position
     func setPosition(_ p: float3) {
+    }
+    
+    func addForce(_ direction: float3,_ position: float3) {
+    }
+    
+    func applyImpulse(_ direction: float3,_ position: float3) {
     }
     
     /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.

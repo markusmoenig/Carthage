@@ -112,6 +112,10 @@ struct DataEntityView: View {
     @State private var yText                : String
     @State private var zText                : String
     
+    // For Menus
+    @State private var menuText             : String = ""
+    @State private var menuOptions          : [String] = []
+
     // For Color
     @State private var colorValue           = Color.white
     
@@ -141,6 +145,12 @@ struct DataEntityView: View {
         _colorValue = State(initialValue: Color(red: Double(entity.value.x), green: Double(entity.value.y), blue: Double(entity.value.z)))
         
         _libraryName = State(initialValue: entity.text)
+        
+        if entity.usage == .Menu {
+            _menuOptions = State(initialValue: entity.text.components(separatedBy: ", "))
+            let comp = entity.text.components(separatedBy: ", ")
+            _menuText = State(initialValue: comp[Int(entity.value.x)])
+        }
     }
 
     var body: some View {
@@ -196,6 +206,23 @@ struct DataEntityView: View {
                 .buttonStyle(.borderless)
             }
             HStack {
+                if entity.usage == .Menu {
+                    Menu {
+                        ForEach(menuOptions, id: \.self) { optionName in
+                            Button(optionName, action: {
+                                let options = entity.text.components(separatedBy: ", ")
+                                if let index = options.firstIndex(of: optionName) {
+                                    entity.value.x = Float(index)
+                                    menuText = optionName
+                                }
+                                model.updateSelectedGroup(groupName: groupName)
+                            })
+                        }
+                    }
+                    label: {
+                        Text(menuText)
+                    }
+                } else
                 if entity.usage == .Slider {
                     HStack {
                         DataFloatSliderView(model, groupName, $xValue, $xText, $valueRange, .red)

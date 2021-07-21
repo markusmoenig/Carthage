@@ -14,7 +14,8 @@ import JavaScriptCore
 
     var position: [String: AnyObject] { get set }
 
-    func applyForce() -> String
+    func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
+    func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
 
     static func getInstance() -> CarthageJSObject
 }
@@ -45,12 +46,16 @@ class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
         }
     }
     
-    func applyForce() -> String {
+    func addForce(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
         if let entity = getSelf() {
-            return entity.object.name
+            entity.addForce(toFloat3(direction), toFloat3(position))
         }
-       
-       return ""
+    }
+    
+    func applyImpulse(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
+        if let entity = getSelf() {
+            entity.applyImpulse(toFloat3(direction), toFloat3(position))
+        }
     }
 
     /// Class initializer

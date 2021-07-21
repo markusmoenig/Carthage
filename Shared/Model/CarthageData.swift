@@ -19,7 +19,7 @@ class CarthageDataEntity: Codable, Hashable {
     }
     
     enum UsageType: String, Codable {
-        case Numeric, Slider, Color
+        case Numeric, Slider, Color, Menu
     }
     
     enum Feature: String, Codable {
@@ -53,7 +53,7 @@ class CarthageDataEntity: Codable, Hashable {
         case text
     }
     
-    init(_ key: String,_ v: Int,_ r: float2 = float2(0,1),_ u: UsageType = .Slider,_ f: Feature = .None,_ t: Double? = nil) {
+    init(_ key: String,_ v: Int,_ r: float2 = float2(0,1),_ u: UsageType = .Slider,_ f: Feature = .None,_ te: String = "",_ t: Double? = nil) {
         self.key = key
         type = .Int
         usage = u
@@ -61,6 +61,7 @@ class CarthageDataEntity: Codable, Hashable {
         value = float4(Float(v), 0, 0, 0)
         range = r
         time = t
+        text = te
         
         defaultValue = value
     }
@@ -258,11 +259,11 @@ class CarthageData: Codable, Hashable {
     }
     
     /// Set Int
-    func set(_ key: String,_ value: Int,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Slider,_ feature: CarthageDataEntity.Feature = .None,_ time: Double? = nil) {
+    func set(_ key: String,_ value: Int,_ range: float2 = float2(0,1),_ usage: CarthageDataEntity.UsageType = .Slider,_ feature: CarthageDataEntity.Feature = .None,_ text: String = "",_ time: Double? = nil) {
         if let ex = getExisting(key, .Int, time) {
             ex.value = float4(Float(value), 0, 0, 0)
         } else {
-            data.append(CarthageDataEntity(key, value, range, usage, feature, time))
+            data.append(CarthageDataEntity(key, value, range, usage, feature, text, time))
         }
     }
     

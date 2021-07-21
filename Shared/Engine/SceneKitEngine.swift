@@ -79,35 +79,6 @@ class SceneKitEntity : CarthageEntity {
         }
 
         let downGravityCategory = 1 << 0
-
-        // Physics
-        if object.type == .Geometry || object.type == .Procedural {
-
-            node.physicsBody = SCNPhysicsBody()
-            node.physicsBody?.type = .dynamic
-            node.physicsBody?.isAffectedByGravity = true
-
-            // attach the sphere node to the scene's root node
-            //_mySphereNode.categoryBitMask = downGravityCategory
-            //_sceneView.scene!.rootNode.addChildNode(_mySphereNode)
-            
-            //let gravityField = SCNPhysicsField.radialGravity()
-            //gravityField.strength = 750
-            //gravityField.isActive = true
-            //node.physicsField = gravityField
-            
-            node.physicsBody?.physicsShape = nil
-
-            node.physicsBody?.mass = 0.125
-
-            node.categoryBitMask = downGravityCategory
-
-            //node.physicsBody?.friction = 0
-            //node.physicsBody?.restitution = 1
-            //node.physicsBody?.angularDamping = 1
-            
-            //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 0.5))
-        }
         
         if object.type == .Procedural {
                         
@@ -187,19 +158,19 @@ class SceneKitEntity : CarthageEntity {
                     node.geometry?.materials = [material]
                 }
             }
-            
-            let b = node.physicsBody
-            node.physicsBody = nil
-            node.physicsBody = b
         }
         
         // Scene Physics (World)
         if object.type == .Scene {
 
             if let scene = scene.scene {
-                scene.physicsWorld.gravity = SCNVector3(0.0,-90.8,0.0)
-                scene.physicsWorld.speed = 1.0
+                if let physicsData = object.dataGroups.getGroup("Physics"), groupName == "Physics" || groupName.isEmpty  {
 
+                    scene.physicsWorld.gravity = SCNVector3(physicsData.getFloat3("Gravity"))
+                    scene.physicsWorld.speed = 1.0
+                }
+
+                /*
                 let gravityNode = SCNNode()
                                                 
                 let gravityField = SCNPhysicsField.linearGravity()
@@ -209,6 +180,7 @@ class SceneKitEntity : CarthageEntity {
                                                 gravityField.isExclusive = true
                                                 gravityNode.physicsField = gravityField
                                                 scene.rootNode.addChildNode(gravityNode)
+                 */
                 //_sceneView.scene!.rootNode.addChildNode(_gravityFieldNode)
             }
         }
@@ -219,6 +191,35 @@ class SceneKitEntity : CarthageEntity {
             
             node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
             node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)))
+        }
+        
+        // Physics
+        if object.type == .Geometry || object.type == .Procedural {
+
+            if let physicsData = object.dataGroups.getGroup("Physics"), groupName == "Physics" || groupName.isEmpty  {
+
+                node.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType(rawValue: physicsData.getInt("Type")!)!, shape: nil)
+                //node.physicsBody?.isAffectedByGravity = true
+
+                // attach the sphere node to the scene's root node
+                //_mySphereNode.categoryBitMask = downGravityCategory
+                //_sceneView.scene!.rootNode.addChildNode(_mySphereNode)
+                
+                //let gravityField = SCNPhysicsField.radialGravity()
+                //gravityField.strength = 750
+                //gravityField.isActive = true
+                //node.physicsField = gravityField
+                
+                node.physicsBody?.mass = 0.125
+
+                node.categoryBitMask = downGravityCategory
+
+                //node.physicsBody?.friction = 0
+                //node.physicsBody?.restitution = 1
+                //node.physicsBody?.angularDamping = 1
+                
+                //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: SCNSphere(radius: 0.5))
+            }
         }
     }
     
@@ -232,39 +233,13 @@ class SceneKitEntity : CarthageEntity {
         node.position.z = SCNFloat(p.z)
     }
     
-    /*
-    override var position: [String: Double]  {
-        get {
-            return ["x": Double(node.position.x), "y": Double(node.position.y), "z": Double(node.position.z)]
-        }
-        set {
-            if let x = newValue["x"] { node.position.x = SCNFloat(x) }
-            if let y = newValue["y"] { node.position.y = SCNFloat(y) }
-            if let z = newValue["z"] { node.position.z = SCNFloat(z) }
-        }
+    override func addForce(_ direction: float3,_ position: float3) {
+
     }
     
-    override var rotation: [String: Double]  {
-        get {
-            return ["x": Double(node.rotation.x), "y": Double(node.rotation.y), "z": Double(node.rotation.z)]
-        }
-        set {
-            if let x = newValue["x"] { node.rotation.x = SCNFloat(x) }
-            if let y = newValue["y"] { node.rotation.y = SCNFloat(y) }
-            if let z = newValue["z"] { node.rotation.z = SCNFloat(z) }
-        }
+    override func applyImpulse(_ direction: float3,_ position: float3) {
+        node.physicsBody?.applyForce(SCNVector3(direction), at: SCNVector3(position), asImpulse: true)
     }
-    
-    override var scale: [String: Double]  {
-        get {
-            return ["x": Double(node.scale.x), "y": Double(node.scale.y), "z": Double(node.scale.z)]
-        }
-        set {
-            if let x = newValue["x"] { node.scale.x = SCNFloat(x) }
-            if let y = newValue["y"] { node.scale.y = SCNFloat(y) }
-            if let z = newValue["z"] { node.scale.z = SCNFloat(z) }
-        }
-    }*/
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
@@ -285,7 +260,8 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override init(model: CarthageModel, sceneObject: CarthageObject)
     {
         scene = SCNScene()
-        
+        scene?.isPaused = true
+
         /*
         let light = SCNLight()
         light.type = SCNLight.LightType.omni
@@ -327,6 +303,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     /// Sets the view
     func setView(_ sceneView: SCNView) {
         view = sceneView
+        view?.isPlaying = false
         sceneView.autoenablesDefaultLighting = true
         if let skView = sceneView as? SKInpuView {
             skView.carthageScene = self
@@ -336,12 +313,14 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override func play()
     {
         super.play()
+        scene?.isPaused = false
         view?.isPlaying = true
     }
     
     override func stop()
     {
         super.stop()
+        scene?.isPaused = true
         view?.isPlaying = false
     }
     

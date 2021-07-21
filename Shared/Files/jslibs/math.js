@@ -1249,10 +1249,11 @@ CT.Math.Vector2.Up = new CT.Math.Vector2(1, 0);
 
 CT.Math.Vector3=function(x, y, z)
 {
+    if (!(this instanceof CT.Math.Vector3)) return new CT.Math.Vector3(x, y, z);
+
     this.x = x ? x : 0.0;
     this.y = y ? y : 0.0;
     this.z = z ? z : 0.0;
-
 };
 
 /** Sets the vector values directly

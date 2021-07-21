@@ -20,7 +20,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     }
     
     enum SettingsMode {
-        case parameters, materials, data, javascript, settings, help
+        case parameters, materials, physics, data, javascript, settings, help
     }
     
     var settingsMode    : SettingsMode = .parameters
@@ -80,6 +80,10 @@ class CarthageObject : Codable, Hashable, Identifiable {
         
         if type == .Scene {
             settingsMode = .javascript
+            
+            dataGroups.addGroup("Physics", CarthageData([
+                CarthageDataEntity("Gravity", float3(0,-9.8,0), float2(-100, 100)),
+            ]))
         }
         
         if type == .Geometry || type == .Procedural {
@@ -89,6 +93,10 @@ class CarthageObject : Codable, Hashable, Identifiable {
                 CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
                 CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
                 CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
+            ]))
+            
+            dataGroups.addGroup("Physics", CarthageData([
+                CarthageDataEntity("Type", Int(0), float2(0, 3), .Menu, .None, "Static, Dynamic, Kinematic"),
             ]))
             
             // Default object code

@@ -14,13 +14,6 @@ struct SideView: View {
     @Binding var document               : CarthageDocument
 
     @State   var selected               : CarthageObject? = nil
-    
-    @State var test                     = """
-                        **ytes** \n hh?
-                    
-                        * jere
-                        * here22
-                    """
 
     @Environment(\.colorScheme) var deviceColorScheme   : ColorScheme
     
@@ -55,6 +48,17 @@ struct SideView: View {
                     }
 
                     if selected.type == .Geometry || selected.type == .Procedural || selected.type == .Scene {
+                        
+                        Button(action: {
+                            mode = .physics
+                            selected.settingsMode = mode
+                        })
+                        {
+                            Image(systemName: mode == .physics ? "paperplane.fill" : "paperplane")
+                                .imageScale(.large)
+                        }
+                        .buttonStyle(.borderless)
+                        
                         Button(action: {
                             mode = .data
                             selected.settingsMode = mode
@@ -128,6 +132,12 @@ struct SideView: View {
                 if mode == .materials {
                     if let materialData = selected.dataGroups.getGroup("Material") {
                         DataView(model: document.model, data: materialData)
+                    }
+                }
+                
+                if mode == .physics {
+                    if let physicsData = selected.dataGroups.getGroup("Physics") {
+                        DataView(model: document.model, data: physicsData)
                     }
                 }
                 
