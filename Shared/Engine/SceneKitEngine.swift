@@ -77,8 +77,6 @@ class SceneKitEntity : CarthageEntity {
             let scale = transform.getFloat3("Scale")
             node.scale = SCNVector3(x: SCNFloat(scale.x), y: SCNFloat(scale.y), z: SCNFloat(scale.z))
         }
-
-        let downGravityCategory = 1 << 0
         
         if object.type == .Procedural {
                         
@@ -172,7 +170,8 @@ class SceneKitEntity : CarthageEntity {
 
                 /*
                 let gravityNode = SCNNode()
-                                                
+                 let downGravityCategory = 1 << 0
+
                 let gravityField = SCNPhysicsField.linearGravity()
                 gravityField.categoryBitMask = downGravityCategory
                                                 gravityField.isActive = true
@@ -198,8 +197,11 @@ class SceneKitEntity : CarthageEntity {
 
             if let physicsData = object.dataGroups.getGroup("Physics"), groupName == "Physics" || groupName.isEmpty  {
 
-                node.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType(rawValue: physicsData.getInt("Type")!)!, shape: nil)
-                //node.physicsBody?.isAffectedByGravity = true
+                let type = physicsData.getInt("Type", 0)
+                node.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType(rawValue: type)!, shape: nil)
+                if type == 0 {
+                    node.physicsBody?.isAffectedByGravity = false
+                }
 
                 // attach the sphere node to the scene's root node
                 //_mySphereNode.categoryBitMask = downGravityCategory
@@ -212,7 +214,7 @@ class SceneKitEntity : CarthageEntity {
                 
                 node.physicsBody?.mass = 0.125
 
-                node.categoryBitMask = downGravityCategory
+                //node.categoryBitMask = downGravityCategory
 
                 //node.physicsBody?.friction = 0
                 //node.physicsBody?.restitution = 1

@@ -184,14 +184,14 @@ class CarthageData: Codable, Hashable {
     }
     
     /// Get an Int key
-    func getInt(_ key: String,_ time: Double? = nil) -> Int? {
+    func getInt(_ key: String,_ defaultValue: Int = 0,_ time: Double? = nil) -> Int {
         for e in data {
             if e.key == key && e.type == .Int && e.time == time {
                 return Int(e.value.x)
             }
         }
         // TODO: Interpolate between existing values
-        return nil
+        return defaultValue
     }
     
     /// Get an Float key
