@@ -12,7 +12,7 @@ import JavaScriptCore
     
     var name: String { get }
 
-    var position: [String: Double] { get set }
+    var position: [String: AnyObject] { get set }
 
     func applyForce() -> String
 
@@ -31,21 +31,16 @@ class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
         }
     }
     
-    var position: [String: Double]  {
-        get {
+    var position: [String: AnyObject]  {
+        get {            
             if let entity = getSelf() {
-                let p = entity.getPosition()
-                return ["x": Double(p.x), "y": Double(p.y), "z": Double(p.z)]
+                return fromFloat3(entity.getPosition())
             }
             return [:]
         }
         set {
             if let entity = getSelf() {
-                var p = float3(0,0,0)
-                if let x = newValue["x"] { p.x = Float(x) }
-                if let y = newValue["y"] { p.x = Float(y) }
-                if let z = newValue["z"] { p.x = Float(z) }
-                entity.setPosition(p)
+                entity.setPosition(toFloat3(newValue))
             }
         }
     }
@@ -70,5 +65,33 @@ class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
             return entity
         }
         return nil
+    }
+    
+    /// Converts a JSValue to Float
+    func toFloat(_ o: AnyObject) -> Float {
+        var v : Float = 0
+        if let value = JSValue(object: o, in: JSContext.current()) {
+            v = Float(value.toDouble())
+        }
+        return v
+    }
+    
+    /// Converts a JSValue to float3
+    func toFloat3(_ o: [String: AnyObject]) -> float3 {
+        var p = float3(0,0,0)
+        if let x = o["x"] { p.x = toFloat(x) }
+        if let y = o["y"] { p.y = toFloat(y) }
+        if let z = o["z"] { p.z = toFloat(z) }
+        return p
+    }
+    
+    /// Float to JSValue
+    func fromFloat(_ v: Float) -> JSValue {
+        return JSValue(double: Double(v), in: JSContext.current())
+    }
+    
+    /// float3 to JSValue
+    func fromFloat3(_ p: float3) -> [String:JSValue] {
+        return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z)]
     }
 }

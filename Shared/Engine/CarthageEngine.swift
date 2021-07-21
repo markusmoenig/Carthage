@@ -49,11 +49,19 @@ import JavaScriptCore
     
     let model           : CarthageModel
     let sceneObject     : CarthageObject
-    
-    var jsObjects       : [CarthageObject] = []
-    
+        
     var isPlaying       : Bool = false
-            
+    
+
+    /// All js enabled objects of the scene
+    var jsObjects       : [CarthageObject] = []
+    /// All objects who needs to be send a tick each frame
+    var tickObjects     : [CarthageObject] = []
+    /// All objects who needs to be send keyDown events
+    var keyDownObjects  : [CarthageObject] = []
+    /// All objects who needs to be send keyUp events
+    var keyUpObjects  : [CarthageObject] = []
+    
     /// Initialize the engine
     init(model: CarthageModel, sceneObject: CarthageObject)
     {
@@ -134,7 +142,12 @@ import JavaScriptCore
         model.logChanged.send()
         
         isPlaying = true
+        
         jsObjects = []
+        tickObjects = []
+        keyDownObjects = []
+        keyUpObjects = []
+
         func setupJS(_ object: CarthageObject) {
             if object.code.isEmpty { return }
             
@@ -166,8 +179,6 @@ import JavaScriptCore
                 }
             }
 
-            require(object, "matrix")
-
             // Exception handler.
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
@@ -178,7 +189,22 @@ import JavaScriptCore
                 }
             }
             
+            require(object, "math")
+
             object.jsContext?.evaluateScript(object.code)
+            
+            // Collect the objects who need callbacks
+            if object.jsContext?.objectForKeyedSubscript("tick").isUndefined == false {
+                tickObjects.append(object)
+            }
+            
+            if object.jsContext?.objectForKeyedSubscript("keyDown").isUndefined == false {
+                keyDownObjects.append(object)
+            }
+            
+            if object.jsContext?.objectForKeyedSubscript("keyUp").isUndefined == false {
+                keyUpObjects.append(object)
+            }
             
             jsObjects.append(object)
         }
@@ -201,16 +227,30 @@ import JavaScriptCore
             c.jsContext = nil
             c.entity?.updateFromModel()
         }
+        
+        for o in jsObjects {
+            o.jsContext = nil
+        }
     }
     
     /// The game loop, call the tick functions of the js contexts who signed up for this
     func tick(_ time: Double)
     {
-        for o in jsObjects {
-            
-            if o.jsContext?.objectForKeyedSubscript("tick").isUndefined == false {
-                o.jsContext?.evaluateScript("tick(\(time))")
-            }
+        // Send a tick to each object who supports it
+        for o in tickObjects {
+            o.jsContext?.evaluateScript("tick(\(time))")
+        }
+    }
+    
+    func keyDown(_ key: String) {
+        for o in keyDownObjects {
+            o.jsContext?.evaluateScript("keyDown(`\(key)`)")
+        }
+    }
+    
+    func keyUp(_ key: String) {
+        for o in keyUpObjects {
+            o.jsContext?.evaluateScript("keyUp(`\(key)`)")
         }
     }
 }

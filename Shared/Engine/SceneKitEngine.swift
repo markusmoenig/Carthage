@@ -285,7 +285,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override init(model: CarthageModel, sceneObject: CarthageObject)
     {
         scene = SCNScene()
-
+        
         /*
         let light = SCNLight()
         light.type = SCNLight.LightType.omni
@@ -324,9 +324,13 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
         }
     }
     
+    /// Sets the view
     func setView(_ sceneView: SCNView) {
         view = sceneView
         sceneView.autoenablesDefaultLighting = true
+        if let skView = sceneView as? SKInpuView {
+            skView.carthageScene = self
+        }
     }
     
     override func play()
