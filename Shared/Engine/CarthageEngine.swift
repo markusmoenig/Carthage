@@ -28,6 +28,13 @@ import JavaScriptCore
         object.entity = self
     }
     
+    /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.
+    func updateFromModel(groupName: String = "")
+    {
+    }
+    
+    // PROPERTIES
+    
     /// Get the object position
     func getPosition() -> float3 {
         return float3()
@@ -37,15 +44,19 @@ import JavaScriptCore
     func setPosition(_ p: float3) {
     }
     
+    func getLookAt() -> float3 {
+        return  float3()
+    }
+    
+    func setLookAt(_ lookAt: float3) {
+    }
+    
+    // FUNCTIONS
+    
     func addForce(_ direction: float3,_ position: float3) {
     }
     
     func applyImpulse(_ direction: float3,_ position: float3) {
-    }
-    
-    /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.
-    func updateFromModel(groupName: String = "")
-    {
     }
 }
 
@@ -60,7 +71,6 @@ import JavaScriptCore
         
     var isPlaying       : Bool = false
     
-
     /// All js enabled objects of the scene
     var jsObjects       : [CarthageObject] = []
     /// All objects who needs to be send a tick each frame
@@ -155,6 +165,17 @@ import JavaScriptCore
         tickObjects = []
         keyDownObjects = []
         keyUpObjects = []
+        
+        func getTopLevelObject(_ type: CarthageObject.CarthageObjectType) -> CarthageObject? {
+            for o in sceneObject.children! {
+                if o.type == type {
+                    return o
+                }
+            }
+            return nil
+        }
+        
+        let camera = getTopLevelObject(.Camera)
 
         func setupJS(_ object: CarthageObject) {
             if object.jsCode.isEmpty { return }
@@ -166,14 +187,31 @@ import JavaScriptCore
             object.jsContext?.setObject(printConsole, forKeyedSubscript: "console" as NSString)
             
             // Init scene js object
+            object.jsContext?.setObject(CarthageJSCamera.self, forKeyedSubscript: "Camera" as NSString)
             object.jsContext?.setObject(CarthageJSScene.self, forKeyedSubscript: "Scene" as NSString)
             object.jsContext?.setObject(CarthageJSObject.self, forKeyedSubscript: "Object" as NSString)
             
+            // Exception handler.
+            object.jsContext!.exceptionHandler = { context, exception in
+                if let exc = exception {
+                    if let str = exc.toString() {
+                        gModel?.logText.append("Error in \(object.name): \(str) \n")
+                        gModel?.logChanged.send()
+                    }
+                }
+            }
+            
             object.jsContext?.setObject(object.entity, forKeyedSubscript: "__si" as NSString)
             object.jsContext?.evaluateScript("scene = Scene.getInstance();")
-            
+
             if object.json.isEmpty == false {
                 object.jsContext?.evaluateScript("scene.data = " + object.json)
+            }
+            
+            // Set the camera object into the context
+            if let camera = camera {
+                object.jsContext?.evaluateScript("camera = Camera.getInstance();")
+                object.jsContext?.setObject(camera.entity, forKeyedSubscript: "__ci" as NSString)
             }
             
             if object.type != .Scene {
@@ -184,16 +222,6 @@ import JavaScriptCore
                 
                 if object.json.isEmpty == false {
                     object.jsContext?.evaluateScript("object.data = " + object.json)
-                }
-            }
-
-            // Exception handler.
-            object.jsContext!.exceptionHandler = { context, exception in
-                if let exc = exception {
-                    if let str = exc.toString() {
-                        gModel?.logText.append("Error in \(object.name): \(str) \n")
-                        gModel?.logChanged.send()
-                    }
                 }
             }
             

@@ -235,6 +235,16 @@ class SceneKitEntity : CarthageEntity {
         node.position.z = SCNFloat(p.z)
     }
     
+    override func getLookAt() -> float3 {
+        return  float3(0,0,0)
+    }
+    
+    override func setLookAt(_ lookAt: float3) {
+        if object.type == .Camera {
+            node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)))
+        }
+    }
+    
     override func addForce(_ direction: float3,_ position: float3) {
 
     }

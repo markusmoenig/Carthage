@@ -169,39 +169,11 @@ class RealityKitEntity : CarthageEntity {
         entity.transform.translation.z = p.z
     }
     
-    /*
-    override var position: [String: Double]  {
-        get {
-            return ["x": Double(entity.transform.translation.x), "y": Double(entity.transform.translation.y), "z": Double(entity.transform.translation.z)]
-        }
-        set {
-            if let x = newValue["x"] { entity.transform.translation.x = Float(x) }
-            if let y = newValue["y"] { entity.transform.translation.y = Float(y) }
-            if let z = newValue["z"] { entity.transform.translation.z = Float(z) }
+    override func setLookAt(_ lookAt: float3) {
+        if let perspectiveCam = entity as? PerspectiveCamera {
+            perspectiveCam.look(at: lookAt, from: getPosition(), relativeTo: nil)
         }
     }
-    
-    override var rotation: [String: Double]  {
-        get {
-            return ["x": Double(entity.position.x), "y": Double(entity.position.y), "z": Double(entity.position.z)]
-        }
-        set {
-            if let x = newValue["x"] { entity.position.x = Float(x) }
-            if let y = newValue["y"] { entity.position.y = Float(y) }
-            if let z = newValue["z"] { entity.position.z = Float(z) }
-        }
-    }
-    
-    override var scale: [String: Double]  {
-        get {
-            return ["x": Double(entity.transform.scale.x), "y": Double(entity.transform.scale.y), "z": Double(entity.transform.scale.z)]
-        }
-        set {
-            if let x = newValue["x"] { entity.position.x = Float(x) }
-            if let y = newValue["y"] { entity.position.y = Float(y) }
-            if let z = newValue["z"] { entity.position.z = Float(z) }
-        }
-    }*/
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract

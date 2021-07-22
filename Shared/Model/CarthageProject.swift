@@ -36,7 +36,6 @@ class CarthageProject: Codable {
     {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(scenes, forKey: .scenes)
-        print("testing", scenes[0].children?.count)
     }
     
     /// Reparents the objects, only needed after loading

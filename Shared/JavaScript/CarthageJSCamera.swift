@@ -1,26 +1,24 @@
 //
-//  CarthageJSObject.swift
+//  CarthageJSCamera.swift
 //  Carthage
 //
-//  Created by Markus Moenig on 20/7/21.
+//  Created by Markus Moenig on 22/7/21.
 //
 
 import Foundation
 import JavaScriptCore
 
-@objc protocol CarthageJSObjectJSExports: JSExport {
+@objc protocol CarthageJSCameraJSExports: JSExport {
     
     var name                    : String { get }
 
     var position                : [String: AnyObject] { get set }
+    var lookAt                  : [String: AnyObject] { get set }
 
-    func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
-    func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
-
-    static func getInstance() -> CarthageJSObject
+    static func getInstance() -> CarthageJSCamera
 }
 
-class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
+class CarthageJSCamera: NSObject, CarthageJSCameraJSExports {
     
     /// name property
     var name: String  {
@@ -33,7 +31,7 @@ class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
     }
     
     var position: [String: AnyObject]  {
-        get {            
+        get {
             if let entity = getSelf() {
                 return fromFloat3(entity.getPosition())
             }
@@ -46,27 +44,29 @@ class CarthageJSObject: NSObject, CarthageJSObjectJSExports {
         }
     }
     
-    func addForce(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
-        if let entity = getSelf() {
-            entity.addForce(toFloat3(direction), toFloat3(position))
+    var lookAt: [String: AnyObject]  {
+        get {
+            if let entity = getSelf() {
+                return fromFloat3(entity.getLookAt())
+            }
+            return [:]
         }
-    }
-    
-    func applyImpulse(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
-        if let entity = getSelf() {
-            entity.applyImpulse(toFloat3(direction), toFloat3(position))
+        set {
+            if let entity = getSelf() {
+                entity.setLookAt(toFloat3(newValue))
+            }
         }
     }
 
     /// Class initializer
-    class func getInstance() -> CarthageJSObject {
-        return CarthageJSObject()
+    class func getInstance() -> CarthageJSCamera {
+        return CarthageJSCamera()
     }
     
     /// Return a reference to the embedded CarthageEntity
     func getSelf() -> CarthageEntity? {
         let context = JSContext.current()
-        if let entity = context?.objectForKeyedSubscript("__oi").toObject() as? CarthageEntity {
+        if let entity = context?.objectForKeyedSubscript("__ci").toObject() as? CarthageEntity {
             return entity
         }
         return nil
