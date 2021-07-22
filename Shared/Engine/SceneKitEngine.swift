@@ -232,11 +232,17 @@ class SceneKitEntity : CarthageEntity {
     }
     
     override func setPosition(_ p: float3) {
-        print("position", p)
-
         node.position.x = SCNFloat(p.x)
         node.position.y = SCNFloat(p.y)
         node.position.z = SCNFloat(p.z)
+    }
+    
+    override func getOrientation() -> float4 {
+        return  float4(Float(node.orientation.x), Float(node.orientation.y), Float(node.orientation.z), Float(node.orientation.w))
+    }
+    
+    override func setOrientation(_ q: float4) {
+        node.orientation = SCNVector4(SCNFloat(q.x),SCNFloat(q.y),SCNFloat(q.z),SCNFloat(q.w))
     }
     
     override func getResolution() -> float2 {

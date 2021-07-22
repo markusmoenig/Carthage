@@ -13,6 +13,7 @@ import JavaScriptCore
     var name                    : String { get }
 
     var position                : [String: AnyObject] { get set }
+    var orientation             : [String: AnyObject] { get set }
 
     func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
     func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
@@ -47,6 +48,20 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
         set {
             if let entity = getSelf() {
                 entity.setPosition(toFloat3(newValue))
+            }
+        }
+    }
+    
+    var orientation: [String: AnyObject]  {
+        get {
+            if let entity = getSelf() {
+                return fromFloat4(entity.getOrientation())
+            }
+            return [:]
+        }
+        set {
+            if let entity = getSelf() {
+                entity.setOrientation(toFloat4(newValue))
             }
         }
     }

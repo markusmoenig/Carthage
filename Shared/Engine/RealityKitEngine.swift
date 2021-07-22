@@ -171,6 +171,14 @@ class RealityKitEntity : CarthageEntity {
         entity.transform.translation.z = p.z
     }
     
+    override func getOrientation() -> float4 {
+        return  float4(Float(entity.orientation.imag.x), Float(entity.orientation.imag.y), Float(entity.orientation.imag.z), Float(entity.orientation.real))
+    }
+    
+    override func setOrientation(_ q: float4) {
+        entity.orientation = simd_quatf(vector: q)
+    }
+    
     override func getResolution() -> float2 {
         if let view = scene.arView {
             return float2(Float(view.frame.width), Float(view.frame.height))

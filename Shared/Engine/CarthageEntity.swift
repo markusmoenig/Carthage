@@ -40,6 +40,15 @@ import JavaScriptCore
     func setPosition(_ p: float3) {
     }
     
+    /// Get the object orientation (quaternion)
+    func getOrientation() -> float4 {
+        return float4()
+    }
+    
+    /// Set the object orientation (quaternion)
+    func setOrientation(_ p: float4) {
+    }
+    
     /// Get the resolution
     func getResolution() -> float2 {
         return float2()

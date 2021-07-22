@@ -40,6 +40,16 @@ class CarthageJSBase: NSObject {
         return p
     }
     
+    /// Converts a JSValue to float4
+    func toFloat4(_ o: [String: AnyObject]) -> float4 {
+        var p = float4(0,0,0,0)
+        if let x = o["x"] { p.x = toFloat(x) }
+        if let y = o["y"] { p.y = toFloat(y) }
+        if let z = o["z"] { p.z = toFloat(z) }
+        if let w = o["w"] { p.w = toFloat(w) }
+        return p
+    }
+    
     /// Float to JSValue
     func fromFloat(_ v: Float) -> JSValue {
         return JSValue(double: Double(v), in: JSContext.current())
@@ -53,5 +63,10 @@ class CarthageJSBase: NSObject {
     /// float3 to JSValue
     func fromFloat3(_ p: float3) -> [String:JSValue] {
         return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z)]
+    }
+    
+    /// float4 to JSValue
+    func fromFloat4(_ p: float4) -> [String:JSValue] {
+        return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
     }
 }
