@@ -157,7 +157,7 @@ import JavaScriptCore
         keyUpObjects = []
 
         func setupJS(_ object: CarthageObject) {
-            if object.code.isEmpty { return }
+            if object.jsCode.isEmpty { return }
             
             object.jsContext = JSContext()
             
@@ -199,7 +199,7 @@ import JavaScriptCore
             
             require(object, "math")
 
-            object.jsContext?.evaluateScript(object.code)
+            object.jsContext?.evaluateScript(object.jsCode)
             
             // Collect the objects who need callbacks
             if object.jsContext?.objectForKeyedSubscript("tick").isUndefined == false {

@@ -83,7 +83,7 @@ class ScriptEditor
 
         var code =
         """
-        var \(object.settingsMode == .data ? object.dataContext : object.codeContext) = ace.createEditSession(`\(object.settingsMode == .data ? object.json : object.code)`)
+        var \(object.settingsMode == .data ? object.dataContext : object.codeContext) = ace.createEditSession(`\(object.settingsMode == .data ? object.json : object.jsCode)`)
         editor.setSession(\(object.settingsMode == .data ? object.dataContext : object.codeContext))
                 
         """
@@ -331,7 +331,7 @@ class ScriptEditor
                 if object.settingsMode == .data {
                     object.json = value
                 } else {
-                    object.code = value
+                    object.jsCode = value
                 }
                 
                 /*

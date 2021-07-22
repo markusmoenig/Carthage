@@ -39,7 +39,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
     var dataGroups      : CarthageDataGroups
 
     /// The JavaScript code for this object
-    var code            : String = ""
+    var jsCode          : String = ""
 
     /// The JSON data for this object
     var json            : String = ""
@@ -65,7 +65,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case proceduralType
         case children
         case dataGroups
-        case code
+        case jsCode
         case libraryName
     }
     
@@ -102,7 +102,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
             // Default object code
             if let path = Bundle.main.path(forResource: "object", ofType: "js", inDirectory: "Files/defaults") {
                 if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
-                    code = value
+                    jsCode = value
                 }
             }
             
@@ -124,7 +124,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
             // Default object code
             if let path = Bundle.main.path(forResource: "scene", ofType: "js", inDirectory: "Files/defaults") {
                 if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
-                    code = value
+                    jsCode = value
                 }
             }
         } else
@@ -181,7 +181,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         proceduralType = try container.decode(CarthageProceduralObjectType.self, forKey: .proceduralType)
         children = try container.decode([CarthageObject]?.self, forKey: .children)
         dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
-        code = try container.decode(String.self, forKey: .code)
+        jsCode = try container.decode(String.self, forKey: .jsCode)
         libraryName = try container.decode(String.self, forKey: .libraryName)
     }
     
@@ -194,7 +194,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         try container.encode(proceduralType, forKey: .proceduralType)
         try container.encode(children, forKey: .children)
         try container.encode(dataGroups, forKey: .dataGroups)
-        try container.encode(code, forKey: .code)
+        try container.encode(jsCode, forKey: .jsCode)
         try container.encode(libraryName, forKey: .libraryName)
     }
     

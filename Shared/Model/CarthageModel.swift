@@ -62,10 +62,22 @@ class CarthageModel: NSObject, ObservableObject {
         super.init()
         
         gModel = self
-        setScene(project.scenes.first!)
+        setScene(project.scenes.first!, selectScene: true)
     }
     
-    func setScene(_ scene: CarthageObject)
+    /// Called when a project has been loaded from file, re-load the engine
+    func setProject(project: CarthageProject)
+    {
+        self.project = project
+        selected = project.scenes.first
+
+        if let first = project.scenes.first {
+            setScene(first, selectScene: true)
+        }
+    }
+    
+    /// Sets the scene and reloads the engine
+    func setScene(_ scene: CarthageObject, selectScene: Bool = false)
     {
         engine?.destroy()
         if engineType == .SceneKit {
@@ -76,8 +88,10 @@ class CarthageModel: NSObject, ObservableObject {
         
         currentScene = scene
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.objectSelected.send(scene)
+        if selectScene {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.objectSelected.send(scene)
+            }
         }
     }
     

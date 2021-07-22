@@ -12,7 +12,6 @@ class CarthageProject: Codable {
 
     private enum CodingKeys: String, CodingKey {
         case scenes
-        //case camera
     }
     
     /// The objects in the project
@@ -30,7 +29,6 @@ class CarthageProject: Codable {
     {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         scenes = try container.decode([CarthageObject].self, forKey: .scenes)
-        //camera = try container.decode(SignedPinholeCamera.self, forKey: .camera)
         reparent()
     }
     
@@ -38,7 +36,7 @@ class CarthageProject: Codable {
     {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(scenes, forKey: .scenes)
-        //try container.encode(camera, forKey: .camera)
+        print("testing", scenes[0].children?.count)
     }
     
     /// Reparents the objects, only needed after loading

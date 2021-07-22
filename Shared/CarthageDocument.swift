@@ -9,33 +9,49 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 extension UTType {
-    static var exampleText: UTType {
-        UTType(importedAs: "com.example.plain-text")
+    static var carthageProject: UTType {
+        UTType(exportedAs: "com.Carthage.project")
     }
 }
 
 struct CarthageDocument: FileDocument {
-    var text: String
     
     var model       = CarthageModel()
 
-    init(text: String = "Hello, world!") {
-        self.text = text
+    static var readableContentTypes: [UTType] { [.carthageProject] }
+    static var writableContentTypes: [UTType] { [.carthageProject] }
+
+    init() {
     }
-
-    static var readableContentTypes: [UTType] { [.exampleText] }
-
+    
     init(configuration: ReadConfiguration) throws {
         guard let data = configuration.file.regularFileContents,
-              let string = String(data: data, encoding: .utf8)
+                let project = try? JSONDecoder().decode(CarthageProject.self, from: data)
         else {
+            /*
+            do {
+                let data = configuration.file.regularFileContents
+                let response = try JSONDecoder().decode(Project.self, from: data!)
+            } catch {
+                print(error) //here.....
+            }*/
+            
             throw CocoaError(.fileReadCorruptFile)
         }
-        text = string
+        if data.isEmpty == false {
+            
+            model.setProject(project: project)
+        }
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = text.data(using: .utf8)!
+        var data = Data()
+        
+        let encodedData = try? JSONEncoder().encode(model.project)
+        if let json = String(data: encodedData!, encoding: .utf8) {
+            data = json.data(using: .utf8)!
+        }
+        
         return .init(regularFileWithContents: data)
     }
 }
