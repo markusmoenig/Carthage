@@ -9,8 +9,6 @@ import Combine
 import JavaScriptCore
 import ModelIO
 
-var gModel : CarthageModel? = nil
-
 class CarthageModel: NSObject, ObservableObject {
     
     enum EngineType {
@@ -61,7 +59,6 @@ class CarthageModel: NSObject, ObservableObject {
         
         super.init()
         
-        gModel = self
         setScene(project.scenes.first!, selectScene: true)
     }
     

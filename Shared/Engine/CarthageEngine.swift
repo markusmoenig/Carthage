@@ -10,10 +10,6 @@ import JavaScriptCore
 
 /// The javascript protocol for object
 @objc protocol CarthageEntityJSExports: JSExport {
-    
-    //var position: [String: Double] { get set }
-    //var rotation: [String: Double] { get set }
-    //var scale: [String: Double] { get set }
 }
 
 @objc class CarthageEntity : NSObject, CarthageEntityJSExports {
@@ -109,31 +105,30 @@ import JavaScriptCore
         }
     }
     
-    /*
+    /// JS: Require
     let require: @convention(block) (String) -> () = { input in
-        print("require", input)
-    }*/
-    
-    
-    func require(_ object: CarthageObject,_ module: String) {
-        guard let path = Bundle.main.path(forResource: module, ofType: "js", inDirectory: "Files/jslibs") else {
-            return
-        }
-        
-        if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
-            object.jsContext?.evaluateScript(value)
+        if let object = getObject() {
+            guard let path = Bundle.main.path(forResource: input, ofType: "js", inDirectory: "Files/jslibs") else {
+                return
+            }
+            
+            if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
+                object.jsContext?.evaluateScript(value)
+            }
         }
     }
     
+    /// JavaScript applyForce
     let applyForce: @convention(block) (String) -> () = { input in
         let context = JSContext.current()
         let object = context?.objectForKeyedSubscript("_internal").toObject() as? CarthageScene
     }
     
+    /// JavaScript print
     let printConsole: @convention(block) (String) -> () = { input in
-        DispatchQueue.main.async {
-            gModel?.logText.append(input + "\n")
-            gModel?.logChanged.send()
+        if let model = getModel() {
+            model.logText.append(input + "\n")
+            model.logChanged.send()
         }
     }
     
@@ -195,8 +190,8 @@ import JavaScriptCore
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
                     if let str = exc.toString() {
-                        gModel?.logText.append("Error in \(object.name): \(str) \n")
-                        gModel?.logChanged.send()
+                        self.model.logText.append("Error in \(object.name): \(str) \n")
+                        self.model.logChanged.send()
                     }
                 }
             }
@@ -223,10 +218,11 @@ import JavaScriptCore
                 if object.json.isEmpty == false {
                     object.jsContext?.evaluateScript("object.data = " + object.json)
                 }
+            } else {
+                // __oi always points to the object
+                object.jsContext?.setObject(object.entity, forKeyedSubscript: "__oi" as NSString)
             }
             
-            require(object, "math")
-
             object.jsContext?.evaluateScript(object.jsCode)
             
             // Collect the objects who need callbacks
@@ -288,5 +284,29 @@ import JavaScriptCore
         for o in keyUpObjects {
             o.jsContext?.evaluateScript("keyUp(`\(key)`)")
         }
+    }
+    
+    /// Returns the CarthageModel from the current JSContext
+    static func getModel() -> CarthageModel? {
+        let context = JSContext.current()
+        if let entity = context?.objectForKeyedSubscript("__si").toObject() as? CarthageEntity {
+            if let sceneKitEntity = entity as? SceneKitEntity {
+                return sceneKitEntity.scene.model
+
+            } else
+            if let realityKitEntity = entity as? RealityKitEntity {
+                return realityKitEntity.scene.model
+            }
+        }
+        return nil
+    }
+    
+    /// Returns the CarthageModel from the current JSContext
+    static func getObject() -> CarthageObject? {
+        let context = JSContext.current()
+        if let entity = context?.objectForKeyedSubscript("__oi").toObject() as? CarthageEntity {
+            return entity.object
+        }
+        return nil
     }
 }
