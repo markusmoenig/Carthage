@@ -36,8 +36,7 @@ class SceneKitEntity : CarthageEntity {
             self.node = SCNNode()
             
             if object.type == .Camera {
-                let camera = SCNCamera()
-                self.node.camera = camera
+                self.node.camera = SCNCamera()
                 self.node.position = SCNVector3(x: 0.0, y: 0.0, z: 0.0)
                 self.node.look(at: SCNVector3(x: 0, y: 0, z: 0))
                 //camera.usesOrthographicProjection = true
@@ -187,9 +186,10 @@ class SceneKitEntity : CarthageEntity {
         if let camera = object.dataGroups.getGroup("Camera"), groupName == "Camera" || groupName.isEmpty  {
             let position = camera.getFloat3("Position")
             let lookAt = camera.getFloat3("Look At")
-            
+                        
+            print("update", position, lookAt)
             node.position = SCNVector3(x: SCNFloat(position.x), y: SCNFloat(position.y), z: SCNFloat(position.z))
-            node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)))
+            node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)), up: SCNVector3(0,1,0), localFront: SCNVector3(0,0,-1))
         }
         
         // Physics
@@ -225,14 +225,25 @@ class SceneKitEntity : CarthageEntity {
         }
     }
     
+    // The following are the member functions called from JavaScript 
+    
     override func getPosition() -> float3 {
         return  float3(Float(node.position.x), Float(node.position.y), Float(node.position.z))
     }
     
     override func setPosition(_ p: float3) {
+        print("position", p)
+
         node.position.x = SCNFloat(p.x)
         node.position.y = SCNFloat(p.y)
         node.position.z = SCNFloat(p.z)
+    }
+    
+    override func getResolution() -> float2 {
+        if let view = scene.view {
+            return float2(Float(view.frame.width), Float(view.frame.height))
+        }
+        return float2()
     }
     
     override func getLookAt() -> float3 {
@@ -241,6 +252,8 @@ class SceneKitEntity : CarthageEntity {
     
     override func setLookAt(_ lookAt: float3) {
         if object.type == .Camera {
+            print("lookAt", lookAt)
+
             node.look(at: SCNVector3(x: SCNFloat(lookAt.x), y: SCNFloat(lookAt.y), z: SCNFloat(lookAt.z)))
         }
     }

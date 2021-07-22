@@ -8,54 +8,6 @@
 import Foundation
 import JavaScriptCore
 
-/// The javascript protocol for object
-@objc protocol CarthageEntityJSExports: JSExport {
-}
-
-@objc class CarthageEntity : NSObject, CarthageEntityJSExports {
-    
-    let object          : CarthageObject
-    
-    init(object: CarthageObject) {
-        self.object = object
-        
-        super.init()
-        
-        object.entity = self
-    }
-    
-    /// Update the entity from the data model, this is heavy but only gets called to set the initial states of the entity before the scene starts.
-    func updateFromModel(groupName: String = "")
-    {
-    }
-    
-    // PROPERTIES
-    
-    /// Get the object position
-    func getPosition() -> float3 {
-        return float3()
-    }
-    
-    /// Set the object position
-    func setPosition(_ p: float3) {
-    }
-    
-    func getLookAt() -> float3 {
-        return  float3()
-    }
-    
-    func setLookAt(_ lookAt: float3) {
-    }
-    
-    // FUNCTIONS
-    
-    func addForce(_ direction: float3,_ position: float3) {
-    }
-    
-    func applyImpulse(_ direction: float3,_ position: float3) {
-    }
-}
-
 /// The javascript protocol for scenes
 @objc protocol CarthageSceneJSExports: JSExport {
 }
@@ -105,7 +57,7 @@ import JavaScriptCore
         }
     }
     
-    /// JS: Require
+    /// JavaScript require. Load and execute the given module
     let require: @convention(block) (String) -> () = { input in
         if let object = getObject() {
             guard let path = Bundle.main.path(forResource: input, ofType: "js", inDirectory: "Files/jslibs") else {
@@ -116,12 +68,6 @@ import JavaScriptCore
                 object.jsContext?.evaluateScript(value)
             }
         }
-    }
-    
-    /// JavaScript applyForce
-    let applyForce: @convention(block) (String) -> () = { input in
-        let context = JSContext.current()
-        let object = context?.objectForKeyedSubscript("_internal").toObject() as? CarthageScene
     }
     
     /// JavaScript print
@@ -186,7 +132,7 @@ import JavaScriptCore
             object.jsContext?.setObject(CarthageJSScene.self, forKeyedSubscript: "Scene" as NSString)
             object.jsContext?.setObject(CarthageJSObject.self, forKeyedSubscript: "Object" as NSString)
             
-            // Exception handler.
+            // Exception handler
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
                     if let str = exc.toString() {
@@ -205,7 +151,7 @@ import JavaScriptCore
             
             // Set the camera object into the context
             if let camera = camera {
-                object.jsContext?.evaluateScript("camera = Camera.getInstance();")
+                object.jsContext?.evaluateScript("scene.camera = Camera.getInstance();")
                 object.jsContext?.setObject(camera.entity, forKeyedSubscript: "__ci" as NSString)
             }
             
@@ -223,6 +169,7 @@ import JavaScriptCore
                 object.jsContext?.setObject(object.entity, forKeyedSubscript: "__oi" as NSString)
             }
             
+            object.jsContext?.evaluateScript("CT = {};")
             object.jsContext?.evaluateScript(object.jsCode)
             
             // Collect the objects who need callbacks
@@ -268,6 +215,7 @@ import JavaScriptCore
     /// The game loop, call the tick functions of the js contexts who signed up for this
     func tick(_ time: Double)
     {
+        if isPlaying == false { return }
         // Send a tick to each object who supports it
         for o in tickObjects {
             o.jsContext?.evaluateScript("tick(\(time))")

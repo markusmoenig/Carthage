@@ -6,8 +6,6 @@
  * The matrix is replaced by the calculated result.
  */
 
-CT = {};
-
 /**
  * Contains Math related classes used by Carthage (originally written for Visual Graphics).
  * @namespace
@@ -965,6 +963,8 @@ CT.Math.bezier=function(t, p0, p1, p2)
 
 CT.Math.Vector2=function(x, y)
 {
+    if (!(this instanceof CT.Math.Vector2)) return new CT.Math.Vector2(x, y);
+
     this.x = x ? x : 0.0;
     this.y = y ? y : 0.0;
 };

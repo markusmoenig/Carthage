@@ -10,12 +10,19 @@ import JavaScriptCore
 
 @objc protocol CarthageJSSceneJSExports: JSExport {
     
-    var name: String { get }
+    var name                    : String { get }
+
+    var resolution              : [String: AnyObject] { get }
 
     static func getInstance() -> CarthageJSScene
 }
 
-class CarthageJSScene: NSObject, CarthageJSSceneJSExports {
+class CarthageJSScene: CarthageJSBase, CarthageJSSceneJSExports {
+    
+    override init() {
+        super.init()
+        _id = "__si"
+    }
     
     /// name property
     var name: String  {
@@ -26,18 +33,18 @@ class CarthageJSScene: NSObject, CarthageJSSceneJSExports {
             return ""
         }
     }
+    
+    var resolution: [String: AnyObject]  {
+        get {
+            if let entity = getSelf() {
+                return fromFloat2(entity.getResolution())
+            }
+            return [:]
+        }
+    }
 
     /// Class initializer
     class func getInstance() -> CarthageJSScene {
         return CarthageJSScene()
-    }
-    
-    /// Return a reference to the embedded CarthageEntity
-    func getSelf() -> CarthageEntity? {
-        let context = JSContext.current()
-        if let entity = context?.objectForKeyedSubscript("__si").toObject() as? CarthageEntity {
-            return entity
-        }
-        return nil
     }
 }

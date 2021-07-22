@@ -159,6 +159,8 @@ class RealityKitEntity : CarthageEntity {
         }
     }
     
+    // The following are the member functions called from JavaScript
+
     override func getPosition() -> float3 {
         return  float3(Float(entity.transform.translation.x), Float(entity.transform.translation.y), Float(entity.transform.translation.z))
     }
@@ -167,6 +169,13 @@ class RealityKitEntity : CarthageEntity {
         entity.transform.translation.x = p.x
         entity.transform.translation.y = p.y
         entity.transform.translation.z = p.z
+    }
+    
+    override func getResolution() -> float2 {
+        if let view = scene.arView {
+            return float2(Float(view.frame.width), Float(view.frame.height))
+        }
+        return float2()
     }
     
     override func setLookAt(_ lookAt: float3) {
