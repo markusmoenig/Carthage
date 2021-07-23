@@ -227,6 +227,14 @@ class SceneKitEntity : CarthageEntity {
     
     // The following are the member functions called from JavaScript 
     
+    override func getIsActive() -> Bool {
+        return !node.isHidden
+    }
+    
+    override func setIsActive(_ b: Bool) {
+        node.isHidden = !b
+    }
+    
     override func getPosition() -> float3 {
         return  float3(Float(node.position.x), Float(node.position.y), Float(node.position.z))
     }

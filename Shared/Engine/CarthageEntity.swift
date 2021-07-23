@@ -31,6 +31,15 @@ import JavaScriptCore
     
     // PROPERTIES
     
+    /// Get the active state
+    func getIsActive() -> Bool {
+        return true
+    }
+    
+    /// Set the active state
+    func setIsActive(_ b: Bool) {
+    }
+    
     /// Get the object position
     func getPosition() -> float3 {
         return float3()

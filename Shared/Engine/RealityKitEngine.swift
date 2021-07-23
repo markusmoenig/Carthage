@@ -161,6 +161,14 @@ class RealityKitEntity : CarthageEntity {
     
     // The following are the member functions called from JavaScript
 
+    override func getIsActive() -> Bool {
+        return entity.isEnabled
+    }
+    
+    override func setIsActive(_ b: Bool) {
+        entity.isEnabled = b
+    }
+    
     override func getPosition() -> float3 {
         return  float3(Float(entity.transform.translation.x), Float(entity.transform.translation.y), Float(entity.transform.translation.z))
     }

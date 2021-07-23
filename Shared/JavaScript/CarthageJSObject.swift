@@ -15,6 +15,8 @@ import JavaScriptCore
     var position                : [String: AnyObject] { get set }
     var orientation             : [String: AnyObject] { get set }
 
+    var isActive                : Bool { get set }
+
     func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
     func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
 
@@ -35,6 +37,21 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
                 return entity.object.name
             }
             return ""
+        }
+    }
+    
+    /// isActive property
+    var isActive: Bool  {
+        get {
+            if let entity = getSelf() {
+                return entity.getIsActive()
+            }
+            return false
+        }
+        set {
+            if let entity = getSelf() {
+                entity.setIsActive(newValue)
+            }
         }
     }
     
