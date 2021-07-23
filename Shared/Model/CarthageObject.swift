@@ -19,7 +19,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case Plane, Sphere, Cube
     }
     
-    enum SettingsMode {
+    enum SettingsMode: Int32, Codable {
         case parameters, materials, physics, data, javascript, settings, help
     }
     
@@ -62,6 +62,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         case id
         case name
         case type
+        case settingsMode
         case proceduralType
         case children
         case dataGroups
@@ -178,6 +179,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         id = try container.decode(UUID.self, forKey: .id)
         name = try container.decode(String.self, forKey: .name)
         type = try container.decode(CarthageObjectType.self, forKey: .type)
+        settingsMode = try container.decode(CarthageObject.SettingsMode.self, forKey: .settingsMode)
         proceduralType = try container.decode(CarthageProceduralObjectType.self, forKey: .proceduralType)
         children = try container.decode([CarthageObject]?.self, forKey: .children)
         dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
@@ -191,6 +193,7 @@ class CarthageObject : Codable, Hashable, Identifiable {
         try container.encode(id, forKey: .id)
         try container.encode(name, forKey: .name)
         try container.encode(type, forKey: .type)
+        try container.encode(settingsMode, forKey: .settingsMode)
         try container.encode(proceduralType, forKey: .proceduralType)
         try container.encode(children, forKey: .children)
         try container.encode(dataGroups, forKey: .dataGroups)

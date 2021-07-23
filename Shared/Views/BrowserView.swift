@@ -67,7 +67,8 @@ struct BrowserView: View {
                             .imageScale(.large)
                     }
                     .buttonStyle(.borderless)
-                    
+                    .keyboardShortcut("b")
+
                     Button(action: {
                         mode = .log
                     })
@@ -76,6 +77,7 @@ struct BrowserView: View {
                             .imageScale(.large)
                     }
                     .buttonStyle(.borderless)
+                    .keyboardShortcut("l")
                     //.padding(.leading, 4)
                     
                     //Divider()
@@ -291,14 +293,14 @@ struct BrowserView: View {
                         .padding(.leading, 4)
                     }.frame(maxWidth: .infinity)
                 }
-                
-                .onReceive(document.model.logChanged) { _ in
-                    log = document.model.logText
-                    mode = .log
-                }
             }
         }
         .animation(.default)
+        
+        .onReceive(document.model.logChanged) { _ in
+            log = document.model.logText
+            mode = .log
+        }
     }
     
     /// Loads an url into a Data

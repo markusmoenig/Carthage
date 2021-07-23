@@ -11,6 +11,14 @@ import RealityKit
 
 struct ContentView: View {
     
+    @Environment(\.colorScheme) var deviceColorScheme   : ColorScheme
+
+    enum Mode {
+        case normal, scripting
+    }
+    
+    @State private var mode             : Mode = .normal
+
     @Binding var document               : CarthageDocument
     
     @State var sideViewIsVisible        : Bool = true
@@ -20,6 +28,8 @@ struct ContentView: View {
     
     @State var isPlaying                : Bool = false
     
+    @State   var selected               : CarthageObject? = nil
+
     @State private var searchText       = ""
     
     var body: some View {
@@ -35,22 +45,36 @@ struct ContentView: View {
                 
                     HStack {
                     
-                        if engineType == .SceneKit {
-                            /*
-                            SceneView(
-                                scene: document.model.engine?.getNativeScene() as? SCNScene,
-                                //pointOfView: document.model.cameraNode,
-                                options: [.allowsCameraControl],
-                                delegate: document.model.engine as? SceneKitScene
-                            )*/
-                            SKView(document.model)
-                        } else {
-                            RKView(document.model)
-                        }
-                        
-                        if sideViewIsVisible {
-                            SideView(document: $document)
-                                .frame(width: min(geometry.size.width / 2.5, 800))
+                        if mode == .normal {
+                            if engineType == .SceneKit {
+                                SKView(document.model)
+                            } else {
+                                RKView(document.model)
+                            }
+                            
+                            if sideViewIsVisible {
+                                SideView(document: $document)
+                                    .frame(width: min(geometry.size.width / 2.5, 800))
+                            }
+                        } else
+                        if mode == .scripting {
+                            
+                            ZStack(alignment: .topTrailing) {
+                                WebView(document.model, deviceColorScheme)
+                                    .onChange(of: deviceColorScheme) { newValue in
+                                        document.model.scriptEditor?.setTheme(newValue)
+                                    }
+                                
+                                if engineType == .SceneKit {
+                                    SKView(document.model)
+                                        .frame(width: geometry.size.width / 3, height: geometry.size.height / 3)
+                                        .opacity(isPlaying ? 1 : 0.5)
+                                } else {
+                                    RKView(document.model)
+                                        .frame(width: geometry.size.width / 3, height: geometry.size.height / 3)
+                                        .opacity(isPlaying ? 1 : 0.5)
+                                }
+                            }
                         }
                     }
                     
@@ -73,6 +97,7 @@ struct ContentView: View {
                     }, label: {
                         Image(systemName: isPlaying == true ? "play.fill" : "play")
                     })
+                        .keyboardShortcut("r")
                     
                     Button(action: {
                         isPlaying = false
@@ -80,6 +105,7 @@ struct ContentView: View {
                     }, label: {
                         Image(systemName: isPlaying == false ? "stop.fill" : "stop")
                     })
+                        .keyboardShortcut("t")
                 }
             }
 
@@ -110,14 +136,35 @@ struct ContentView: View {
             ToolbarItemGroup(placement: .automatic) {
                 Spacer()
                 
-                Button(action: {
-                    sideViewIsVisible.toggle()
-                }, label: {
-                    Image(systemName: "sidebar.right")
-                })
+                HStack(spacing: 0) {
+
+                    Button(action: {
+                        if mode == .normal {
+                            mode = .scripting
+                            if let selected = selected {
+                                if selected.settingsMode != .javascript && selected.settingsMode != .data {
+                                    selected.settingsMode = .javascript
+                                }
+                            }
+                        } else {
+                            mode = .normal
+                        }
+                    }, label: {
+                        Image(systemName: mode == .normal ? "rectangle" : "rectangle.fill")
+                    })
+                    .keyboardShortcut("f")
+
+                    Button(action: {
+                        sideViewIsVisible.toggle()
+                    }, label: {
+                        Image(systemName: "sidebar.right")
+                    })
+                }
             }
         }
         
+        .animation(.default)
+
         .onAppear(perform: {
             if document.model.engineType == .SceneKit {
                 engineTypeText = "SceneKit"
@@ -131,6 +178,19 @@ struct ContentView: View {
         .searchable(text: $searchText) {
             ForEach(searchResults, id: \.self) { result in
                 Text("\(result)").searchCompletion(result)
+            }
+        }
+        
+        // In scripting view set the new script mode
+        .onReceive(document.model.objectSelected) { object in
+            selected = object
+            if mode == .scripting {
+                mode = .normal
+                //mode = .scripting
+
+                //object.codeContext = ""
+                //object.dataContext = ""
+                //document.model.scriptEditor?.setSession(object)
             }
         }
     }
