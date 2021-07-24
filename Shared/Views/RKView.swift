@@ -14,6 +14,7 @@ class RKInpuView: ARView {
     
     weak var carthageScene  : CarthageScene? = nil
     
+    #if os(OSX)
     var keyCodes    : [UInt16:String] = [
         53: "Escape",
 
@@ -103,6 +104,8 @@ class RKInpuView: ARView {
             }
         }
     }
+    
+    #endif
 }
 
 #if os(OSX)

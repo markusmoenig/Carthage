@@ -11,8 +11,10 @@ import RealityFoundation
 
 #if os(OSX)
 typealias SCNFloat = CGFloat
+typealias SCNFLOAT = CGFloat
 #elseif os(iOS)
 typealias SCNFloat = Float
+typealias SCNFLOAT = CGFloat
 #endif
 
 
@@ -86,7 +88,7 @@ class SceneKitEntity : CarthageEntity {
                 if object.proceduralType == .Sphere {
                     let radius = procedural.getFloat("Radius", 1)
                     
-                    let sphereGeometry = SCNSphere(radius: SCNFloat(radius))
+                    let sphereGeometry = SCNSphere(radius: SCNFLOAT(radius))
                     node.geometry = sphereGeometry
                     //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: sphereGeometry)
                 } else
@@ -94,7 +96,7 @@ class SceneKitEntity : CarthageEntity {
                     let size = procedural.getFloat3("Size", float3(1,1,1))
                     let cornerRadius = procedural.getFloat("Corner Radius")
 
-                    let cubeGeometry = SCNBox(width: SCNFloat(size.x), height: SCNFloat(size.y), length: SCNFloat(size.z), chamferRadius: SCNFloat(cornerRadius))
+                    let cubeGeometry = SCNBox(width: SCNFLOAT(size.x), height: SCNFLOAT(size.y), length: SCNFLOAT(size.z), chamferRadius: SCNFLOAT(cornerRadius))
                     
                     node.geometry = cubeGeometry
                     //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: cubeGeometry)
@@ -103,8 +105,8 @@ class SceneKitEntity : CarthageEntity {
                     let size = procedural.getFloat2("Size", float2(20,20))
                     let cornerRadius = procedural.getFloat("Corner Radius")
                     
-                    let planeGeometry = SCNPlane(width: SCNFloat(size.x), height: SCNFloat(size.y))
-                    planeGeometry.cornerRadius = SCNFloat(cornerRadius)
+                    let planeGeometry = SCNPlane(width: SCNFLOAT(size.x), height: SCNFLOAT(size.y))
+                    planeGeometry.cornerRadius = SCNFLOAT(cornerRadius)
                     node.geometry = planeGeometry
                     //node.physicsBody?.physicsShape = SCNPhysicsShape(geometry: planeGeometry)
                 }
@@ -127,7 +129,7 @@ class SceneKitEntity : CarthageEntity {
                         textureDict[key] = materialData.getText(key)
                     }
                 } else {
-                    material?.diffuse.contents = CGColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    material?.diffuse.contents = CGColor(red: SCNFLOAT(diffuse.x), green: SCNFLOAT(diffuse.y), blue: SCNFLOAT(diffuse.z), alpha: 1)
                     textureDict[key] = nil
                 }
                 
@@ -217,7 +219,7 @@ class SceneKitEntity : CarthageEntity {
 
                 if type != 0 {
                     print(SCNFloat(physicsData.getFloat("Mass", 1)))
-                    node.physicsBody?.mass = SCNFloat(physicsData.getFloat("Mass", 1))
+                    node.physicsBody?.mass = SCNFLOAT(physicsData.getFloat("Mass", 1))
                 }
 
                 //node.categoryBitMask = downGravityCategory

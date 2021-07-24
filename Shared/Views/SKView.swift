@@ -15,6 +15,7 @@ class SKInpuView: SCNView {
     
     weak var carthageScene  : CarthageScene? = nil
 
+
     var keyCodes    : [UInt16:String] = [
         53: "Escape",
 
@@ -138,11 +139,17 @@ struct SwiftUISKView: NSViewRepresentable {
     }
 }
 #else
+
+class SKInpuView: SCNView {
+    
+    weak var carthageScene  : CarthageScene? = nil
+}
+
 struct SwiftUISKView: UIViewRepresentable {
     public typealias UIViewType = SCNView
     var model       : CarthageModel!
     
-    private let skView: SCNView = SCNView()
+    private let skView: SCNView = SKInpuView()
     public func makeUIView(context: UIViewRepresentableContext<SwiftUISKView>) -> SCNView {
         
         if let skEngine = model.engine as? SceneKitScene {
