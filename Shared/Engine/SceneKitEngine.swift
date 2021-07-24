@@ -216,7 +216,8 @@ class SceneKitEntity : CarthageEntity {
                 
 
                 if type != 0 {
-                    //node.physicsBody?.mass = 0.125
+                    print(SCNFloat(physicsData.getFloat("Mass", 1)))
+                    node.physicsBody?.mass = SCNFloat(physicsData.getFloat("Mass", 1))
                 }
 
                 //node.categoryBitMask = downGravityCategory

@@ -183,7 +183,7 @@ class RealityKitEntity : CarthageEntity {
                         modelEntity.generateCollisionShapes(recursive: true)
                     }
                     
-                    modelEntity.physicsBody = PhysicsBodyComponent(massProperties: .default, material: nil, mode: mode)
+                    modelEntity.physicsBody = PhysicsBodyComponent(massProperties: .init(mass: physicsData.getFloat("Mass", 1)), material: nil, mode: mode)
                     //modelEntity.physicsMotion = .init(linearVelocity: [0.1 ,0, 0], angularVelocity: [3, 3, 3])
                     //modelEntity.components.set(modelEntity.physicsBody!)
                     //modelEntity.components.set(modelEntity.physicsMotion!)

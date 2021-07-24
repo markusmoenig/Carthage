@@ -78,28 +78,13 @@ class CarthageObject : Codable, Hashable, Identifiable {
         self.libraryName = name
         
         dataGroups = CarthageDataGroups()
+        initDataGroups(fromConstructor: true)
         
-        if type == .Scene {
-            settingsMode = .javascript
-            
-            dataGroups.addGroup("Physics", CarthageData([
-                CarthageDataEntity("Gravity", float3(0,-9.8,0), float2(-100, 100)),
-            ]))
+        if type != .Camera {
+            children = []
         }
         
         if type == .Geometry || type == .Procedural {
-            // Init default data types for geometry objects
-            
-            dataGroups.addGroup("Transform", CarthageData([
-                CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
-                CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
-                CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
-            ]))
-            
-            dataGroups.addGroup("Physics", CarthageData([
-                CarthageDataEntity("Type", Int(0), float2(0, 3), .Menu, .None, "Static, Dynamic, Kinematic"),
-            ]))
-            
             // Default object code
             if let path = Bundle.main.path(forResource: "object", ofType: "js", inDirectory: "Files/defaults") {
                 if let value = try? String(contentsOfFile: path, encoding: String.Encoding.utf8) {
@@ -128,48 +113,6 @@ class CarthageObject : Codable, Hashable, Identifiable {
                     jsCode = value
                 }
             }
-        } else
-        if type == .Camera {
-            // Init default data types for geometry objects
-            
-            dataGroups.addGroup("Camera", CarthageData([
-                CarthageDataEntity("Position", float3(0,1,3), float2(-1000, 1000)),
-                CarthageDataEntity("Look At", float3(0,0,0), float2(-1000, 1000)),
-                //CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
-            ]))
-        }
-        
-        if type == .Procedural {
-            if proceduralType == .Sphere {
-                dataGroups.addGroup("Procedural", CarthageData([
-                    CarthageDataEntity("Radius", Float(0.5), float2(0, 10), .Slider),
-                ]))
-            } else
-            if proceduralType == .Cube {
-                dataGroups.addGroup("Procedural", CarthageData([
-                    CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
-                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 0.5), .Slider),
-                ]))
-            } else
-            if proceduralType == .Plane {
-                dataGroups.addGroup("Procedural", CarthageData([
-                    CarthageDataEntity("Size", float2(20, 20), float2(0, 1000), .Numeric),
-                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
-                ]))
-                if let transform = dataGroups.getGroup("Transform") {
-                    transform.set("Rotation", float3(270, 0, 0))
-                }
-            }
-            
-            dataGroups.addGroup("Material", CarthageData([
-                CarthageDataEntity("Color", float3(0.5,0.5,0.5), float2(0, 1), .Color, .Texture),
-                CarthageDataEntity("Metallic", Float(0), float2(0, 1), .Slider, .Texture),
-                CarthageDataEntity("Roughness", Float(0.5 ), float2(0, 1), .Slider, .Texture),
-            ]))
-        }
-        
-        if type != .Camera {
-            children = []
         }
     }
     
@@ -185,6 +128,8 @@ class CarthageObject : Codable, Hashable, Identifiable {
         dataGroups = try container.decode(CarthageDataGroups.self, forKey: .dataGroups)
         jsCode = try container.decode(String.self, forKey: .jsCode)
         libraryName = try container.decode(String.self, forKey: .libraryName)
+        
+        initDataGroups()
     }
     
     func encode(to encoder: Encoder) throws
@@ -207,6 +152,90 @@ class CarthageObject : Codable, Hashable, Identifiable {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+    
+    /// Initializes the data groups with default values, or, when already exists, make sure all options are present
+    func initDataGroups(fromConstructor: Bool = false) {
+        if type == .Scene {
+            
+            settingsMode = .javascript
+            dataGroups.addGroup("Physics", CarthageData([
+                CarthageDataEntity("Gravity", float3(0,-9.8,0), float2(-100, 100)),
+            ]))
+        }
+        
+        if type == .Geometry || type == .Procedural {
+            
+            // Init default data types for geometry objects
+            addDataGroup(name: "Transform", entities: [
+                CarthageDataEntity("Position", float3(0,0,0), float2(-0.5, 0.5)),
+                CarthageDataEntity("Rotation", float3(0,0,0), float2(0, 360), .Slider),
+                CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
+            ])
+            
+            addDataGroup(name: "Physics", entities: [
+                CarthageDataEntity("Type", Int(0), float2(0, 3), .Menu, .None, "Static, Dynamic, Kinematic"),
+                CarthageDataEntity("Mass", Float(0.5), float2(0, 1000), .Numeric),
+            ])
+        } else
+        if type == .Scene {
+        } else
+        if type == .Camera {
+            // Init default data types for geometry objects
+            addDataGroup(name: "Camera", entities: [
+                CarthageDataEntity("Position", float3(0,1,3), float2(-1000, 1000)),
+                CarthageDataEntity("Look At", float3(0,0,0), float2(-1000, 1000)),
+                //CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
+            ])
+        }
+        
+        if type == .Procedural {
+            if proceduralType == .Sphere {
+                addDataGroup(name: "Procedural", entities: [
+                    CarthageDataEntity("Radius", Float(0.5), float2(0, 10), .Slider),
+                ])
+            } else
+            if proceduralType == .Cube {
+                addDataGroup(name: "Procedural", entities: [
+                    CarthageDataEntity("Size", float3(1, 1, 1), float2(0, 10), .Numeric),
+                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 0.5), .Slider),
+                ])
+            } else
+            if proceduralType == .Plane {
+                addDataGroup(name: "Procedural", entities: [
+                    CarthageDataEntity("Size", float2(20, 20), float2(0, 1000), .Numeric),
+                    CarthageDataEntity("Corner Radius", Float(0), float2(0, 10), .Slider),
+                ])
+                if fromConstructor == true {
+                    if let transform = dataGroups.getGroup("Transform") {
+                        transform.set("Rotation", float3(270, 0, 0))
+                    }
+                }
+            }
+            
+            addDataGroup(name: "Material", entities: [
+                CarthageDataEntity("Color", float3(0.5,0.5,0.5), float2(0, 1), .Color, .Texture),
+                CarthageDataEntity("Metallic", Float(0), float2(0, 1), .Slider, .Texture),
+                CarthageDataEntity("Roughness", Float(0.5 ), float2(0, 1), .Slider, .Texture),
+            ])
+        }
+    }
+    
+    /// Creates or adds the given entities to the new or existing group. This way we can dynamically add new options to existing projects.
+    func addDataGroup(name: String, entities: [CarthageDataEntity]) {
+        let group = dataGroups.getGroup(name)
+        if let group = group {
+            // If group exists, make sure all entities are present
+
+            for e in entities {
+                if group.exists(e.key) == false {
+                    group.data.append(e)
+                }
+            }
+        } else {
+            // If group does not exist add it
+            dataGroups.addGroup(name, CarthageData(entities))
+        }
     }
     
     /// Returns a flat array with the children of this object
