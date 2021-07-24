@@ -24,6 +24,8 @@
 		2B3E745C26A9470D00CEBAFB /* CarthageJSBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E745A26A9470D00CEBAFB /* CarthageJSBase.swift */; };
 		2B3E746126A94BE300CEBAFB /* CarthageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E746026A94BE300CEBAFB /* CarthageEntity.swift */; };
 		2B3E746226A94BE300CEBAFB /* CarthageEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B3E746026A94BE300CEBAFB /* CarthageEntity.swift */; };
+		2B57C2C826AB98F0008713A1 /* JSHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B57C2C726AB98F0008713A1 /* JSHelpView.swift */; };
+		2B57C2C926AB98F0008713A1 /* JSHelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B57C2C726AB98F0008713A1 /* JSHelpView.swift */; };
 		2B5951E826A65E1900F685F0 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 2B5951E726A65E1900F685F0 /* images */; };
 		2B5951E926A65E1900F685F0 /* images in Resources */ = {isa = PBXBuildFile; fileRef = 2B5951E726A65E1900F685F0 /* images */; };
 		2B5951EB26A6C7C800F685F0 /* CarthageJSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */; };
@@ -80,6 +82,7 @@
 		2B3E745726A908A100CEBAFB /* CarthageJSCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSCamera.swift; sourceTree = "<group>"; };
 		2B3E745A26A9470D00CEBAFB /* CarthageJSBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSBase.swift; sourceTree = "<group>"; };
 		2B3E746026A94BE300CEBAFB /* CarthageEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageEntity.swift; sourceTree = "<group>"; };
+		2B57C2C726AB98F0008713A1 /* JSHelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSHelpView.swift; sourceTree = "<group>"; };
 		2B5951E726A65E1900F685F0 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = Shared/images; sourceTree = "<group>"; };
 		2B5951EA26A6C7C800F685F0 /* CarthageJSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSObject.swift; sourceTree = "<group>"; };
 		2B5951ED26A6CA0100F685F0 /* CarthageJSScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarthageJSScene.swift; sourceTree = "<group>"; };
@@ -169,6 +172,7 @@
 				2BA40F02269BDE1700558C15 /* DataView.swift */,
 				2B3C75BD269EC21A00415C14 /* SKView.swift */,
 				2B183B75269D542C009B0F82 /* RKView.swift */,
+				2B57C2C726AB98F0008713A1 /* JSHelpView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -366,6 +370,7 @@
 				2B6AABAA269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2B0E2E7A26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF1269BBF8500558C15 /* SideView.swift in Sources */,
+				2B57C2C826AB98F0008713A1 /* JSHelpView.swift in Sources */,
 				2BF4CF00269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F03269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF7269BC32300558C15 /* CarthageProject.swift in Sources */,
@@ -398,6 +403,7 @@
 				2B6AABAB269C1524001B17DE /* SceneKitEngine.swift in Sources */,
 				2B0E2E7B26A11BCA00A053DE /* PersistenceController.swift in Sources */,
 				2BA40EF2269BBF8500558C15 /* SideView.swift in Sources */,
+				2B57C2C926AB98F0008713A1 /* JSHelpView.swift in Sources */,
 				2BF4CF01269ACE9E00337EB6 /* ContentView.swift in Sources */,
 				2BA40F04269BDE1700558C15 /* DataView.swift in Sources */,
 				2BA40EF8269BC32300558C15 /* CarthageProject.swift in Sources */,

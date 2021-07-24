@@ -10,10 +10,21 @@ import JavaScriptCore
 
 class CarthageJSBase: NSObject {
     
+    /// The id of the object in the global context of the JavaScript Context
     var _id         : String = ""
+    
+    /// Set when this object has been returned from Swift, i.e. a reference or clone of another object
+    var _ref        : CarthageEntity? = nil
     
     /// Return a reference to the embedded CarthageEntity
     func getSelf(_ id: String? = nil) -> CarthageEntity? {
+        
+        // Existing entity
+        if let ref = _ref {
+            return ref
+        }
+        
+        // Get the reference from the JS context
         let idToUse = id == nil ? _id : id
         let context = JSContext.current()
         if let entity = context?.objectForKeyedSubscript(idToUse).toObject() as? CarthageEntity {

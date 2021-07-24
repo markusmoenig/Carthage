@@ -27,7 +27,7 @@ class SceneKitEntity : CarthageEntity {
     // material properties (which would be very slow)
     var textureDict     : [String: String] = [:]
         
-    init(scene: SceneKitScene, object: CarthageObject, node: SCNNode? = nil) {
+    init(scene: SceneKitScene, object: CarthageObject, node: SCNNode? = nil, updateFromModel: Bool = true) {
         self.scene = scene
         
         if let node = node {
@@ -48,7 +48,9 @@ class SceneKitEntity : CarthageEntity {
         
         super.init(object: object)
         
-        updateFromModel()
+        if updateFromModel {
+            self.updateFromModel()
+        }
         
         attach()
     }
@@ -212,7 +214,10 @@ class SceneKitEntity : CarthageEntity {
                 //gravityField.isActive = true
                 //node.physicsField = gravityField
                 
-                node.physicsBody?.mass = 0.125
+
+                if type != 0 {
+                    //node.physicsBody?.mass = 0.125
+                }
 
                 //node.categoryBitMask = downGravityCategory
 
@@ -272,8 +277,16 @@ class SceneKitEntity : CarthageEntity {
         }
     }
     
+    override func clone() -> CarthageEntity {
+        let cloneObject = CarthageObject(type: object.type, name: "Copy of " + object.name)
+        cloneObject.parent = object.parent
+        let node = node.clone()
+        let clone = SceneKitEntity(scene: scene, object: cloneObject, node: node, updateFromModel: false)
+        scene.clones.append(clone)
+        return clone
+    }
+    
     override func addForce(_ direction: float3,_ position: float3) {
-
     }
     
     override func applyImpulse(_ direction: float3,_ position: float3) {
@@ -288,6 +301,8 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     var view                : SCNView? = nil
     
     var cameraNode          : SCNNode? = nil
+    
+    var clones              : [SceneKitEntity] = []
 
     //let camera          : SCNCamera
     //let cameraNode      : SCNNode
@@ -351,6 +366,7 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     override func play()
     {
+        clones = []
         super.play()
         scene?.isPaused = false
         view?.isPlaying = true
@@ -358,7 +374,12 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     
     override func stop()
     {
+        for c in clones {
+            c.node.removeFromParentNode()
+        }
+        clones = []
         super.stop()
+
         scene?.isPaused = true
         view?.isPlaying = false
     }

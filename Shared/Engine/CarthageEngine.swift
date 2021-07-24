@@ -206,10 +206,6 @@ import JavaScriptCore
             c.jsContext = nil
             c.entity?.updateFromModel()
         }
-        
-        for o in jsObjects {
-            o.jsContext = nil
-        }
     }
     
     /// The game loop, call the tick functions of the js contexts who signed up for this

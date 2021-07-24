@@ -8,7 +8,10 @@
 import Foundation
 import RealityKit
 import Combine
+
+#if os(OSX)
 import AppKit
+#endif
 
 class RealityKitEntity : CarthageEntity {
     
@@ -21,7 +24,7 @@ class RealityKitEntity : CarthageEntity {
     
     var material            : PhysicallyBasedMaterial? = nil
 
-    init(scene: RealityKitScene, object: CarthageObject, entity: Entity? = nil) {
+    init(scene: RealityKitScene, object: CarthageObject, entity: Entity? = nil, updateFromModel: Bool = true) {
         
         self.scene = scene
         if let entity = entity {
@@ -38,7 +41,9 @@ class RealityKitEntity : CarthageEntity {
         self.entity.name = object.name
         super.init(object: object)
         
-        updateFromModel()
+        if updateFromModel {
+            self.updateFromModel()
+        }
         
         attach()
     }
@@ -157,6 +162,34 @@ class RealityKitEntity : CarthageEntity {
                 perspectiveCam.camera.fieldOfViewInDegrees = 60
             }
         }
+        
+        // Physics
+        if object.type == .Geometry || object.type == .Procedural {
+
+            if let physicsData = object.dataGroups.getGroup("Physics"), groupName == "Physics" || groupName.isEmpty  {
+
+                if let modelEntity = entity as? ModelEntity {
+                    var mode = PhysicsBodyMode.static
+                    
+                    if scene.isPlaying == true {
+                        let type = physicsData.getInt("Type", 0)
+                        if type == 1 {
+                            mode = .dynamic
+                        } else
+                        if type == 2 {
+                            mode = .kinematic
+                        }
+                        
+                        modelEntity.generateCollisionShapes(recursive: true)
+                    }
+                    
+                    modelEntity.physicsBody = PhysicsBodyComponent(massProperties: .default, material: nil, mode: mode)
+                    //modelEntity.physicsMotion = .init(linearVelocity: [0.1 ,0, 0], angularVelocity: [3, 3, 3])
+                    //modelEntity.components.set(modelEntity.physicsBody!)
+                    //modelEntity.components.set(modelEntity.physicsMotion!)
+                }
+            }
+        }
     }
     
     // The following are the member functions called from JavaScript
@@ -199,6 +232,25 @@ class RealityKitEntity : CarthageEntity {
             perspectiveCam.look(at: lookAt, from: getPosition(), relativeTo: nil)
         }
     }
+    
+    override func clone() -> CarthageEntity {
+        let cloneObject = CarthageObject(type: object.type, name: "Copy of " + object.name)
+        cloneObject.parent = object.parent
+        let entity = entity.clone(recursive: true)
+        let clone = RealityKitEntity(scene: scene, object: cloneObject, entity: entity, updateFromModel: false)
+        scene.clones.append(clone)
+        return clone
+    }
+    
+    override func addForce(_ direction: float3,_ position: float3) {
+
+    }
+    
+    override func applyImpulse(_ direction: float3,_ position: float3) {
+        if let modelEntity = entity as? ModelEntity {
+            modelEntity.applyImpulse(direction, at: position, relativeTo: modelEntity)
+        }
+    }
 }
 
 /// The SceneKit implementation of the CarthageEngine abstract
@@ -213,15 +265,25 @@ class RealityKitScene: CarthageScene {
     
     var sceneObserver       : Cancellable!
     
+    var clones              : [RealityKitEntity] = []
+    
     /// Initialize the engine
     override init(model: CarthageModel, sceneObject: CarthageObject)
     {
         sceneAnchor = AnchorEntity(world: [0, 0, 0])
-        
         super.init(model: model, sceneObject: sceneObject)
 
         sceneObject.entity = RealityKitEntity(scene: self, object: sceneObject, entity: sceneAnchor!)
         load()
+    }
+    
+    /// Sets the view
+    func setView(_ sceneView: ARView) {
+        
+        arView = sceneView
+        if let rkView = sceneView as? RKInpuView {
+            rkView.carthageScene = self
+        }
     }
     
     /// Adds the given object to it's parent.
@@ -247,6 +309,17 @@ class RealityKitScene: CarthageScene {
 
     override func play()
     {
+        let children = sceneObject.collectChildren()
+            
+        // We need to iterate all objects to set proper physic types because in isPlaying == false mode all
+        // objects are created as .static. RealityKit cannot be paused ...
+        // TODO: Some initialisation stuff like collision shape generation should only be done one time
+        
+        isPlaying = true
+        for c in children {
+            c.entity?.updateFromModel(groupName: "Physics")
+        }
+        
         super.play()
         
         if let arView = arView {
@@ -258,6 +331,10 @@ class RealityKitScene: CarthageScene {
     
     override func stop()
     {
+        for c in clones {
+            c.entity.removeFromParent()
+        }
+        clones = []
         super.stop()
         
         sceneObserver = nil

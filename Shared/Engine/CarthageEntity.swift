@@ -72,6 +72,12 @@ import JavaScriptCore
     
     // FUNCTIONS
     
+    func clone() -> CarthageEntity {
+        let object = CarthageObject(type: .Geometry, name: "copy")
+        let clone = CarthageEntity(object: object)
+        return clone
+    }
+    
     func addForce(_ direction: float3,_ position: float3) {
     }
     

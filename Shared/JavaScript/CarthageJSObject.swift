@@ -17,6 +17,8 @@ import JavaScriptCore
 
     var isActive                : Bool { get set }
 
+    func clone() -> CarthageJSObject
+    
     func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
     func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
 
@@ -25,10 +27,20 @@ import JavaScriptCore
 
 class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
     
+    /// Called from JavaScript
     override init() {
         super.init()
         _id = "__oi"
     }
+    
+    /// Called from Swift when cloning or referencing an existing CarthageEntity
+    init(entity: CarthageEntity) {
+        super.init()
+        _id = ""
+        _ref = entity
+    }
+    
+    // MARK: PROPERTIES
     
     /// name property
     var name: String  {
@@ -81,6 +93,16 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
                 entity.setOrientation(toFloat4(newValue))
             }
         }
+    }
+    
+    // MARK: FUNCTIONS
+    
+    func clone() -> CarthageJSObject {
+        if let entity = getSelf() {
+            let clonedEntity = entity.clone()
+            return CarthageJSObject(entity: clonedEntity)
+        }
+        return CarthageJSObject()
     }
     
     func addForce(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
