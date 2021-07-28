@@ -54,6 +54,10 @@ import JavaScriptCore
         return float4()
     }
     
+    /// Set the euler angles
+    func setEuler(_ p: float3) {
+    }
+    
     /// Set the object orientation (quaternion)
     func setOrientation(_ p: float4) {
     }
@@ -61,6 +65,10 @@ import JavaScriptCore
     /// Get the resolution
     func getResolution() -> float2 {
         return float2()
+    }
+    
+    func getDirection() -> float3 {
+        return  float3()
     }
     
     func getLookAt() -> float3 {

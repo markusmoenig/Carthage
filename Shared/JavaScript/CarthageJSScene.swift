@@ -12,7 +12,7 @@ import JavaScriptCore
     
     var name                    : String { get }
 
-    var resolution              : [String: AnyObject] { get }
+    var resolution              : Any { get }
 
     static func getInstance() -> CarthageJSScene
 }
@@ -34,7 +34,7 @@ class CarthageJSScene: CarthageJSBase, CarthageJSSceneJSExports {
         }
     }
     
-    var resolution: [String: AnyObject]  {
+    var resolution: Any {
         get {
             if let entity = getSelf() {
                 return fromFloat2(entity.getResolution())

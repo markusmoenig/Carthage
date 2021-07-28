@@ -12,8 +12,14 @@ import JavaScriptCore
     
     var name                    : String { get }
 
-    var position                : [String: AnyObject] { get set }
-    var lookAt                  : [String: AnyObject] { get set }
+    var position                : Any { get set }    
+    var orientation             : Any { get set }
+
+    var lookAt                  : Any { get set }
+
+    func getDirection() -> Any
+
+    func setEuler(_ angles: [String: AnyObject])
 
     static func getInstance() -> CarthageJSCamera
 }
@@ -35,7 +41,7 @@ class CarthageJSCamera: CarthageJSBase, CarthageJSCameraJSExports {
         }
     }
     
-    var position: [String: AnyObject]  {
+    var position: Any  {
         get {
             if let entity = getSelf() {
                 return fromFloat3(entity.getPosition())
@@ -49,7 +55,21 @@ class CarthageJSCamera: CarthageJSBase, CarthageJSCameraJSExports {
         }
     }
     
-    var lookAt: [String: AnyObject]  {
+    var orientation: Any {
+        get {
+            if let entity = getSelf() {
+                return fromFloat4(entity.getOrientation())
+            }
+            return [:]
+        }
+        set {
+            if let entity = getSelf() {
+                entity.setOrientation(toFloat4(newValue))
+            }
+        }
+    }
+    
+    var lookAt: Any  {
         get {
             if let entity = getSelf() {
                 return fromFloat3(entity.getLookAt())
@@ -60,6 +80,22 @@ class CarthageJSCamera: CarthageJSBase, CarthageJSCameraJSExports {
             if let entity = getSelf() {
                 entity.setLookAt(toFloat3(newValue))
             }
+        }
+    }
+    
+    func getDirection() -> Any {
+        if let entity = getSelf() {
+            let v = entity.getDirection()
+            if let object = JSContext.current().evaluateScript("new CT.Math.Vector3(\(v.x), \(v.y), \(v.z))") {
+                return object
+            }
+        }
+        return [:]
+    }
+    
+    func setEuler(_ angles: [String: AnyObject]) {
+        if let entity = getSelf() {
+            entity.setEuler(toFloat3(angles))
         }
     }
 

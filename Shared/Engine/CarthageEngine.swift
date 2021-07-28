@@ -26,7 +26,15 @@ import JavaScriptCore
     /// All objects who needs to be send keyDown events
     var keyDownObjects  : [CarthageObject] = []
     /// All objects who needs to be send keyUp events
-    var keyUpObjects  : [CarthageObject] = []
+    var keyUpObjects    : [CarthageObject] = []
+    /// All objects who needs to be send touchDown events
+    var touchDownObjects: [CarthageObject] = []
+    /// All objects who needs to be send touchMoved events
+    var touchMovedObjects: [CarthageObject] = []
+    /// All objects who needs to be send touchDragged events
+    var touchDraggedObjects: [CarthageObject] = []
+    /// All objects who needs to be send touchUp events
+    var touchUpObjects  : [CarthageObject] = []
     
     /// Initialize the engine
     init(model: CarthageModel, sceneObject: CarthageObject)
@@ -185,6 +193,22 @@ import JavaScriptCore
                 keyUpObjects.append(object)
             }
             
+            if object.jsContext?.objectForKeyedSubscript("touchDown").isUndefined == false {
+                touchDownObjects.append(object)
+            }
+            
+            if object.jsContext?.objectForKeyedSubscript("touchMoved").isUndefined == false {
+                touchMovedObjects.append(object)
+            }
+            
+            if object.jsContext?.objectForKeyedSubscript("touchDragged").isUndefined == false {
+                touchDraggedObjects.append(object)
+            }
+            
+            if object.jsContext?.objectForKeyedSubscript("touchUp").isUndefined == false {
+                touchUpObjects.append(object)
+            }
+            
             jsObjects.append(object)
         }
         
@@ -217,16 +241,50 @@ import JavaScriptCore
             o.jsContext?.evaluateScript("tick(\(time))")
         }
     }
+        
+    // Keys
     
     func keyDown(_ key: String) {
+        if isPlaying == false {return}
         for o in keyDownObjects {
             o.jsContext?.evaluateScript("keyDown(`\(key)`)")
         }
     }
     
     func keyUp(_ key: String) {
+        if isPlaying == false {return}
         for o in keyUpObjects {
             o.jsContext?.evaluateScript("keyUp(`\(key)`)")
+        }
+    }
+    
+    // Touches
+    
+    func touchDown(_ p: float2) {
+        if isPlaying == false {return}
+        for o in touchDownObjects {
+            o.jsContext?.evaluateScript("touchDown(`\(p.x)`, `\(p.y)`)")
+        }
+    }
+    
+    func touchMoved(_ p: float2) {
+        if isPlaying == false {return}
+        for o in touchMovedObjects {
+            o.jsContext?.evaluateScript("touchMoved(`\(p.x)`, `\(p.y)`)")
+        }
+    }
+    
+    func touchDragged(_ p: float2) {
+        if isPlaying == false {return}
+        for o in touchDraggedObjects {
+            o.jsContext?.evaluateScript("touchDragged(`\(p.x)`, `\(p.y)`)")
+        }
+    }
+    
+    func touchUp(_ p: float2) {
+        if isPlaying == false {return}
+        for o in touchUpObjects {
+            o.jsContext?.evaluateScript("touchUp(`\(p.x)`, `\(p.y)`)")
         }
     }
     

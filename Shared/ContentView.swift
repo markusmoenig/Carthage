@@ -74,6 +74,10 @@ struct ContentView: View {
                                         .frame(width: geometry.size.width / 3, height: geometry.size.height / 3)
                                         .opacity(isPlaying ? 1 : 0.5)
                                 }
+                                
+                                //JSHelpView(document: $document)
+                                //    .offset(x: 0, y: 200)
+                                    //.frame(width: 100, height: 200)
                             }
                         }
                     }

@@ -8,6 +8,7 @@
 import SceneKit
 import SceneKit.ModelIO
 import RealityFoundation
+import GLKit
 
 #if os(OSX)
 typealias SCNFloat = CGFloat
@@ -218,7 +219,6 @@ class SceneKitEntity : CarthageEntity {
                 
 
                 if type != 0 {
-                    print(SCNFloat(physicsData.getFloat("Mass", 1)))
                     node.physicsBody?.mass = SCNFLOAT(physicsData.getFloat("Mass", 1))
                 }
 
@@ -253,12 +253,51 @@ class SceneKitEntity : CarthageEntity {
         node.position.z = SCNFloat(p.z)
     }
     
+    // https://stackoverflow.com/questions/42029347/position-a-scenekit-object-in-front-of-scncameras-current-orientation
+    override func getDirection() -> float3 {
+        let x = Float(-node.rotation.x)
+        let y = Float(-node.rotation.y)
+        let z = Float(-node.rotation.z)
+        let w = Float(node.rotation.w)
+        
+        let m00 = cos(w) + pow(x, 2) * (1 - cos(w))
+        let m01 = x * y * (1 - cos(w)) - z * sin(w)
+        let m02 = x * z * (1 - cos(w)) + y*sin(w)
+        
+        let m10 = y*x*(1-cos(w)) + z*sin(w)
+        let m11 = cos(w) + pow(y, 2) * (1 - cos(w))
+        let m12 = y*z*(1-cos(w)) - x*sin(w)
+        
+        let m20 = z*x*(1 - cos(w)) - y*sin(w)
+        let m21 = z*y*(1 - cos(w)) + x*sin(w)
+        let m22 = cos(w) + pow(z, 2) * ( 1 - cos(w))
+
+        let nodeRotationMatrix = GLKMatrix3Make( m00,
+                                                 m01,
+                                                 m02,
+
+                                                 m10,
+                                                 m11,
+                                                 m12,
+
+                                                 m20,
+                                                 m21,
+                                                 m22)
+
+        let direction = GLKMatrix3MultiplyVector3(nodeRotationMatrix, GLKVector3Make(0.0, 0.0, -1.0))
+        return float3(direction.x, direction.y, direction.z)
+    }
+    
     override func getOrientation() -> float4 {
         return  float4(Float(node.orientation.x), Float(node.orientation.y), Float(node.orientation.z), Float(node.orientation.w))
     }
     
     override func setOrientation(_ q: float4) {
         node.orientation = SCNVector4(SCNFloat(q.x),SCNFloat(q.y),SCNFloat(q.z),SCNFloat(q.w))
+    }
+    
+    override func setEuler(_ q: float3) {
+        node.eulerAngles = SCNVector3(SCNFloat(q.x),SCNFloat(q.y),SCNFloat(q.z))
     }
     
     override func getResolution() -> float2 {

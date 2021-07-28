@@ -105,6 +105,54 @@ class SKInpuView: SCNView {
             }
         }
     }
+    
+    var mouseIsDown         : Bool = false
+    var mousePos            = float2(0, 0)
+    
+    var hasTap              : Bool = false
+    var hasDoubleTap        : Bool = false
+    
+    /// To get continuous mouse events on macOS
+    override public func updateTrackingAreas()
+    {
+        let options : NSTrackingArea.Options = [.mouseEnteredAndExited, .mouseMoved, .activeInKeyWindow]
+        let trackingArea = NSTrackingArea(rect: self.bounds, options: options,
+                                      owner: self, userInfo: nil)
+        self.addTrackingArea(trackingArea)
+    }
+    
+    func setMousePos(_ event: NSEvent)
+    {
+        var location = event.locationInWindow
+        location.y = location.y - CGFloat(frame.height)
+        location = convert(location, from: nil)
+        
+        mousePos.x = Float(location.x / frame.width) - 0.5
+        mousePos.y = Float(location.y / frame.height) - 0.5
+    }
+    
+    override public func mouseDown(with event: NSEvent) {
+        setMousePos(event)
+        carthageScene?.touchDown(mousePos)
+    }
+    
+    override public func mouseMoved(with event: NSEvent) {
+        setMousePos(event)
+        carthageScene?.touchMoved(mousePos)
+    }
+    
+    override public func mouseDragged(with event: NSEvent) {
+        setMousePos(event)
+        carthageScene?.touchDragged(mousePos)
+    }
+    
+    override public func mouseUp(with event: NSEvent) {
+        mouseIsDown = false
+        hasTap = false
+        hasDoubleTap = false
+        setMousePos(event)
+        carthageScene?.touchUp(mousePos)
+    }
 }
 
 struct SwiftUISKView: NSViewRepresentable {

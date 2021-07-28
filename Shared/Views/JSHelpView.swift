@@ -8,7 +8,14 @@
 import SwiftUI
 
 struct JSHelpView: View {
+    
+    @Binding var document               : CarthageDocument
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Text(document.model.helpText)
+        }
+            .background(.white)
+            .frame(width: 100, height: 200)
     }
 }

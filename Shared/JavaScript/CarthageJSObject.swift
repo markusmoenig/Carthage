@@ -12,13 +12,17 @@ import JavaScriptCore
     
     var name                    : String { get }
 
-    var position                : [String: AnyObject] { get set }
-    var orientation             : [String: AnyObject] { get set }
+    var position                : Any { get set }
+    var orientation             : Any { get set }
 
     var isActive                : Bool { get set }
 
     func clone() -> CarthageJSObject
-    
+
+    func getDirection() -> Any
+
+    func setEuler(_ angles: [String: AnyObject])
+
     func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
     func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
 
@@ -67,7 +71,7 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
         }
     }
     
-    var position: [String: AnyObject]  {
+    var position: Any {
         get {            
             if let entity = getSelf() {
                 return fromFloat3(entity.getPosition())
@@ -81,7 +85,7 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
         }
     }
     
-    var orientation: [String: AnyObject]  {
+    var orientation: Any  {
         get {
             if let entity = getSelf() {
                 return fromFloat4(entity.getOrientation())
@@ -103,6 +107,20 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
             return CarthageJSObject(entity: clonedEntity)
         }
         return CarthageJSObject()
+    }
+    
+    func getDirection() -> Any {
+        if let entity = getSelf() {
+            //entity.setEuler(toFloat3(angles))
+            return fromFloat3(entity.getDirection())
+        }
+        return [:]
+    }
+    
+    func setEuler(_ angles: [String: AnyObject]) {
+        if let entity = getSelf() {
+            entity.setEuler(toFloat3(angles))
+        }
     }
     
     func addForce(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {

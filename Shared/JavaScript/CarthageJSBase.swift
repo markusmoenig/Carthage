@@ -43,22 +43,28 @@ class CarthageJSBase: NSObject {
     }
     
     /// Converts a JSValue to float3
-    func toFloat3(_ o: [String: AnyObject]) -> float3 {
-        var p = float3(0,0,0)
-        if let x = o["x"] { p.x = toFloat(x) }
-        if let y = o["y"] { p.y = toFloat(y) }
-        if let z = o["z"] { p.z = toFloat(z) }
-        return p
+    func toFloat3(_ o: Any) -> float3 {
+        if let o = o as? [String: AnyObject] {
+            var p = float3(0,0,0)
+            if let x = o["x"] { p.x = toFloat(x) }
+            if let y = o["y"] { p.y = toFloat(y) }
+            if let z = o["z"] { p.z = toFloat(z) }
+            return p
+        }
+        return float3()
     }
     
     /// Converts a JSValue to float4
-    func toFloat4(_ o: [String: AnyObject]) -> float4 {
-        var p = float4(0,0,0,0)
-        if let x = o["x"] { p.x = toFloat(x) }
-        if let y = o["y"] { p.y = toFloat(y) }
-        if let z = o["z"] { p.z = toFloat(z) }
-        if let w = o["w"] { p.w = toFloat(w) }
-        return p
+    func toFloat4(_ o: Any) -> float4 {
+        if let o = o as? [String: AnyObject] {
+            var p = float4(0,0,0,0)
+            if let x = o["x"] { p.x = toFloat(x) }
+            if let y = o["y"] { p.y = toFloat(y) }
+            if let z = o["z"] { p.z = toFloat(z) }
+            if let w = o["w"] { p.w = toFloat(w) }
+            return p
+        }
+        return float4()
     }
     
     /// Float to JSValue
@@ -67,17 +73,29 @@ class CarthageJSBase: NSObject {
     }
     
     /// float2 to JSValue
-    func fromFloat2(_ p: float2) -> [String:JSValue] {
-        return ["x": fromFloat(p.x), "y": fromFloat(p.y)]
+    func fromFloat2(_ p: float2) -> Any {
+        if let object = JSContext.current().evaluateScript("new CT.Math.Vector2(\(p.x), \(p.y))") {
+            return object
+        }
+        //return ["x": fromFloat(p.x), "y": fromFloat(p.y)]
+        return [:]
     }
     
     /// float3 to JSValue
-    func fromFloat3(_ p: float3) -> [String:JSValue] {
-        return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z)]
+    func fromFloat3(_ p: float3) -> Any {
+        if let object = JSContext.current().evaluateScript("new CT.Math.Vector3(\(p.x), \(p.y), \(p.z))") {
+            return object
+        }
+        //return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z)]
+        return [:]
     }
     
     /// float4 to JSValue
-    func fromFloat4(_ p: float4) -> [String:JSValue] {
-        return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
+    func fromFloat4(_ p: float4) -> Any {
+        if let object = JSContext.current().evaluateScript("new CT.Math.Vector4(\(p.x), \(p.y), \(p.z), \(p.w)") {
+            return object
+        }
+        //return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
+        return [:]
     }
 }

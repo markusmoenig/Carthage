@@ -52,6 +52,8 @@ class CarthageModel: NSObject, ObservableObject {
 
     var logText                     : String = ""
     
+    var helpText                    : AttributedString = ""
+    
     override init() {
 
         project = CarthageProject()
