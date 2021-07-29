@@ -102,6 +102,16 @@ import JavaScriptCore
         
     }
     
+    /// Returns a top level object of the given type in the scene
+    func getTopLevelObject(_ type: CarthageObject.CarthageObjectType) -> CarthageObject? {
+        for o in sceneObject.children! {
+            if o.type == type {
+                return o
+            }
+        }
+        return nil
+    }
+    
     ///  Setup the js context
     func play() {
         
@@ -114,15 +124,6 @@ import JavaScriptCore
         tickObjects = []
         keyDownObjects = []
         keyUpObjects = []
-        
-        func getTopLevelObject(_ type: CarthageObject.CarthageObjectType) -> CarthageObject? {
-            for o in sceneObject.children! {
-                if o.type == type {
-                    return o
-                }
-            }
-            return nil
-        }
         
         let camera = getTopLevelObject(.Camera)
 

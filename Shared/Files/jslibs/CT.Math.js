@@ -21,6 +21,8 @@ CT.Math = {};
  * @constructor
  */
 CT.Math.Matrix4 = function(opt_src) {
+    if (!(this instanceof CT.Math.Matrix4)) return new CT.Math.Matrix4(opt_src);
+
   var i, s, d;
   if (opt_src && typeof opt_src === 'object' && opt_src.hasOwnProperty('elements')) {
     s = opt_src.elements;
@@ -1625,6 +1627,8 @@ CT.Math.Vector3.Front = new CT.Math.Vector3(0, 0, -1);
 
 CT.Math.Vector4=function(x, y, z, w)
 {
+    if (!(this instanceof CT.Math.Vector4)) return new CT.Math.Vector4(x, y, z, w);
+
     this.set(x, y, z, w);
 };
 

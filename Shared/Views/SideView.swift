@@ -82,7 +82,7 @@ struct SideView: View {
                         .buttonStyle(.borderless)
                     }
                     
-                    if selected.type == .Camera {
+                    if selected.type == .Camera || selected.type == .Scene {
                         Button(action: {
                             mode = .parameters
                             selected.settingsMode = mode
@@ -126,6 +126,10 @@ struct SideView: View {
                     
                     if let cameraData = selected.dataGroups.getGroup("Camera") {
                         DataView(model: document.model, data: cameraData)
+                    }
+                    
+                    if let settingsData = selected.dataGroups.getGroup("Settings") {
+                        DataView(model: document.model, data: settingsData)
                     }
                 }
                 

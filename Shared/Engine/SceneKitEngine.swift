@@ -171,6 +171,16 @@ class SceneKitEntity : CarthageEntity {
                     scene.physicsWorld.gravity = SCNVector3(physicsData.getFloat3("Gravity"))
                     scene.physicsWorld.speed = 1.0
                 }
+                
+                if let settingsData = object.dataGroups.getGroup("Settings"), groupName == "Settings" || groupName.isEmpty {
+                    let key = "Background"
+                    if let url = self.scene.getUrl(data: settingsData, key: key) {
+                        scene.background.contents = url
+                    } else {
+                        let color = settingsData.getFloat3(key, float3(0.5,0.5,0.5))
+                        scene.background.contents = CGColor(red: SCNFLOAT(color.x), green: SCNFLOAT(color.y), blue: SCNFLOAT(color.z), alpha: 1)
+                    }
+                }
 
                 /*
                 let gravityNode = SCNNode()
@@ -244,7 +254,7 @@ class SceneKitEntity : CarthageEntity {
     }
     
     override func getPosition() -> float3 {
-        return  float3(Float(node.position.x), Float(node.position.y), Float(node.position.z))
+        return float3(Float(node.presentation.position.x), Float(node.presentation.position.y), Float(node.presentation.position.z))
     }
     
     override func setPosition(_ p: float3) {
@@ -329,6 +339,7 @@ class SceneKitEntity : CarthageEntity {
     }
     
     override func addForce(_ direction: float3,_ position: float3) {
+        node.physicsBody?.applyForce(SCNVector3(direction), at: SCNVector3(position), asImpulse: false)
     }
     
     override func applyImpulse(_ direction: float3,_ position: float3) {

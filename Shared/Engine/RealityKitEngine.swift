@@ -8,6 +8,7 @@
 import Foundation
 import RealityKit
 import Combine
+import GLKit
 
 #if os(OSX)
 import AppKit
@@ -92,7 +93,7 @@ class RealityKitEntity : CarthageEntity {
                     }
                 } else {
                     #if os(OSX)
-                    material?.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    //material?.baseColor.tint = NSColor.red// NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
                     #elseif os(iOS)
                     material?.baseColor.tint = UIColor(red: SCNFLOAT(diffuse.x), green: SCNFLOAT(diffuse.y), blue: SCNFLOAT(diffuse.z), alpha: 1)
                     #endif
@@ -196,6 +197,21 @@ class RealityKitEntity : CarthageEntity {
                 }
             }
         }
+        
+        if object.type == .Scene {
+            
+            if let settingsData = object.dataGroups.getGroup("Settings"), groupName == "Settings" || groupName.isEmpty {
+                let key = "Background"
+                if let url = self.scene.getUrl(data: settingsData, key: key) {
+                    //scene.arView?.environment.background =
+                } else {
+                    let color = settingsData.getFloat3(key, float3(0.5,0.5,0.5))
+                    if let arView = scene.arView {
+                        arView.environment.background = ARView.Environment.Background.color(NSColor(red: SCNFloat(color.x), green: SCNFloat(color.y), blue: SCNFloat(color.z), alpha: 1))
+                    }
+                }
+            }
+        }
     }
     
     // The following are the member functions called from JavaScript
@@ -218,12 +234,51 @@ class RealityKitEntity : CarthageEntity {
         entity.transform.translation.z = p.z
     }
     
+    // https://stackoverflow.com/questions/42029347/position-a-scenekit-object-in-front-of-scncameras-current-orientation
+    override func getDirection() -> float3 {
+        let x = Float(-entity.transform.rotation.imag.x)
+        let y = Float(-entity.transform.rotation.imag.y)
+        let z = Float(-entity.transform.rotation.imag.z)
+        let w = Float(entity.transform.rotation.real)
+        
+        let m00 = cos(w) + pow(x, 2) * (1 - cos(w))
+        let m01 = x * y * (1 - cos(w)) - z * sin(w)
+        let m02 = x * z * (1 - cos(w)) + y*sin(w)
+        
+        let m10 = y*x*(1-cos(w)) + z*sin(w)
+        let m11 = cos(w) + pow(y, 2) * (1 - cos(w))
+        let m12 = y*z*(1-cos(w)) - x*sin(w)
+        
+        let m20 = z*x*(1 - cos(w)) - y*sin(w)
+        let m21 = z*y*(1 - cos(w)) + x*sin(w)
+        let m22 = cos(w) + pow(z, 2) * ( 1 - cos(w))
+
+        let nodeRotationMatrix = GLKMatrix3Make( m00,
+                                                 m01,
+                                                 m02,
+
+                                                 m10,
+                                                 m11,
+                                                 m12,
+
+                                                 m20,
+                                                 m21,
+                                                 m22)
+
+        let direction = GLKMatrix3MultiplyVector3(nodeRotationMatrix, GLKVector3Make(0.0, 0.0, -1.0))
+        return float3(direction.x, direction.y, direction.z)
+    }
+    
     override func getOrientation() -> float4 {
         return  float4(Float(entity.orientation.imag.x), Float(entity.orientation.imag.y), Float(entity.orientation.imag.z), Float(entity.orientation.real))
     }
     
     override func setOrientation(_ q: float4) {
         entity.orientation = simd_quatf(vector: q)
+    }
+    
+    override func setEuler(_ q: float3) {
+        entity.transform = Transform(pitch: q.x, yaw: q.y, roll: q.z)// eulerAngles = SCNVector3(SCNFloat(q.x),SCNFloat(q.y),SCNFloat(q.z))
     }
     
     override func getResolution() -> float2 {
@@ -289,6 +344,8 @@ class RealityKitScene: CarthageScene {
         arView = sceneView
         if let rkView = sceneView as? RKInpuView {
             rkView.carthageScene = self
+            
+            sceneObject.entity?.updateFromModel()
         }
     }
     

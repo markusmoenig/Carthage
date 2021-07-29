@@ -179,13 +179,15 @@ class CarthageObject : Codable, Hashable, Identifiable {
             ])
         } else
         if type == .Scene {
+            addDataGroup(name: "Settings", entities: [
+                CarthageDataEntity("Background", float3(0.5,0.5,0.5), float2(0, 1), .Color, .Texture),
+            ])
         } else
         if type == .Camera {
             // Init default data types for geometry objects
             addDataGroup(name: "Camera", entities: [
                 CarthageDataEntity("Position", float3(0,1,3), float2(-1000, 1000)),
                 CarthageDataEntity("Look At", float3(0,0,0), float2(-1000, 1000)),
-                //CarthageDataEntity("Scale", float3(1,1,1), float2(0, 10), .Slider),
             ])
         }
         

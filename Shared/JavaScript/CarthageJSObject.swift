@@ -23,8 +23,8 @@ import JavaScriptCore
 
     func setEuler(_ angles: [String: AnyObject])
 
-    func addForce(_ position: [String: AnyObject],_ direction: [String: AnyObject])
-    func applyImpulse(_ position: [String: AnyObject],_ direction: [String: AnyObject])
+    func addForce(_ position: Any,_ direction: Any)
+    func applyImpulse(_ position: Any,_ direction: Any)
 
     static func getInstance() -> CarthageJSObject
 }
@@ -123,13 +123,13 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
         }
     }
     
-    func addForce(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
+    func addForce(_ direction: Any, _ position: Any) {
         if let entity = getSelf() {
             entity.addForce(toFloat3(direction), toFloat3(position))
         }
     }
     
-    func applyImpulse(_ direction: [String: AnyObject], _ position: [String: AnyObject]) {
+    func applyImpulse(_ direction: Any, _ position: Any) {
         if let entity = getSelf() {
             entity.applyImpulse(toFloat3(direction), toFloat3(position))
         }
