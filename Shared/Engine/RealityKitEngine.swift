@@ -234,6 +234,14 @@ class RealityKitEntity : CarthageEntity {
         entity.transform.translation.z = p.z
     }
     
+    override func getTransform() -> float4x4 {
+        return entity.transform.matrix
+    }
+    
+    override func setTransform(_ p: float4x4) {
+        entity.transform = Transform(matrix: p)
+    }
+    
     // https://stackoverflow.com/questions/42029347/position-a-scenekit-object-in-front-of-scncameras-current-orientation
     override func getDirection() -> float3 {
         let x = Float(-entity.transform.rotation.imag.x)

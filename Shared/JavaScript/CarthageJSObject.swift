@@ -13,6 +13,7 @@ import JavaScriptCore
     var name                    : String { get }
 
     var position                : Any { get set }
+    var transform               : Any { get set }
     var orientation             : Any { get set }
 
     var isActive                : Bool { get set }
@@ -85,10 +86,24 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
         }
     }
     
+    var transform: Any {
+        get {
+            if let entity = getSelf() {
+                return fromFloat4x4(entity.getTransform())
+            }
+            return [:]
+        }
+        set {
+            if let entity = getSelf() {
+                entity.setTransform(toFloat4x4(newValue))
+            }
+        }
+    }
+    
     var orientation: Any  {
         get {
             if let entity = getSelf() {
-                return fromFloat4(entity.getOrientation())
+                return fromFloat4AsQuat(entity.getOrientation())
             }
             return [:]
         }

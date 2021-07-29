@@ -7,6 +7,7 @@
 
 import Foundation
 import JavaScriptCore
+import simd
 
 /// The abstract API for entities, this gets subclassed by the different engines for each node in a graph.
 @objc protocol CarthageEntityJSExports: JSExport {
@@ -38,6 +39,15 @@ import JavaScriptCore
     
     /// Set the active state
     func setIsActive(_ b: Bool) {
+    }
+    
+    /// Get the object transform
+    func getTransform() -> float4x4 {
+        return float4x4()
+    }
+    
+    /// Set the object transform
+    func setTransform(_ p: float4x4) {
     }
     
     /// Get the object position

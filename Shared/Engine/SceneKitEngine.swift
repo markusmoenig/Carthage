@@ -263,6 +263,14 @@ class SceneKitEntity : CarthageEntity {
         node.position.z = SCNFloat(p.z)
     }
     
+    override func getTransform() -> float4x4 {
+        return node.simdTransform
+    }
+    
+    override func setTransform(_ p: float4x4) {
+        node.simdTransform = p
+    }
+    
     // https://stackoverflow.com/questions/42029347/position-a-scenekit-object-in-front-of-scncameras-current-orientation
     override func getDirection() -> float3 {
         let x = Float(-node.rotation.x)

@@ -124,6 +124,10 @@ import JavaScriptCore
         tickObjects = []
         keyDownObjects = []
         keyUpObjects = []
+        touchDownObjects = []
+        touchMovedObjects = []
+        touchDraggedObjects = []
+        touchUpObjects = []
         
         let camera = getTopLevelObject(.Camera)
 

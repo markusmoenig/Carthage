@@ -6,8 +6,6 @@
  * @param {Number}[100] farZ - Far plane
  */
 
-//print("1")
-
 CT.Camera = function(fov, nearZ, farZ) {
     if (!(this instanceof CT.Camera)) return new CT.Camera(fov, nearZ, farZ);
 

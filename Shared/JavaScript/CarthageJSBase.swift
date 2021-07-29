@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import simd
 import JavaScriptCore
 
 class CarthageJSBase: NSObject {
@@ -67,6 +68,20 @@ class CarthageJSBase: NSObject {
         return float4()
     }
     
+    /// Converts a JSValue to float4
+    func toFloat4x4(_ o: Any) -> float4x4 {
+        if let o = o as? [String: AnyObject] {
+            if let a = o["elements"] as? [String: Float] {
+                let p = float4x4(float4(a["0"]!, a["1"]!, a["2"]!, a["3"]!),
+                                 float4(a["4"]!, a["5"]!, a["6"]!, a["7"]!),
+                                 float4(a["8"]!, a["9"]!, a["10"]!, a["11"]!),
+                                 float4(a["12"]!, a["13"]!, a["14"]!, a["15"]!))
+                return p
+            }
+        }
+        return float4x4()
+    }
+    
     /// Float to JSValue
     func fromFloat(_ v: Float) -> JSValue {
         return JSValue(double: Double(v), in: JSContext.current())
@@ -92,7 +107,26 @@ class CarthageJSBase: NSObject {
     
     /// float4 to JSValue
     func fromFloat4(_ p: float4) -> Any {
-        if let object = JSContext.current().evaluateScript("new CT.Math.Vector4(\(p.x), \(p.y), \(p.z), \(p.w)") {
+        if let object = JSContext.current().evaluateScript("new CT.Math.Vector4(\(p.x), \(p.y), \(p.z), \(p.w))") {
+            return object
+        }
+        //return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
+        return [:]
+    }
+    
+    /// float4 to JSValue
+    func fromFloat4AsQuat(_ p: float4) -> Any {
+        if let object = JSContext.current().evaluateScript("new CT.Math.Quat(\(p.x), \(p.y), \(p.z), \(p.w))") {
+            return object
+        }
+        //return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
+        return [:]
+    }
+    
+    /// float4x4 to JSValue
+    func fromFloat4x4(_ m: float4x4) -> Any {
+        print("new CT.Math.Matrix4({ elements: [\(m[0].x), \(m[0].y), \(m[0].z), \(m[0].w), \(m[1].x), \(m[1].y), \(m[1].z), \(m[1].w), \(m[2].x), \(m[2].y), \(m[2].z), \(m[2].w), \(m[3].x), \(m[3].y), \(m[3].z), \(m[3].w)]}")
+        if let object = JSContext.current().evaluateScript("new CT.Math.Matrix4({ elements: [\(m[0].x), \(m[0].y), \(m[0].z), \(m[0].w), \(m[1].x), \(m[1].y), \(m[1].z), \(m[1].w), \(m[2].x), \(m[2].y), \(m[2].z), \(m[2].w), \(m[3].x), \(m[3].y), \(m[3].z), \(m[3].w)]})") {
             return object
         }
         //return ["x": fromFloat(p.x), "y": fromFloat(p.y), "z": fromFloat(p.z), "w": fromFloat(p.w)]
