@@ -93,7 +93,7 @@ class RealityKitEntity : CarthageEntity {
                     }
                 } else {
                     #if os(OSX)
-                    //material?.baseColor.tint = NSColor.red// NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
+                    material?.baseColor.tint = NSColor(red: SCNFloat(diffuse.x), green: SCNFloat(diffuse.y), blue: SCNFloat(diffuse.z), alpha: 1)
                     #elseif os(iOS)
                     material?.baseColor.tint = UIColor(red: SCNFLOAT(diffuse.x), green: SCNFLOAT(diffuse.y), blue: SCNFLOAT(diffuse.z), alpha: 1)
                     #endif

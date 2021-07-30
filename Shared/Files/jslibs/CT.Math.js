@@ -103,6 +103,16 @@ CT.Math.Matrix4.prototype.concat = function(other) {
 CT.Math.Matrix4.prototype.multiply = CT.Math.Matrix4.prototype.concat;
 
 /**
+ * Returns the forward facing vector of the matrix which are elements, 8, 9, 10.
+ * Convenience function.
+ * @return {CT.Math.Vector3} The forward facing vector.
+ */
+CT.Math.Matrix4.prototype.forwardVector = function() {
+    var e = this.elements;
+    return new CT.Math.Vector3(-e[8], -e[9], -e[10]);
+};
+
+/**
  * Multiply the three-dimensional vector.
  * This assume the vector is direction (NOT position).
  * @param pos {CT.Math.Vector3} The multiply vector

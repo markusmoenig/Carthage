@@ -127,7 +127,7 @@ class RKInpuView: ARView {
         location = convert(location, from: nil)
         
         mousePos.x = Float(location.x)// / frame.width) - 0.5
-        mousePos.y = Float(location.y)// / frame.height) - 0.5
+        mousePos.y = Float(-location.y)// / frame.height) - 0.5
     }
     
     override public func mouseDown(with event: NSEvent) {
