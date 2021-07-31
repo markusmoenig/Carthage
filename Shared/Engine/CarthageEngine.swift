@@ -36,6 +36,9 @@ import JavaScriptCore
     /// All objects who needs to be send touchUp events
     var touchUpObjects  : [CarthageObject] = []
     
+    /// Will contain the current resolution of the gaming display
+    var resolution      = float2()
+    
     /// Initialize the engine
     init(model: CarthageModel, sceneObject: CarthageObject)
     {
@@ -81,8 +84,10 @@ import JavaScriptCore
     /// JavaScript print
     let printConsole: @convention(block) (String) -> () = { input in
         if let model = getModel() {
-            model.logText.append(input + "\n")
-            model.logChanged.send()
+            DispatchQueue.main.async {
+                model.logText.append(input + "\n")
+                model.logChanged.send()
+            }
         }
     }
     
@@ -149,8 +154,10 @@ import JavaScriptCore
             object.jsContext!.exceptionHandler = { context, exception in
                 if let exc = exception {
                     if let str = exc.toString() {
-                        self.model.logText.append("Error in \(object.name): \(str) \n")
-                        self.model.logChanged.send()
+                        DispatchQueue.main.async {
+                            self.model.logText.append("Error in \(object.name): \(str) \n")
+                            self.model.logChanged.send()
+                        }
                     }
                 }
             }

@@ -290,10 +290,7 @@ class RealityKitEntity : CarthageEntity {
     }
     
     override func getResolution() -> float2 {
-        if let view = scene.arView {
-            return float2(Float(view.frame.width), Float(view.frame.height))
-        }
-        return float2()
+        return scene.resolution
     }
     
     override func setLookAt(_ lookAt: float3) {
@@ -391,12 +388,16 @@ class RealityKitScene: CarthageScene {
             c.entity?.updateFromModel(groupName: "Physics")
         }
         
+        if let arView = arView {
+            resolution = float2(Float(arView.frame.width), Float(arView.frame.height))
+        }
+        
         super.play()
         
         if let arView = arView {
             sceneObserver = arView.scene.subscribe(to: SceneEvents.Update.self) { [unowned self] (_) in
                 tick(Date.timeIntervalSinceReferenceDate)
-            }
+            }            
         }
     }
     

@@ -14,6 +14,8 @@ import JavaScriptCore
 
     var resolution              : Any { get }
 
+    func getObject(_ name: String) -> CarthageJSObject?
+
     static func getInstance() -> CarthageJSScene
 }
 
@@ -41,6 +43,21 @@ class CarthageJSScene: CarthageJSBase, CarthageJSSceneJSExports {
             }
             return [:]
         }
+    }
+    
+    func getObject(_ name: String) -> CarthageJSObject? {
+        if let entity = getSelf() {
+            if let children = entity.object.scene?.children {
+                for o in children {
+                    if o.name == name {
+                        return CarthageJSObject(entity: o.entity!)
+                    }
+                }
+            }
+            //entity.setEuler(toFloat3(angles))
+            //return fromFloat3(entity.getDirection())
+        }
+        return nil
     }
 
     /// Class initializer

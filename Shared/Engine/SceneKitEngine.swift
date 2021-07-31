@@ -319,10 +319,7 @@ class SceneKitEntity : CarthageEntity {
     }
     
     override func getResolution() -> float2 {
-        if let view = scene.view {
-            return float2(Float(view.frame.width), Float(view.frame.height))
-        }
-        return float2()
+        return scene.resolution
     }
     
     override func getLookAt() -> float3 {
@@ -428,6 +425,11 @@ class SceneKitScene: CarthageScene, SCNSceneRendererDelegate {
     override func play()
     {
         clones = []
+        
+        if let view = view {
+            resolution = float2(Float(view.frame.width), Float(view.frame.height))
+        }
+        
         super.play()
         scene?.isPaused = false
         view?.isPlaying = true
