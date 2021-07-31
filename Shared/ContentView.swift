@@ -54,7 +54,7 @@ struct ContentView: View {
                             
                             if sideViewIsVisible {
                                 SideView(document: $document)
-                                    .frame(width: min(geometry.size.width / 2.5, 800))
+                                    .frame(width: min(geometry.size.width / 2.8, 700))
                             }
                         } else
                         if mode == .scripting {
