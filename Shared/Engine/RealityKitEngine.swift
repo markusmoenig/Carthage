@@ -242,41 +242,6 @@ class RealityKitEntity : CarthageEntity {
         entity.transform = Transform(matrix: p)
     }
     
-    // https://stackoverflow.com/questions/42029347/position-a-scenekit-object-in-front-of-scncameras-current-orientation
-    override func getDirection() -> float3 {
-        let x = Float(-entity.transform.rotation.imag.x)
-        let y = Float(-entity.transform.rotation.imag.y)
-        let z = Float(-entity.transform.rotation.imag.z)
-        let w = Float(entity.transform.rotation.real)
-        
-        let m00 = cos(w) + pow(x, 2) * (1 - cos(w))
-        let m01 = x * y * (1 - cos(w)) - z * sin(w)
-        let m02 = x * z * (1 - cos(w)) + y*sin(w)
-        
-        let m10 = y*x*(1-cos(w)) + z*sin(w)
-        let m11 = cos(w) + pow(y, 2) * (1 - cos(w))
-        let m12 = y*z*(1-cos(w)) - x*sin(w)
-        
-        let m20 = z*x*(1 - cos(w)) - y*sin(w)
-        let m21 = z*y*(1 - cos(w)) + x*sin(w)
-        let m22 = cos(w) + pow(z, 2) * ( 1 - cos(w))
-
-        let nodeRotationMatrix = GLKMatrix3Make( m00,
-                                                 m01,
-                                                 m02,
-
-                                                 m10,
-                                                 m11,
-                                                 m12,
-
-                                                 m20,
-                                                 m21,
-                                                 m22)
-
-        let direction = GLKMatrix3MultiplyVector3(nodeRotationMatrix, GLKVector3Make(0.0, 0.0, -1.0))
-        return float3(direction.x, direction.y, direction.z)
-    }
-    
     override func getOrientation() -> float4 {
         return  float4(Float(entity.orientation.imag.x), Float(entity.orientation.imag.y), Float(entity.orientation.imag.z), Float(entity.orientation.real))
     }

@@ -20,8 +20,6 @@ import JavaScriptCore
 
     func clone() -> CarthageJSObject
 
-    func getDirection() -> Any
-
     func setEuler(_ angles: [String: AnyObject])
 
     func addForce(_ position: Any,_ direction: Any)
@@ -122,14 +120,6 @@ class CarthageJSObject: CarthageJSBase, CarthageJSObjectJSExports {
             return CarthageJSObject(entity: clonedEntity)
         }
         return CarthageJSObject()
-    }
-    
-    func getDirection() -> Any {
-        if let entity = getSelf() {
-            //entity.setEuler(toFloat3(angles))
-            return fromFloat3(entity.getDirection())
-        }
-        return [:]
     }
     
     func setEuler(_ angles: [String: AnyObject]) {

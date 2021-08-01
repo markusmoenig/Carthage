@@ -77,10 +77,6 @@ import simd
         return float2()
     }
     
-    func getDirection() -> float3 {
-        return  float3()
-    }
-    
     func getLookAt() -> float3 {
         return  float3()
     }

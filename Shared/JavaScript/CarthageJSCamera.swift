@@ -18,8 +18,6 @@ import JavaScriptCore
 
     var lookAt                  : Any { get set }
 
-    func getDirection() -> Any
-
     func setEuler(_ angles: [String: AnyObject])
 
     static func getInstance() -> CarthageJSCamera
@@ -96,16 +94,6 @@ class CarthageJSCamera: CarthageJSBase, CarthageJSCameraJSExports {
                 entity.setLookAt(toFloat3(newValue))
             }
         }
-    }
-    
-    func getDirection() -> Any {
-        if let entity = getSelf() {
-            let v = entity.getDirection()
-            if let object = JSContext.current().evaluateScript("new CT.Math.Vector3(\(v.x), \(v.y), \(v.z))") {
-                return object
-            }
-        }
-        return [:]
     }
     
     func setEuler(_ angles: [String: AnyObject]) {
